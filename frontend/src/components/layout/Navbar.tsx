@@ -9,13 +9,18 @@ import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { LanguageSwitcher } from "@/components/theme/LanguageSwitcher";
 import { useAuth } from "@/context/AuthProvider";
 import { logoutUser } from "@/lib/firebase/auth";
+import { isPendingTeacher } from "@/lib/utils/userStatus";
 import { Button } from "@/components/ui/Button";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const { profile, loading } = useAuth();
   const t = useTranslations("nav");
-  const dashboardHref = profile ? `/dashboard/${profile.role}` : "/dashboard/student";
+  const dashboardHref = !profile
+    ? "/dashboard/student"
+    : isPendingTeacher(profile)
+      ? "/auth/pending-approval"
+      : `/dashboard/${profile.role}`;
 
   const navLinks = [
     { href: "/#stages", label: t("stages") },

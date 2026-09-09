@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import type { User } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase/client";
@@ -11,12 +11,14 @@ interface AuthContextValue {
   firebaseUser: User | null;
   profile: AppUser | null;
   loading: boolean;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue>({
   firebaseUser: null,
   profile: null,
   loading: true,
+  refreshProfile: async () => {},
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -33,8 +35,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return unsubscribe;
   }, []);
 
+  const refreshProfile = useCallback(async () => {
+    if (!firebaseUser) return;
+    setProfile(await getUserProfile(firebaseUser.uid));
+  }, [firebaseUser]);
+
   return (
-    <AuthContext.Provider value={{ firebaseUser, profile, loading }}>
+    <AuthContext.Provider value={{ firebaseUser, profile, loading, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );

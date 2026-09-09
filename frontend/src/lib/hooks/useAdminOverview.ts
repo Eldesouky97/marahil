@@ -9,6 +9,7 @@ interface AdminOverview {
   userCount: number;
   teacherCount: number;
   studentCount: number;
+  pendingTeacherCount: number;
   courseCount: number;
   publishedCourseCount: number;
   certificateCount: number;
@@ -18,6 +19,7 @@ const EMPTY: AdminOverview = {
   userCount: 0,
   teacherCount: 0,
   studentCount: 0,
+  pendingTeacherCount: 0,
   courseCount: 0,
   publishedCourseCount: 0,
   certificateCount: 0,
@@ -38,6 +40,7 @@ export function useAdminOverview() {
           userCount: users.length,
           teacherCount: users.filter((u) => u.role === "teacher").length,
           studentCount: users.filter((u) => u.role === "student").length,
+          pendingTeacherCount: users.filter((u) => u.role === "teacher" && u.status === "pending").length,
           courseCount: courses.length,
           publishedCourseCount: courses.filter((c) => c.published).length,
           certificateCount: certificates.length,

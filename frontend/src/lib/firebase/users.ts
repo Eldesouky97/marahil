@@ -1,6 +1,6 @@
 import { collection, doc, DocumentData, getDoc, getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "./client";
-import type { AppUser, UserRole } from "@/types/user";
+import type { AppUser, PersonalDetails, UserRole, UserStatus } from "@/types/user";
 
 function mapUser(uid: string, data: DocumentData): AppUser {
   return {
@@ -8,8 +8,17 @@ function mapUser(uid: string, data: DocumentData): AppUser {
     name: data.name,
     email: data.email,
     role: data.role,
+    status: data.status,
     photoURL: data.photoURL,
     createdAt: data.createdAt?.toMillis?.() ?? Date.now(),
+    phone: data.phone,
+    age: data.age,
+    governorate: data.governorate,
+    stage: data.stage,
+    school: data.school,
+    subject: data.subject,
+    workplace: data.workplace,
+    jobTitle: data.jobTitle,
   };
 }
 
@@ -20,9 +29,10 @@ export async function getUserProfile(uid: string): Promise<AppUser | null> {
 
 export async function createUserProfile(
   uid: string,
-  input: { name: string; email: string; role: UserRole }
+  input: { name: string; email: string; role: UserRole } & PersonalDetails
 ): Promise<void> {
-  await setDoc(doc(db, "users", uid), { ...input, createdAt: serverTimestamp() });
+  const status: UserStatus = input.role === "teacher" ? "pending" : "approved";
+  await setDoc(doc(db, "users", uid), { ...input, status, createdAt: serverTimestamp() });
 }
 
 /** Admin-only (see backend/firestore.rules isAdmin()) — lists every user for the admin dashboard. */
@@ -39,4 +49,9 @@ export async function listAllUsers(): Promise<AppUser[]> {
  */
 export async function updateUserRole(uid: string, role: UserRole): Promise<void> {
   await updateDoc(doc(db, "users", uid), { role });
+}
+
+/** Admin-only — approves a pending teacher (see backend/firestore.rules isApproved()). */
+export async function updateUserStatus(uid: string, status: UserStatus): Promise<void> {
+  await updateDoc(doc(db, "users", uid), { status });
 }

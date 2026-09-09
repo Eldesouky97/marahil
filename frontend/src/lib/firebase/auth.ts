@@ -9,17 +9,18 @@ import {
 } from "firebase/auth";
 import { auth } from "./client";
 import { createUserProfile } from "./users";
-import type { UserRole } from "@/types/user";
+import type { PersonalDetails, UserRole } from "@/types/user";
 
 export async function registerUser(
   name: string,
   email: string,
   password: string,
-  role: UserRole
+  role: UserRole,
+  details: PersonalDetails
 ) {
   const credential = await createUserWithEmailAndPassword(auth, email, password);
   await updateProfile(credential.user, { displayName: name });
-  await createUserProfile(credential.user.uid, { name, email, role });
+  await createUserProfile(credential.user.uid, { name, email, role, ...details });
   return credential.user;
 }
 

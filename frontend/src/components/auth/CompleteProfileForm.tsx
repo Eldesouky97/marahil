@@ -7,10 +7,11 @@ import { useRouter } from "@/i18n/navigation";
 import { useAuth } from "@/context/AuthProvider";
 import { createUserProfile } from "@/lib/firebase/users";
 import { RoleSwitch } from "./RoleSwitch";
+import { PersonalDetailsForm } from "./PersonalDetailsForm";
 import { Button } from "@/components/ui/Button";
 import { FormField, inputClasses } from "@/components/ui/FormField";
 import { Spinner } from "@/components/ui/Spinner";
-import type { UserRole } from "@/types/user";
+import type { PersonalDetails, UserRole } from "@/types/user";
 
 export function CompleteProfileForm() {
   const router = useRouter();
@@ -38,36 +39,48 @@ function CompleteProfileFields({ firebaseUser }: { firebaseUser: User }) {
   const router = useRouter();
   const t = useTranslations("auth.completeProfile");
 
+  const [step, setStep] = useState<1 | 2>(1);
   const [role, setRole] = useState<UserRole>("student");
   const [name, setName] = useState(() => firebaseUser.displayName ?? "");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleNext(e: React.FormEvent) {
     e.preventDefault();
+    setStep(2);
+  }
+
+  async function handleFinish(details: PersonalDetails) {
     setError(null);
     setSubmitting(true);
     try {
-      await createUserProfile(firebaseUser.uid, { name, email: firebaseUser.email ?? "", role });
-      router.push(`/dashboard/${role}`);
+      await createUserProfile(firebaseUser.uid, { name, email: firebaseUser.email ?? "", role, ...details });
+      router.push(role === "teacher" ? "/auth/pending-approval" : `/dashboard/${role}`);
     } catch {
       setError(t("error"));
       setSubmitting(false);
     }
   }
 
+  if (step === 2) {
+    return (
+      <>
+        {error && <p className="mb-4 text-sm text-danger-ink">{error}</p>}
+        <PersonalDetailsForm role={role} onSubmit={handleFinish} submitting={submitting} onBack={() => setStep(1)} />
+      </>
+    );
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleNext} className="space-y-4">
       <RoleSwitch value={role} onChange={setRole} />
 
       <FormField label={t("name")}>
         <input required className={inputClasses} value={name} onChange={(e) => setName(e.target.value)} />
       </FormField>
 
-      {error && <p className="text-sm text-danger-ink">{error}</p>}
-
-      <Button type="submit" disabled={submitting} className="w-full">
-        {submitting ? t("submitting") : t("submit")}
+      <Button type="submit" className="w-full">
+        {t("next")}
       </Button>
     </form>
   );

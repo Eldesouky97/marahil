@@ -28,12 +28,23 @@ service cloud.firestore {
       return isSignedIn() && userData(request.auth.uid).role == 'admin';
     }
 
+    // Grandfathers accounts written before the `status` field existed (treats
+    // a missing status as approved) so pre-existing teachers don't get locked
+    // out the moment this rule ships.
+    function isApproved(uid) {
+      let u = userData(uid);
+      return !('status' in u) || u.status == 'approved';
+    }
+
     // --- users ---------------------------------------------------------
     match /users/{uid} {
       allow read: if isOwner(uid) || isAdmin();
       allow create: if isOwner(uid)
-        && request.resource.data.role in ['teacher', 'student'];
-      allow update: if (isOwner(uid) && request.resource.data.role == resource.data.role)
+        && request.resource.data.role in ['teacher', 'student']
+        && request.resource.data.status == (request.resource.data.role == 'teacher' ? 'pending' : 'approved');
+      allow update: if (isOwner(uid)
+          && request.resource.data.role == resource.data.role
+          && request.resource.data.status == resource.data.status)
         || isAdmin();
       allow delete: if false;
     }
@@ -45,7 +56,8 @@ service cloud.firestore {
         || isAdmin();
       allow create: if isSignedIn()
         && request.resource.data.teacherId == request.auth.uid
-        && request.resource.data.published == false;
+        && request.resource.data.published == false
+        && isApproved(request.auth.uid);
       allow update: if isOwner(resource.data.teacherId)
         && request.resource.data.teacherId == resource.data.teacherId;
       allow delete: if false;

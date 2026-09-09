@@ -110,8 +110,7 @@
       "email": "Email",
       "password": "Password",
       "orDivider": "or",
-      "submit": "Create Account",
-      "submitting": "Creating...",
+      "next": "Next",
       "haveAccount": "Already have an account?",
       "login": "Log in",
       "error": "Couldn't create the account. Check your details or the email may already be in use."
@@ -128,9 +127,29 @@
     "completeProfile": {
       "title": "Complete Your Profile",
       "name": "Full Name",
-      "submit": "Continue",
-      "submitting": "Saving...",
+      "next": "Next",
       "error": "Couldn't save your details. Please try again."
+    },
+    "personalDetails": {
+      "title": "Additional Details",
+      "phone": "Phone Number",
+      "age": "Age",
+      "governorate": "Governorate",
+      "stage": "School Stage",
+      "school": "School / College",
+      "subject": "Specialization / Subject",
+      "workplace": "Workplace",
+      "jobTitle": "Job Title",
+      "back": "Back",
+      "submit": "Finish Registration",
+      "submitting": "Saving..."
+    },
+    "pendingApproval": {
+      "title": "Account Under Review",
+      "message": "Your teacher registration has been received. Your account is currently awaiting admin approval and will be activated once approved.",
+      "checkAgain": "Check Again",
+      "checking": "Checking...",
+      "signOut": "Sign Out"
     }
   },
   "courses": {
@@ -210,6 +229,7 @@
       "statsCourses": "Courses",
       "statsPublished": "Published",
       "statsCertificates": "Certificates Issued",
+      "statsPendingTeachers": "Teachers Awaiting Approval",
       "manageUsers": "Manage Users",
       "manageCourses": "Manage Courses"
     },
@@ -219,7 +239,10 @@
       "noUsers": "No users found.",
       "role_student": "Student",
       "role_teacher": "Teacher",
-      "role_admin": "Admin"
+      "role_admin": "Admin",
+      "approve": "Approve",
+      "statusPending": "Pending Review",
+      "statusApproved": "Approved"
     },
     "courses": {
       "title": "Manage Courses",

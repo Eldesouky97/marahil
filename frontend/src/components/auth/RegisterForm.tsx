@@ -7,9 +7,10 @@ import { useRouter, Link } from "@/i18n/navigation";
 import { registerUser } from "@/lib/firebase/auth";
 import { RoleSwitch } from "./RoleSwitch";
 import { GoogleSignInButton } from "./GoogleSignInButton";
+import { PersonalDetailsForm } from "./PersonalDetailsForm";
 import { Button } from "@/components/ui/Button";
 import { FormField, inputClasses } from "@/components/ui/FormField";
-import type { UserRole } from "@/types/user";
+import type { PersonalDetails, UserRole } from "@/types/user";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export function RegisterForm() {
   const t = useTranslations("auth.register");
   const initialRole = searchParams.get("role") === "teacher" ? "teacher" : "student";
 
+  const [step, setStep] = useState<1 | 2>(1);
   const [role, setRole] = useState<UserRole>(initialRole);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -24,22 +26,34 @@ export function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleNext(e: React.FormEvent) {
     e.preventDefault();
+    setStep(2);
+  }
+
+  async function handleFinish(details: PersonalDetails) {
     setError(null);
     setLoading(true);
     try {
-      await registerUser(name, email, password, role);
-      router.push(`/dashboard/${role}`);
+      await registerUser(name, email, password, role, details);
+      router.push(role === "teacher" ? "/auth/pending-approval" : `/dashboard/${role}`);
     } catch {
       setError(t("error"));
-    } finally {
       setLoading(false);
     }
   }
 
+  if (step === 2) {
+    return (
+      <>
+        {error && <p className="mb-4 text-sm text-danger-ink">{error}</p>}
+        <PersonalDetailsForm role={role} onSubmit={handleFinish} submitting={loading} onBack={() => setStep(1)} />
+      </>
+    );
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleNext} className="space-y-4">
       <RoleSwitch value={role} onChange={setRole} />
 
       <FormField label={t("name")}>
@@ -67,10 +81,8 @@ export function RegisterForm() {
         />
       </FormField>
 
-      {error && <p className="text-sm text-danger-ink">{error}</p>}
-
-      <Button type="submit" disabled={loading} className="w-full">
-        {loading ? t("submitting") : t("submit")}
+      <Button type="submit" className="w-full">
+        {t("next")}
       </Button>
 
       <div className="flex items-center gap-3 text-xs text-faint">

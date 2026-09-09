@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { Award, BookOpen, CheckCircle2, GraduationCap, UserCheck, Users } from "lucide-react";
+import { Award, BookOpen, CheckCircle2, Clock, GraduationCap, UserCheck, Users } from "lucide-react";
 import { useAuth } from "@/context/AuthProvider";
 import { useAdminOverview } from "@/lib/hooks/useAdminOverview";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
@@ -27,10 +27,13 @@ export function AdminOverviewView() {
             <Spinner />
           </div>
         ) : (
-          <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-7">
             <StatCard icon={Users} label={t("statsUsers")} value={overview.userCount} />
             <StatCard icon={GraduationCap} label={t("statsTeachers")} value={overview.teacherCount} />
             <StatCard icon={UserCheck} label={t("statsStudents")} value={overview.studentCount} />
+            <Link href="/dashboard/admin/users">
+              <StatCard icon={Clock} label={t("statsPendingTeachers")} value={overview.pendingTeacherCount} />
+            </Link>
             <StatCard icon={BookOpen} label={t("statsCourses")} value={overview.courseCount} />
             <StatCard icon={CheckCircle2} label={t("statsPublished")} value={overview.publishedCourseCount} />
             <StatCard icon={Award} label={t("statsCertificates")} value={overview.certificateCount} />
