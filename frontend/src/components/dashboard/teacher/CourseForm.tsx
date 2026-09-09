@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { createCourse } from "@/lib/firebase/courses";
-import { STAGES } from "@/data/stages";
+import { useStages } from "@/lib/hooks/useStages";
 import { useAuth } from "@/context/AuthProvider";
 import { Button } from "@/components/ui/Button";
 import { FormField, inputClasses } from "@/components/ui/FormField";
@@ -12,14 +13,16 @@ import type { StageId } from "@/types/stage";
 export function CourseForm() {
   const router = useRouter();
   const { profile } = useAuth();
+  const stages = useStages();
+  const t = useTranslations("dashboardTeacher.courseForm");
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [stage, setStage] = useState<StageId>("primary");
-  const [subject, setSubject] = useState(STAGES[1].subjects[0]);
+  const [subject, setSubject] = useState(stages[1].subjects[0]);
   const [saving, setSaving] = useState(false);
 
-  const currentStage = STAGES.find((s) => s.id === stage)!;
+  const currentStage = stages.find((s) => s.id === stage)!;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -39,11 +42,11 @@ export function CourseForm() {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-xl space-y-4">
-      <FormField label="عنوان الدورة">
+      <FormField label={t("title")}>
         <input required className={inputClasses} value={title} onChange={(e) => setTitle(e.target.value)} />
       </FormField>
 
-      <FormField label="وصف مختصر">
+      <FormField label={t("description")}>
         <textarea
           required
           rows={3}
@@ -54,17 +57,17 @@ export function CourseForm() {
       </FormField>
 
       <div className="grid grid-cols-2 gap-4">
-        <FormField label="المرحلة الدراسية">
+        <FormField label={t("stage")}>
           <select
             className={inputClasses}
             value={stage}
             onChange={(e) => {
               const nextStage = e.target.value as StageId;
               setStage(nextStage);
-              setSubject(STAGES.find((s) => s.id === nextStage)!.subjects[0]);
+              setSubject(stages.find((s) => s.id === nextStage)!.subjects[0]);
             }}
           >
-            {STAGES.map((s) => (
+            {stages.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.label}
               </option>
@@ -72,7 +75,7 @@ export function CourseForm() {
           </select>
         </FormField>
 
-        <FormField label="المادة">
+        <FormField label={t("subject")}>
           <select className={inputClasses} value={subject} onChange={(e) => setSubject(e.target.value)}>
             {currentStage.subjects.map((subj) => (
               <option key={subj} value={subj}>
@@ -84,7 +87,7 @@ export function CourseForm() {
       </div>
 
       <Button type="submit" disabled={saving}>
-        {saving ? "جارٍ الإنشاء..." : "إنشاء الدورة"}
+        {saving ? t("submitting") : t("submit")}
       </Button>
     </form>
   );

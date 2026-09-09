@@ -1,6 +1,7 @@
 "use client";
 
-import { stageLabel } from "@/data/stages";
+import { useTranslations } from "next-intl";
+import { useStageLabel } from "@/lib/hooks/useStages";
 import { useAuth } from "@/context/AuthProvider";
 import { useCourseDetail } from "@/lib/hooks/useCourseDetail";
 import { useEnrollment } from "@/lib/hooks/useEnrollment";
@@ -14,6 +15,8 @@ export function CourseDetailView({ courseId }: { courseId: string }) {
   const { profile } = useAuth();
   const { course, lessons, loading } = useCourseDetail(courseId);
   const { enrollment } = useEnrollment(profile?.uid, courseId);
+  const stageLabel = useStageLabel();
+  const t = useTranslations("courses");
 
   if (loading) {
     return (
@@ -24,7 +27,7 @@ export function CourseDetailView({ courseId }: { courseId: string }) {
   }
 
   if (!course) {
-    return <p className="py-24 text-center text-[#8A93A6]">لم يتم العثور على هذه الدورة.</p>;
+    return <p className="py-24 text-center text-dim">{t("notFound")}</p>;
   }
 
   const canAccess = !!enrollment || profile?.uid === course.teacherId;
@@ -34,10 +37,10 @@ export function CourseDetailView({ courseId }: { courseId: string }) {
       <Container className="grid grid-cols-1 gap-10 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <Badge className="mb-4">{stageLabel(course.stage)}</Badge>
-          <h1 className="mb-3 font-display text-3xl text-[#F6EFDD]">{course.title}</h1>
-          <p className="mb-8 leading-relaxed text-[#8A93A6]">{course.description}</p>
+          <h1 className="mb-3 font-display text-3xl text-heading">{course.title}</h1>
+          <p className="mb-8 leading-relaxed text-dim">{course.description}</p>
 
-          <h2 className="mb-4 text-lg font-bold">محتوى الدورة</h2>
+          <h2 className="mb-4 text-lg font-bold">{t("content")}</h2>
           <LessonList
             courseId={course.id}
             lessons={lessons}
@@ -46,8 +49,8 @@ export function CourseDetailView({ courseId }: { courseId: string }) {
           />
         </div>
 
-        <div className="h-fit rounded-2xl border border-white/10 bg-[#0F1729] p-6">
-          <p className="mb-1 text-xs text-[#5C6584]">المعلّم</p>
+        <div className="h-fit rounded-2xl border border-border bg-surface-2 p-6">
+          <p className="mb-1 text-xs text-faint">{t("teacher")}</p>
           <p className="mb-6 font-bold">{course.teacherName}</p>
           <EnrollPanel courseId={course.id} />
         </div>

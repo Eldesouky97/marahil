@@ -4,7 +4,7 @@ export function LessonContent({ lesson }: { lesson: Lesson }) {
   return (
     <div>
       {lesson.videoUrl && (
-        <div className="mb-6 aspect-video overflow-hidden rounded-xl border border-white/10 bg-black">
+        <div className="mb-6 aspect-video overflow-hidden rounded-xl border border-border bg-black">
           <iframe
             src={lesson.videoUrl}
             className="h-full w-full"
@@ -14,7 +14,7 @@ export function LessonContent({ lesson }: { lesson: Lesson }) {
         </div>
       )}
       {lesson.content && (
-        <p className="whitespace-pre-line leading-relaxed text-[#C7CEE3]">{lesson.content}</p>
+        <p className="whitespace-pre-line leading-relaxed text-muted">{lesson.content}</p>
       )}
     </div>
   );

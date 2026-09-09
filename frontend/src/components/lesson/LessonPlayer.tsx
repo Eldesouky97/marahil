@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { ArrowLeft } from "lucide-react";
 import { useAuth } from "@/context/AuthProvider";
 import { useLessonPlayer } from "@/lib/hooks/useLessonPlayer";
@@ -17,6 +18,7 @@ export function LessonPlayer({ courseId, lessonId }: { courseId: string; lessonI
   const { course, lesson, lessons, enrollment, loading, certificateId, completeLesson } =
     useLessonPlayer(courseId, lessonId, profile?.uid, profile?.name);
   const [marking, setMarking] = useState(false);
+  const t = useTranslations("lesson");
 
   if (loading) {
     return (
@@ -27,7 +29,7 @@ export function LessonPlayer({ courseId, lessonId }: { courseId: string; lessonI
   }
 
   if (!course || !lesson) {
-    return <p className="py-24 text-center text-[#8A93A6]">لم يتم العثور على هذا الدرس.</p>;
+    return <p className="py-24 text-center text-dim">{t("notFound")}</p>;
   }
 
   const alreadyDone = enrollment?.completedLessonIds.includes(lesson.id) ?? false;
@@ -43,22 +45,28 @@ export function LessonPlayer({ courseId, lessonId }: { courseId: string; lessonI
   return (
     <section className="py-16">
       <Container size="lg">
-        <Link href={`/courses/${course.id}`} className="mb-6 inline-flex items-center gap-2 text-sm text-[#8A93A6] hover:text-[#E8C878]">
-          <ArrowLeft size={16} /> العودة إلى الدورة
+        <Link
+          href={`/courses/${course.id}`}
+          className="mb-6 inline-flex items-center gap-2 text-sm text-dim hover:text-primary-strong"
+        >
+          <ArrowLeft size={16} className="ltr:rotate-180" /> {t("backToCourse")}
         </Link>
 
-        <h1 className="mb-6 font-display text-2xl text-[#F6EFDD]">{lesson.title}</h1>
+        <h1 className="mb-6 font-display text-2xl text-heading">{lesson.title}</h1>
 
         <LessonContent lesson={lesson} />
 
         {lesson.quiz && lesson.quiz.length > 0 ? (
-          <div className="mt-8 rounded-2xl border border-white/10 bg-[#0F1729] p-8">
-            <QuizPlayer questions={lesson.quiz} onComplete={(score, total) => completeLesson(Math.round((score / total) * 100))} />
+          <div className="mt-8 rounded-2xl border border-border bg-surface-2 p-8">
+            <QuizPlayer
+              questions={lesson.quiz}
+              onComplete={(score, total) => completeLesson(Math.round((score / total) * 100))}
+            />
           </div>
         ) : (
           !alreadyDone && (
             <Button className="mt-8" onClick={markComplete} disabled={marking}>
-              {marking ? "جارٍ الحفظ..." : "تحديد الدرس كمكتمل"}
+              {marking ? t("markCompleteLoading") : t("markComplete")}
             </Button>
           )
         )}
@@ -67,7 +75,7 @@ export function LessonPlayer({ courseId, lessonId }: { courseId: string; lessonI
 
         {nextLesson && (alreadyDone || certificateId) && (
           <Link href={`/learn/${course.id}/${nextLesson.id}`} className="mt-6 block">
-            <Button variant="outline">الدرس التالي</Button>
+            <Button variant="outline">{t("nextLesson")}</Button>
           </Link>
         )}
       </Container>

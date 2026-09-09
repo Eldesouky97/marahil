@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Plus, Trash2 } from "lucide-react";
 import { inputClasses } from "@/components/ui/FormField";
 import type { QuizQuestion } from "@/types/quiz";
@@ -15,6 +16,8 @@ export function QuizBuilder({
   questions: QuizQuestion[];
   onChange: (questions: QuizQuestion[]) => void;
 }) {
+  const t = useTranslations("dashboardTeacher.quizBuilder");
+
   function updateQuestion(index: number, patch: Partial<QuizQuestion>) {
     onChange(questions.map((q, i) => (i === index ? { ...q, ...patch } : q)));
   }
@@ -28,14 +31,14 @@ export function QuizBuilder({
   return (
     <div className="space-y-5">
       {questions.map((q, qIndex) => (
-        <div key={q.id} className="rounded-xl border border-white/10 bg-[#0F1729] p-4">
+        <div key={q.id} className="rounded-xl border border-border bg-surface-2 p-4">
           <div className="mb-3 flex items-center justify-between">
-            <span className="text-xs text-[#8A93A6]">سؤال {qIndex + 1}</span>
+            <span className="text-xs text-dim">{t("questionLabel", { n: qIndex + 1 })}</span>
             <button
               type="button"
               onClick={() => onChange(questions.filter((_, i) => i !== qIndex))}
-              className="cursor-pointer text-[#E86B6B]"
-              aria-label="حذف السؤال"
+              className="cursor-pointer text-danger"
+              aria-label={t("deleteQuestion")}
             >
               <Trash2 size={15} />
             </button>
@@ -43,7 +46,7 @@ export function QuizBuilder({
 
           <input
             className={`${inputClasses} mb-3`}
-            placeholder="نص السؤال"
+            placeholder={t("questionPlaceholder")}
             value={q.question}
             onChange={(e) => updateQuestion(qIndex, { question: e.target.value })}
           />
@@ -59,7 +62,7 @@ export function QuizBuilder({
                 />
                 <input
                   className={inputClasses}
-                  placeholder={`اختيار ${cIndex + 1}`}
+                  placeholder={t("choicePlaceholder", { n: cIndex + 1 })}
                   value={choice}
                   onChange={(e) => updateChoice(qIndex, cIndex, e.target.value)}
                 />
@@ -69,7 +72,7 @@ export function QuizBuilder({
 
           <input
             className={`${inputClasses} mt-3`}
-            placeholder="تفسير الإجابة (اختياري)"
+            placeholder={t("explanationPlaceholder")}
             value={q.explanation}
             onChange={(e) => updateQuestion(qIndex, { explanation: e.target.value })}
           />
@@ -79,9 +82,9 @@ export function QuizBuilder({
       <button
         type="button"
         onClick={() => onChange([...questions, emptyQuestion()])}
-        className="flex cursor-pointer items-center gap-2 text-sm text-[#3FBFAE]"
+        className="flex cursor-pointer items-center gap-2 text-sm text-accent"
       >
-        <Plus size={15} /> أضف سؤالًا
+        <Plus size={15} /> {t("addQuestion")}
       </button>
     </div>
   );

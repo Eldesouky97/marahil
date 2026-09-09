@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { setCoursePublished } from "@/lib/firebase/courses";
 import { useCourseDetail } from "@/lib/hooks/useCourseDetail";
 import { TeacherLessonList } from "./TeacherLessonList";
@@ -13,6 +14,7 @@ import { Container } from "@/components/ui/Container";
 export function ManageCourseView({ courseId }: { courseId: string }) {
   const { course, lessons, loading, refresh } = useCourseDetail(courseId);
   const [publishing, setPublishing] = useState(false);
+  const t = useTranslations("dashboardTeacher.manageCourse");
 
   if (loading) {
     return (
@@ -23,7 +25,7 @@ export function ManageCourseView({ courseId }: { courseId: string }) {
   }
 
   if (!course) {
-    return <p className="py-24 text-center text-[#8A93A6]">لم يتم العثور على هذه الدورة.</p>;
+    return <p className="py-24 text-center text-dim">{t("notFound")}</p>;
   }
 
   async function togglePublish() {
@@ -40,18 +42,23 @@ export function ManageCourseView({ courseId }: { courseId: string }) {
         <DashboardHeader
           title={course.title}
           action={
-            <Button variant={course.published ? "outline" : "gold"} onClick={togglePublish} disabled={publishing} className="px-5 py-2.5 text-sm">
-              {course.published ? "إلغاء النشر" : "نشر الدورة"}
+            <Button
+              variant={course.published ? "outline" : "primary"}
+              onClick={togglePublish}
+              disabled={publishing}
+              className="px-5 py-2.5 text-sm"
+            >
+              {course.published ? t("unpublish") : t("publish")}
             </Button>
           }
         />
 
-        <h2 className="mb-4 text-lg font-bold">الدروس</h2>
+        <h2 className="mb-4 text-lg font-bold">{t("lessons")}</h2>
         <div className="mb-8">
           <TeacherLessonList lessons={lessons} />
         </div>
 
-        <h2 className="mb-4 text-lg font-bold">إضافة درس جديد</h2>
+        <h2 className="mb-4 text-lg font-bold">{t("addLesson")}</h2>
         <LessonForm courseId={course.id} nextOrder={lessons.length} onCreated={refresh} />
       </Container>
     </section>

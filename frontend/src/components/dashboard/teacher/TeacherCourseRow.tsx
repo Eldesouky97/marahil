@@ -1,16 +1,19 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { useState } from "react";
 import { Users } from "lucide-react";
 import { setCoursePublished } from "@/lib/firebase/courses";
-import { stageLabel } from "@/data/stages";
+import { useStageLabel } from "@/lib/hooks/useStages";
 import { cn } from "@/lib/utils/cn";
 import type { Course } from "@/types/course";
 
 export function TeacherCourseRow({ course }: { course: Course }) {
   const [published, setPublished] = useState(course.published);
   const [saving, setSaving] = useState(false);
+  const stageLabel = useStageLabel();
+  const t = useTranslations("dashboardTeacher");
 
   async function togglePublish() {
     setSaving(true);
@@ -21,17 +24,17 @@ export function TeacherCourseRow({ course }: { course: Course }) {
   }
 
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-white/[0.06] bg-[#141F38] p-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-4 rounded-xl border border-border bg-surface p-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <Link href={`/dashboard/teacher/courses/${course.id}`} className="font-medium hover:text-[#E8C878]">
+        <Link href={`/dashboard/teacher/courses/${course.id}`} className="font-medium hover:text-primary-strong">
           {course.title}
         </Link>
-        <div className="mt-1 flex items-center gap-3 text-xs text-[#8A93A6]">
+        <div className="mt-1 flex items-center gap-3 text-xs text-dim">
           <span>{stageLabel(course.stage)}</span>
           <span className="flex items-center gap-1">
             <Users size={12} /> {course.studentsCount}
           </span>
-          <span>{course.lessonsCount} درس</span>
+          <span>{t("lessonsCount", { count: course.lessonsCount })}</span>
         </div>
       </div>
 
@@ -40,12 +43,10 @@ export function TeacherCourseRow({ course }: { course: Course }) {
         disabled={saving}
         className={cn(
           "cursor-pointer self-start rounded-full border px-4 py-1.5 text-xs transition-colors sm:self-auto",
-          published
-            ? "border-[#3FBFAE]/40 bg-[#3FBFAE]/10 text-[#3FBFAE]"
-            : "border-white/15 text-[#8A93A6]"
+          published ? "border-accent/40 bg-accent/10 text-accent" : "border-border-strong text-dim"
         )}
       >
-        {published ? "منشورة" : "مسودة — انشرها"}
+        {published ? t("published") : t("draft")}
       </button>
     </div>
   );

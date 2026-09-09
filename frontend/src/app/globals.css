@@ -1,33 +1,138 @@
 @import "tailwindcss";
 
+/*
+ * Calm, focus-oriented palette: cool neutrals + a quiet indigo/teal duotone
+ * instead of the earlier high-energy gold. Light values live on bare :root;
+ * dark overrides twice (media query for system preference, [data-theme] for
+ * the manual toggle) so the toggle always wins. See ThemeToggle/ThemeProvider.
+ */
 :root {
-  --color-midnight: #0b1224;
-  --color-midnight-2: #080d1a;
-  --color-card: #141f38;
-  --color-card-2: #0f1729;
+  --bg: #f6f7fb;
+  --bg-alt: #eef1f7;
+  --surface: #ffffff;
+  --surface-2: #f1f4f9;
+  --surface-3: #e4e9f7;
 
-  --color-cream: #f6efdd;
-  --color-body: #e7e9f2;
-  --color-body-muted: #b9c2dc;
-  --color-body-2: #c7cee3;
-  --color-dim: #8a93a6;
-  --color-faint: #5c6584;
+  --heading: #1b2130;
+  --body: #333b4d;
+  --muted: #5a6478;
+  --dim: #7b8598;
+  --faint: #9aa3b4;
 
-  --color-gold: #d4a94f;
-  --color-gold-light: #e8c878;
-  --color-teal: #3fbfae;
-  --color-seal: #8a6e2f;
+  --border: rgba(20, 26, 40, 0.08);
+  --border-strong: rgba(20, 26, 40, 0.14);
+  --overlay: rgba(20, 26, 40, 0.06);
 
-  --color-danger: #e86b6b;
-  --color-success: #6be8a8;
+  --primary: #4a63d6;
+  --primary-strong: #3a50b8;
+  --primary-ink: #ffffff;
 
-  --background: var(--color-midnight);
-  --foreground: var(--color-body);
+  --accent: #2e9c8c;
+  --accent-strong: #24806f;
+  --accent-ink: #0d2b26;
+
+  --danger: #d65c54;
+  --danger-ink: #4a100c;
+  --success: #2e9c6d;
+
+  --background: var(--bg);
+  --foreground: var(--body);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1420;
+    --bg-alt: #0a0d14;
+    --surface: #161c2a;
+    --surface-2: #101623;
+    --surface-3: #1b2540;
+
+    --heading: #f1f3f9;
+    --body: #dde1ea;
+    --muted: #aeb6c4;
+    --dim: #838da0;
+    --faint: #565f72;
+
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.14);
+    --overlay: rgba(255, 255, 255, 0.07);
+
+    --primary: #6e8cf5;
+    --primary-strong: #8aa3f8;
+    --primary-ink: #0e1330;
+
+    --accent: #45bbaa;
+    --accent-strong: #5fd0bf;
+    --accent-ink: #d8fdf6;
+
+    --danger: #e8827c;
+    --danger-ink: #4a100c;
+    --success: #6bdbae;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0f1420;
+  --bg-alt: #0a0d14;
+  --surface: #161c2a;
+  --surface-2: #101623;
+  --surface-3: #1b2540;
+
+  --heading: #f1f3f9;
+  --body: #dde1ea;
+  --muted: #aeb6c4;
+  --dim: #838da0;
+  --faint: #565f72;
+
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --overlay: rgba(255, 255, 255, 0.07);
+
+  --primary: #6e8cf5;
+  --primary-strong: #8aa3f8;
+  --primary-ink: #0e1330;
+
+  --accent: #45bbaa;
+  --accent-strong: #5fd0bf;
+  --accent-ink: #d8fdf6;
+
+  --danger: #e8827c;
+  --danger-ink: #4a100c;
+  --success: #6bdbae;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --color-bg: var(--bg);
+  --color-bg-alt: var(--bg-alt);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+
+  --color-heading: var(--heading);
+  --color-body: var(--body);
+  --color-muted: var(--muted);
+  --color-dim: var(--dim);
+  --color-faint: var(--faint);
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-overlay: var(--overlay);
+
+  --color-primary: var(--primary);
+  --color-primary-strong: var(--primary-strong);
+  --color-primary-ink: var(--primary-ink);
+
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-ink: var(--accent-ink);
+
+  --color-danger: var(--danger);
+  --color-danger-ink: var(--danger-ink);
+  --color-success: var(--success);
+
   --font-display: var(--font-amiri), "Traditional Arabic", serif;
   --font-body: var(--font-tajawal), "Segoe UI", sans-serif;
 }
@@ -36,6 +141,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body);
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 .font-display {
@@ -43,8 +149,8 @@ body {
 }
 
 ::selection {
-  background: rgba(212, 169, 79, 0.35);
-  color: var(--color-cream);
+  background: color-mix(in srgb, var(--primary) 35%, transparent);
+  color: var(--heading);
 }
 
 a:focus-visible,
@@ -52,7 +158,7 @@ button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid var(--color-teal);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 

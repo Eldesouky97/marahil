@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Award } from "lucide-react";
 import { QuizQuestionCard } from "./QuizQuestionCard";
 import { Button } from "@/components/ui/Button";
@@ -18,6 +19,7 @@ export function QuizPlayer({
   const [selected, setSelected] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
+  const t = useTranslations("quiz");
 
   const question = questions[step];
 
@@ -47,13 +49,13 @@ export function QuizPlayer({
   if (finished) {
     return (
       <div className="py-6 text-center">
-        <Award size={36} className="mx-auto mb-4 text-[#D4A94F]" />
-        <h3 className="mb-2 font-display text-2xl text-[#F6EFDD]">
-          نتيجتك: {score} من {questions.length}
+        <Award size={36} className="mx-auto mb-4 text-primary" />
+        <h3 className="mb-2 font-display text-2xl text-heading">
+          {t("resultTitle", { score, total: questions.length })}
         </h3>
-        <p className="mb-6 text-[#8A93A6]">أحسنت! يمكنك مراجعة الدرس أو المتابعة للدرس التالي.</p>
+        <p className="mb-6 text-dim">{t("resultSubtitle")}</p>
         <Button variant="outline" onClick={restart}>
-          أعد المحاولة
+          {t("retry")}
         </Button>
       </div>
     );
@@ -62,17 +64,15 @@ export function QuizPlayer({
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <span className="text-xs text-[#8A93A6]">
-          سؤال {step + 1} من {questions.length}
-        </span>
+        <span className="text-xs text-dim">{t("questionCounter", { n: step + 1, total: questions.length })}</span>
         <div className="flex items-center gap-1.5">
           {questions.map((_, i) => (
             <span
               key={i}
               className={cn(
-                "inline-block h-2 w-2 rounded-full bg-white/15",
-                i === step && "bg-[#D4A94F]",
-                i < step && "bg-[#3FBFAE]"
+                "inline-block h-2 w-2 rounded-full bg-overlay",
+                i === step && "bg-primary",
+                i < step && "bg-accent"
               )}
             />
           ))}
@@ -83,12 +83,12 @@ export function QuizPlayer({
 
       {selected !== null && (
         <div className="mt-5 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
-          <p className={cn("text-sm", selected === question.correct ? "text-[#3FBFAE]" : "text-[#D4A94F]")}>
-            {selected === question.correct ? "إجابة صحيحة" : "إجابة غير دقيقة"}
+          <p className={cn("text-sm", selected === question.correct ? "text-accent" : "text-primary")}>
+            {selected === question.correct ? t("correct") : t("incorrect")}
             {question.explanation ? ` — ${question.explanation}` : ""}
           </p>
           <Button onClick={next} className="px-6 py-2.5 text-sm">
-            {step + 1 < questions.length ? "التالي" : "النتيجة"}
+            {step + 1 < questions.length ? t("next") : t("seeResult")}
           </Button>
         </div>
       )}

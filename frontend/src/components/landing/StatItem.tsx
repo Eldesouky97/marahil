@@ -16,11 +16,11 @@ export function StatItem({
   const value = useCountUp(target, shouldStart);
   return (
     <div className="text-center">
-      <div className="mb-2 font-display text-3xl text-[#D4A94F]">
+      <div className="mb-2 font-display text-3xl text-primary">
         {value.toLocaleString("en-US")}
         {suffix}
       </div>
-      <div className="text-sm text-[#8A93A6]">{label}</div>
+      <div className="text-sm text-dim">{label}</div>
     </div>
   );
 }

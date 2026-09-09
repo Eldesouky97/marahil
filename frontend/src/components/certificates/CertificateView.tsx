@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useCertificate } from "@/lib/hooks/useCertificate";
 import { CertificateCard } from "./CertificateCard";
 import { Spinner } from "@/components/ui/Spinner";
@@ -7,6 +8,7 @@ import { Container } from "@/components/ui/Container";
 
 export function CertificateView({ certificateId }: { certificateId: string }) {
   const { certificate, loading } = useCertificate(certificateId);
+  const t = useTranslations("certificates");
 
   if (loading) {
     return (
@@ -17,7 +19,7 @@ export function CertificateView({ certificateId }: { certificateId: string }) {
   }
 
   if (!certificate) {
-    return <p className="py-24 text-center text-[#8A93A6]">لم يتم العثور على هذه الشهادة.</p>;
+    return <p className="py-24 text-center text-dim">{t("notFound")}</p>;
   }
 
   return (

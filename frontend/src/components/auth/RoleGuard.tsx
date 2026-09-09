@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useAuth } from "@/context/AuthProvider";
 import { Spinner } from "@/components/ui/Spinner";
 import type { UserRole } from "@/types/user";

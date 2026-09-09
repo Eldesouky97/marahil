@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { addLesson } from "@/lib/firebase/courses";
 import { QuizBuilder } from "./QuizBuilder";
 import { Button } from "@/components/ui/Button";
@@ -22,6 +23,7 @@ export function LessonForm({
   const [includeQuiz, setIncludeQuiz] = useState(false);
   const [quiz, setQuiz] = useState<QuizQuestion[]>([]);
   const [saving, setSaving] = useState(false);
+  const t = useTranslations("dashboardTeacher.lessonForm");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -43,28 +45,34 @@ export function LessonForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-white/10 bg-[#0F1729] p-5">
-      <FormField label="عنوان الدرس">
+    <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-border bg-surface-2 p-5">
+      <FormField label={t("title")}>
         <input required className={inputClasses} value={title} onChange={(e) => setTitle(e.target.value)} />
       </FormField>
 
-      <FormField label="رابط الفيديو (تضمين، اختياري)">
-        <input dir="ltr" className={inputClasses} value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://www.youtube.com/embed/..." />
+      <FormField label={t("videoLabel")}>
+        <input
+          dir="ltr"
+          className={inputClasses}
+          value={videoUrl}
+          onChange={(e) => setVideoUrl(e.target.value)}
+          placeholder="https://www.youtube.com/embed/..."
+        />
       </FormField>
 
-      <FormField label="شرح مكتوب (اختياري)">
+      <FormField label={t("contentLabel")}>
         <textarea rows={4} className={inputClasses} value={content} onChange={(e) => setContent(e.target.value)} />
       </FormField>
 
-      <label className="flex items-center gap-2 text-sm text-[#C7CEE3]">
+      <label className="flex items-center gap-2 text-sm text-muted">
         <input type="checkbox" checked={includeQuiz} onChange={(e) => setIncludeQuiz(e.target.checked)} />
-        إضافة اختبار قصير لهذا الدرس
+        {t("includeQuiz")}
       </label>
 
       {includeQuiz && <QuizBuilder questions={quiz} onChange={setQuiz} />}
 
       <Button type="submit" disabled={saving}>
-        {saving ? "جارٍ الحفظ..." : "إضافة الدرس"}
+        {saving ? t("submitting") : t("submit")}
       </Button>
     </form>
   );

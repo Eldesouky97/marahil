@@ -10,3 +10,6 @@ ui-debug.log
 
 # Vercel
 .vercel
+
+# Local Claude Code session artifacts
+.claude/

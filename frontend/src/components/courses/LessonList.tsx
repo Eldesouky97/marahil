@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { CheckCircle2, Lock, PlayCircle } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import type { Lesson } from "@/types/course";
@@ -21,11 +21,11 @@ export function LessonList({
         const content = (
           <div
             className={cn(
-              "flex items-center gap-4 rounded-xl border border-white/[0.06] bg-[#141F38] p-4 transition-colors",
-              canAccess && "hover:border-[#D4A94F]/30"
+              "flex items-center gap-4 rounded-xl border border-border bg-surface p-4 transition-colors",
+              canAccess && "hover:border-primary/30"
             )}
           >
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#3FBFAE]/10 text-[#3FBFAE]">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
               {done ? <CheckCircle2 size={17} /> : canAccess ? <PlayCircle size={17} /> : <Lock size={15} />}
             </span>
             <div className="min-w-0 flex-1">

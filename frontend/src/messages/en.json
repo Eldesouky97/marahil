@@ -1,0 +1,230 @@
+{
+  "meta": {
+    "title": "Marahil — Tutoring & Online Courses Platform",
+    "description": "Marahil: interactive lessons, instant quizzes, and verified certificates for every school stage."
+  },
+  "nav": {
+    "stages": "Stages & Subjects",
+    "courses": "Courses",
+    "how": "How It Works",
+    "verify": "Verify a Certificate",
+    "login": "Log In",
+    "logout": "Log Out",
+    "dashboard": "Dashboard",
+    "startNow": "Get Started",
+    "menu": "Menu"
+  },
+  "hero": {
+    "badge": "Marahil Learning Platform",
+    "title": "Your tutoring and courses, all in one place",
+    "subtitle": "Teachers build lessons, quizzes, and certificates with ease, for every stage and subject, while students learn with instant feedback, step by step, all the way to a certificate.",
+    "ctaTeacher": "Start Teaching",
+    "ctaStudent": "Explore as a Student"
+  },
+  "stages": {
+    "eyebrow": "Every Stage, Every Subject",
+    "title": "One curriculum for every age, every subject",
+    "description": "From kindergarten to university and professional training, every subject is built with the same ease and the same quality.",
+    "kg": { "label": "Kindergarten", "subjects": ["Letters & Numbers", "Motor Skills", "Stories & Tales", "Colors & Shapes"] },
+    "primary": { "label": "Primary School", "subjects": ["Arabic", "Math", "Science", "English", "Religious Education", "Computer Science"] },
+    "prep": { "label": "Middle School", "subjects": ["Arabic", "Math", "Science", "English", "Social Studies", "Computer Science"] },
+    "secondary": { "label": "High School", "subjects": ["Physics", "Chemistry", "Biology", "Math", "Arabic", "English", "Geography"] },
+    "university": { "label": "University", "subjects": ["Engineering", "Medicine & Health Sciences", "Business Administration", "Computer Science", "Humanities", "Law"] },
+    "training": { "label": "Courses & Professional Training", "subjects": ["Foreign Languages", "Programming & Development", "Graphic Design", "Business Skills", "Certified Professional Credentials"] },
+    "all": "All Stages"
+  },
+  "howItWorks": {
+    "eyebrow": "How the Platform Works",
+    "title": "From a teacher's idea... to a student's certificate",
+    "steps": [
+      { "n": "1", "title": "The teacher publishes a lesson", "desc": "Upload a video or file, add written notes and questions." },
+      { "n": "2", "title": "The student learns smartly", "desc": "Automatic progress tracking and quick questions during the lesson." },
+      { "n": "3", "title": "A quiz measures understanding", "desc": "Questions graded instantly, with insight into strengths and weaknesses." },
+      { "n": "4", "title": "A verified certificate is issued", "desc": "A signed digital certificate with a unique code for every student." }
+    ]
+  },
+  "features": {
+    "eyebrow": "Teacher Dashboard",
+    "title": "Everything a teacher needs, in one place",
+    "description": "From the first lesson you publish to the last certificate you issue, with tools built to save your time.",
+    "items": [
+      { "title": "Video & File Lessons", "desc": "Upload your lessons as video or PDF, organized into units and chapters." },
+      { "title": "Complete Curricula", "desc": "Build a full curriculum in clear order, from the first lesson to the last unit." },
+      { "title": "Question Bank & Quizzes", "desc": "Multiple-choice questions with instant automatic grading." },
+      { "title": "Verified Digital Certificates", "desc": "A certificate for every student with a unique code anyone can verify." },
+      { "title": "Live Analytics", "desc": "Track every student's progress, completion rates, and average scores." },
+      { "title": "Direct Communication", "desc": "Student questions reach the teacher directly." }
+    ]
+  },
+  "demo": {
+    "eyebrow": "Live Demo",
+    "title": "Try an interactive lesson now",
+    "description": "This is how students feel instant feedback on every quiz — answer, correction, and explanation in the same moment.",
+    "questions": [
+      { "question": "What is 7 × 8?", "choices": ["54", "64", "56", "58"], "correct": 2, "explanation": "7 × 8 = 56" },
+      { "question": "Which gas do body cells need to breathe?", "choices": ["Carbon Dioxide", "Oxygen", "Nitrogen", "Hydrogen"], "correct": 1, "explanation": "Oxygen is the primary gas cells use." },
+      { "question": "What is the plural of \"book\" in Arabic (كتاب)?", "choices": ["كتب", "كتائب", "كاتبون", "مكاتب"], "correct": 0, "explanation": "The plural of «كتاب» is «كُتُب»." }
+    ]
+  },
+  "stats": {
+    "lessons": "Lessons Published",
+    "students": "Active Students",
+    "certificates": "Certificates Issued",
+    "satisfaction": "Teacher Satisfaction"
+  },
+  "testimonial": {
+    "quote": "I moved my entire subject to Marahil within a single week. Students started asking when the next lesson is, instead of me chasing them.",
+    "name": "Sara Youssef",
+    "role": "Math Teacher, High School"
+  },
+  "cta": {
+    "title": "Start building your digital classroom today",
+    "description": "No setup costs, no complexity. Publish your first lesson in minutes.",
+    "ctaTeacher": "Start Teaching",
+    "ctaStudent": "Join as a Student"
+  },
+  "footer": {
+    "tagline": "Marahil Learning Platform",
+    "copyright": "© {year} Marahil Learning Platform"
+  },
+  "auth": {
+    "login": {
+      "title": "Log In",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Log In",
+      "submitting": "Logging in...",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create one",
+      "error": "Incorrect email or password."
+    },
+    "register": {
+      "title": "Create a New Account",
+      "roleStudent": "Student",
+      "roleTeacher": "Teacher",
+      "name": "Full Name",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Create Account",
+      "submitting": "Creating...",
+      "haveAccount": "Already have an account?",
+      "login": "Log in",
+      "error": "Couldn't create the account. Check your details or the email may already be in use."
+    }
+  },
+  "courses": {
+    "catalogTitle": "Browse Courses",
+    "empty": "No courses in this stage yet.",
+    "content": "Course Content",
+    "teacher": "Teacher",
+    "enrollCta": "Enroll Now",
+    "loginToEnroll": "Log in to enroll",
+    "teacherOnlyNotice": "Enrolling is only available for student accounts.",
+    "progressLabel": "Your Progress",
+    "notFound": "This course could not be found."
+  },
+  "dashboardShared": {
+    "welcome": "Welcome, {name}"
+  },
+  "dashboardTeacher": {
+    "newCourse": "New Course",
+    "statsCourses": "My Courses",
+    "statsPublished": "Published",
+    "statsStudents": "Total Students",
+    "myCourses": "My Courses",
+    "noCourses": "You haven't created any courses yet.",
+    "published": "Published",
+    "draft": "Draft — publish it",
+    "lessonsCount": "{count} lessons",
+    "newCourseTitle": "Create a New Course",
+    "courseForm": {
+      "title": "Course Title",
+      "description": "Short Description",
+      "stage": "School Stage",
+      "subject": "Subject",
+      "submit": "Create Course",
+      "submitting": "Creating..."
+    },
+    "manageCourse": {
+      "publish": "Publish Course",
+      "unpublish": "Unpublish",
+      "lessons": "Lessons",
+      "noLessons": "No lessons yet — add the first one below.",
+      "addLesson": "Add a New Lesson",
+      "questionsCount": "{count} questions",
+      "notFound": "This course could not be found."
+    },
+    "lessonForm": {
+      "title": "Lesson Title",
+      "videoLabel": "Video Embed URL (optional)",
+      "contentLabel": "Written Notes (optional)",
+      "includeQuiz": "Add a short quiz for this lesson",
+      "submit": "Add Lesson",
+      "submitting": "Saving..."
+    },
+    "quizBuilder": {
+      "questionLabel": "Question {n}",
+      "questionPlaceholder": "Question text",
+      "choicePlaceholder": "Choice {n}",
+      "explanationPlaceholder": "Answer explanation (optional)",
+      "addQuestion": "Add a Question",
+      "deleteQuestion": "Delete question"
+    }
+  },
+  "dashboardStudent": {
+    "browseCourses": "Browse Courses",
+    "statsCourses": "My Courses",
+    "statsCertificates": "My Certificates",
+    "myCourses": "My Courses",
+    "noCourses": "You haven't enrolled in any course yet.",
+    "myCertificates": "My Certificates",
+    "noCertificates": "Complete a course to earn your first certificate.",
+    "progressComplete": "{progress}% complete"
+  },
+  "lesson": {
+    "backToCourse": "Back to Course",
+    "markComplete": "Mark Lesson as Complete",
+    "markCompleteLoading": "Saving...",
+    "nextLesson": "Next Lesson",
+    "notFound": "This lesson could not be found.",
+    "certificateEarnedTitle": "Congratulations! You completed the course",
+    "certificateEarnedSubtitle": "Your certificate is ready to download and share.",
+    "viewCertificate": "View Certificate"
+  },
+  "quiz": {
+    "questionCounter": "Question {n} of {total}",
+    "correct": "Correct answer",
+    "incorrect": "Not quite right",
+    "resultTitle": "Your score: {score} of {total}",
+    "resultSubtitle": "Well done! You can review the lesson or move on to the next one.",
+    "retry": "Try Again",
+    "next": "Next",
+    "seeResult": "See Result"
+  },
+  "certificates": {
+    "notFound": "This certificate could not be found.",
+    "completionLabel": "Certificate of Completion",
+    "completedText": "Successfully completed the course «{course}» under {teacher}",
+    "serialLabel": "Serial Number",
+    "qrAlt": "Verification code"
+  },
+  "verify": {
+    "title": "Verify a Certificate",
+    "description": "Enter the verification code printed on the certificate to confirm it's genuine.",
+    "placeholder": "MRH-2026-XXXXX or verification code",
+    "submit": "Verify",
+    "validTitle": "Certificate Verified",
+    "codeLabel": "Verification code: {code}",
+    "studentLabel": "Student",
+    "courseLabel": "Course",
+    "teacherLabel": "Teacher",
+    "invalidTitle": "No Certificate Found",
+    "invalidDescription": "Double-check the verification code and try again."
+  },
+  "common": {
+    "loading": "Loading",
+    "themeToLight": "Switch to light mode",
+    "themeToDark": "Switch to dark mode",
+    "language": "العربية"
+  }
+}

@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { Award, BookOpen, Search } from "lucide-react";
 import { useAuth } from "@/context/AuthProvider";
 import { useStudentDashboard } from "@/lib/hooks/useStudentDashboard";
@@ -15,24 +16,26 @@ import { Container } from "@/components/ui/Container";
 export function StudentDashboardView() {
   const { profile } = useAuth();
   const { enrolledCourses, certificates, loading } = useStudentDashboard(profile?.uid);
+  const t = useTranslations("dashboardStudent");
+  const tShared = useTranslations("dashboardShared");
 
   return (
     <section className="py-12">
       <Container>
         <DashboardHeader
-          title={`أهلًا، ${profile?.name ?? ""}`}
+          title={tShared("welcome", { name: profile?.name ?? "" })}
           action={
             <Link href="/courses">
               <Button variant="outline" className="px-5 py-2.5 text-sm">
-                <Search size={16} /> تصفّح الدورات
+                <Search size={16} /> {t("browseCourses")}
               </Button>
             </Link>
           }
         />
 
         <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <StatCard icon={BookOpen} label="دوراتي" value={enrolledCourses.length} />
-          <StatCard icon={Award} label="شهاداتي" value={certificates.length} />
+          <StatCard icon={BookOpen} label={t("statsCourses")} value={enrolledCourses.length} />
+          <StatCard icon={Award} label={t("statsCertificates")} value={certificates.length} />
         </div>
 
         {loading ? (
@@ -42,9 +45,9 @@ export function StudentDashboardView() {
         ) : (
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
             <div>
-              <h2 className="mb-4 text-lg font-bold">دوراتي</h2>
+              <h2 className="mb-4 text-lg font-bold">{t("myCourses")}</h2>
               {enrolledCourses.length === 0 ? (
-                <p className="text-[#8A93A6]">لم تلتحق بأي دورة بعد.</p>
+                <p className="text-dim">{t("noCourses")}</p>
               ) : (
                 <div className="space-y-3">
                   {enrolledCourses.map((item) => (
@@ -55,9 +58,9 @@ export function StudentDashboardView() {
             </div>
 
             <div>
-              <h2 className="mb-4 text-lg font-bold">شهاداتي</h2>
+              <h2 className="mb-4 text-lg font-bold">{t("myCertificates")}</h2>
               {certificates.length === 0 ? (
-                <p className="text-[#8A93A6]">أكمل دورة لتحصل على أول شهادة.</p>
+                <p className="text-dim">{t("noCertificates")}</p>
               ) : (
                 <div className="space-y-3">
                   {certificates.map((cert) => (

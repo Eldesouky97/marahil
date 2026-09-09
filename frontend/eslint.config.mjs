@@ -10,7 +10,7 @@ const eslintConfig = defineConfig([
     // (setLoading(true) then an async call guarded by a `cancelled` flag).
     // That's a correct, common pattern — the newer set-state-in-effect rule
     // just wants callers to migrate to a data-fetching library instead.
-    files: ["src/lib/hooks/**/*.ts"],
+    files: ["src/lib/hooks/**/*.ts", "src/context/**/*.tsx"],
     rules: {
       "react-hooks/set-state-in-effect": "off",
     },

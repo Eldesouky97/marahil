@@ -26,9 +26,9 @@ export function QuizQuestionCard({
               onClick={() => onSelect(i)}
               disabled={selected !== null}
               className={cn(
-                "cursor-pointer rounded-xl border border-white/[0.08] bg-[#141F38] px-4 py-3.5 text-right text-sm transition-all hover:not-disabled:border-[#D4A94F]/35 disabled:cursor-default",
-                state === "correct" && "border-[#3FBFAE]/50 bg-[#3FBFAE]/[0.15] text-[#BFF3EA]",
-                state === "incorrect" && "border-[#E86B6B]/45 bg-[#E86B6B]/[0.12] text-[#F3BFBF]"
+                "cursor-pointer rounded-xl border border-border-strong bg-surface px-4 py-3.5 text-start text-sm transition-all hover:not-disabled:border-primary/35 disabled:cursor-default",
+                state === "correct" && "border-accent/50 bg-accent/[0.15] text-accent-ink",
+                state === "incorrect" && "border-danger/45 bg-danger/[0.12] text-danger-ink"
               )}
             >
               {choice}

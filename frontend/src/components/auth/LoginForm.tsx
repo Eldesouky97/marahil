@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { useRouter, Link } from "@/i18n/navigation";
 import { loginUser } from "@/lib/firebase/auth";
 import { getUserProfile } from "@/lib/firebase/users";
 import { Button } from "@/components/ui/Button";
@@ -10,6 +10,7 @@ import { FormField, inputClasses } from "@/components/ui/FormField";
 
 export function LoginForm() {
   const router = useRouter();
+  const t = useTranslations("auth.login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +25,7 @@ export function LoginForm() {
       const profile = await getUserProfile(user.uid);
       router.push(profile?.role === "teacher" ? "/dashboard/teacher" : "/dashboard/student");
     } catch {
-      setError("البريد الإلكتروني أو كلمة المرور غير صحيحة.");
+      setError(t("error"));
     } finally {
       setLoading(false);
     }
@@ -32,7 +33,7 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <FormField label="البريد الإلكتروني">
+      <FormField label={t("email")}>
         <input
           type="email"
           required
@@ -42,7 +43,7 @@ export function LoginForm() {
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormField>
-      <FormField label="كلمة المرور">
+      <FormField label={t("password")}>
         <input
           type="password"
           required
@@ -53,16 +54,16 @@ export function LoginForm() {
         />
       </FormField>
 
-      {error && <p className="text-sm text-[#F3BFBF]">{error}</p>}
+      {error && <p className="text-sm text-danger-ink">{error}</p>}
 
       <Button type="submit" disabled={loading} className="w-full">
-        {loading ? "جارٍ الدخول..." : "تسجيل الدخول"}
+        {loading ? t("submitting") : t("submit")}
       </Button>
 
-      <p className="text-center text-sm text-[#8A93A6]">
-        ليس لديك حساب؟{" "}
-        <Link href="/auth/register" className="text-[#E8C878]">
-          أنشئ حسابًا
+      <p className="text-center text-sm text-dim">
+        {t("noAccount")}{" "}
+        <Link href="/auth/register" className="text-primary-strong">
+          {t("createAccount")}
         </Link>
       </p>
     </form>

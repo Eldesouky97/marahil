@@ -1,36 +1,22 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { QuizPlayer } from "@/components/quiz/QuizPlayer";
 import { SectionHeading } from "./SectionHeading";
 import { Container } from "@/components/ui/Container";
-
-const DEMO_QUESTIONS = [
-  { id: "1", question: "ما ناتج ٧ × ٨ ؟", choices: ["54", "64", "56", "58"], correct: 2, explanation: "٧ × ٨ = ٥٦" },
-  {
-    id: "2",
-    question: "ما الغاز الذي تحتاجه خلايا الجسم للتنفس؟",
-    choices: ["ثاني أكسيد الكربون", "الأكسجين", "النيتروجين", "الهيدروجين"],
-    correct: 1,
-    explanation: "الأكسجين هو الغاز الأساسي الذي تستخدمه الخلايا.",
-  },
-  {
-    id: "3",
-    question: "ما جمع كلمة «كتاب»؟",
-    choices: ["كتب", "كتائب", "كاتبون", "مكاتب"],
-    correct: 0,
-    explanation: "جمع «كتاب» هو «كُتُب».",
-  },
-];
+import type { QuizQuestion } from "@/types/quiz";
 
 export function InteractiveDemo() {
+  const t = useTranslations("demo");
+  const rawQuestions = t.raw("questions") as Omit<QuizQuestion, "id">[];
+  const questions: QuizQuestion[] = rawQuestions.map((q, i) => ({ id: String(i), ...q }));
+
   return (
-    <section id="demo" className="border-b border-white/[0.06] bg-[#0B1224] py-24">
+    <section id="demo" className="border-b border-border bg-bg py-24">
       <Container size="lg">
-        <SectionHeading
-          eyebrow="تجربة حيّة"
-          title="جرّب درسًا تفاعليًا الآن"
-          description="هكذا يشعر الطالب بالتفاعل الفوري في كل اختبار — إجابة، وتصحيح، وتفسير في نفس اللحظة."
-        />
-        <div className="rounded-2xl border border-white/10 bg-[#0F1729] p-8">
-          <QuizPlayer questions={DEMO_QUESTIONS} />
+        <SectionHeading eyebrow={t("eyebrow")} title={t("title")} description={t("description")} />
+        <div className="rounded-2xl border border-border bg-surface-2 p-8">
+          <QuizPlayer questions={questions} />
         </div>
       </Container>
     </section>

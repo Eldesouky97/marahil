@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter, Link } from "@/i18n/navigation";
 import { registerUser } from "@/lib/firebase/auth";
 import { RoleSwitch } from "./RoleSwitch";
 import { Button } from "@/components/ui/Button";
@@ -12,6 +13,7 @@ import type { UserRole } from "@/types/user";
 export function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations("auth.register");
   const initialRole = searchParams.get("role") === "teacher" ? "teacher" : "student";
 
   const [role, setRole] = useState<UserRole>(initialRole);
@@ -29,7 +31,7 @@ export function RegisterForm() {
       await registerUser(name, email, password, role);
       router.push(role === "teacher" ? "/dashboard/teacher" : "/dashboard/student");
     } catch {
-      setError("تعذّر إنشاء الحساب. تأكد من صحة البيانات أو أن البريد غير مستخدم من قبل.");
+      setError(t("error"));
     } finally {
       setLoading(false);
     }
@@ -39,10 +41,10 @@ export function RegisterForm() {
     <form onSubmit={handleSubmit} className="space-y-4">
       <RoleSwitch value={role} onChange={setRole} />
 
-      <FormField label="الاسم الكامل">
+      <FormField label={t("name")}>
         <input required className={inputClasses} value={name} onChange={(e) => setName(e.target.value)} />
       </FormField>
-      <FormField label="البريد الإلكتروني">
+      <FormField label={t("email")}>
         <input
           type="email"
           required
@@ -52,7 +54,7 @@ export function RegisterForm() {
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormField>
-      <FormField label="كلمة المرور">
+      <FormField label={t("password")}>
         <input
           type="password"
           required
@@ -64,16 +66,16 @@ export function RegisterForm() {
         />
       </FormField>
 
-      {error && <p className="text-sm text-[#F3BFBF]">{error}</p>}
+      {error && <p className="text-sm text-danger-ink">{error}</p>}
 
       <Button type="submit" disabled={loading} className="w-full">
-        {loading ? "جارٍ الإنشاء..." : "إنشاء حساب"}
+        {loading ? t("submitting") : t("submit")}
       </Button>
 
-      <p className="text-center text-sm text-[#8A93A6]">
-        لديك حساب بالفعل؟{" "}
-        <Link href="/auth/login" className="text-[#E8C878]">
-          سجّل الدخول
+      <p className="text-center text-sm text-dim">
+        {t("haveAccount")}{" "}
+        <Link href="/auth/login" className="text-primary-strong">
+          {t("login")}
         </Link>
       </p>
     </form>

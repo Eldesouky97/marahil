@@ -1,19 +1,20 @@
 import { cn } from "@/lib/utils/cn";
 import type { ButtonHTMLAttributes } from "react";
 
-type Variant = "gold" | "outline" | "ghost";
+type Variant = "primary" | "outline" | "ghost";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
 }
 
 const VARIANT_CLASSES: Record<Variant, string> = {
-  gold: "bg-gradient-to-l from-[#D4A94F] to-[#E8C878] text-[#241A05] hover:shadow-[0_0_28px_rgba(212,169,79,0.45)]",
-  outline: "border border-white/15 text-[#E7E9F2] hover:border-teal-400/60 hover:text-[#3FBFAE] bg-transparent",
-  ghost: "text-[#E7E9F2] hover:text-[#E8C878] bg-transparent",
+  primary:
+    "bg-gradient-to-l from-primary to-primary-strong text-primary-ink hover:shadow-[0_0_28px_color-mix(in_srgb,var(--primary)_45%,transparent)]",
+  outline: "border border-border-strong text-body hover:border-accent/60 hover:text-accent bg-transparent",
+  ghost: "text-body hover:text-primary-strong bg-transparent",
 };
 
-export function Button({ variant = "gold", className, children, ...props }: ButtonProps) {
+export function Button({ variant = "primary", className, children, ...props }: ButtonProps) {
   return (
     <button
       className={cn(

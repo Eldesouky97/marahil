@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { Award, BookOpen, Plus, Users } from "lucide-react";
 import { useAuth } from "@/context/AuthProvider";
 import { useTeacherCourses } from "@/lib/hooks/useTeacherCourses";
@@ -14,6 +15,8 @@ import { Container } from "@/components/ui/Container";
 export function TeacherDashboardView() {
   const { profile } = useAuth();
   const { courses, loading } = useTeacherCourses(profile?.uid);
+  const t = useTranslations("dashboardTeacher");
+  const tShared = useTranslations("dashboardShared");
 
   const totalStudents = courses.reduce((sum, c) => sum + c.studentsCount, 0);
   const publishedCount = courses.filter((c) => c.published).length;
@@ -22,29 +25,29 @@ export function TeacherDashboardView() {
     <section className="py-12">
       <Container>
         <DashboardHeader
-          title={`أهلًا، ${profile?.name ?? ""}`}
+          title={tShared("welcome", { name: profile?.name ?? "" })}
           action={
             <Link href="/dashboard/teacher/courses/new">
               <Button className="px-5 py-2.5 text-sm">
-                <Plus size={16} /> دورة جديدة
+                <Plus size={16} /> {t("newCourse")}
               </Button>
             </Link>
           }
         />
 
         <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <StatCard icon={BookOpen} label="دوراتي" value={courses.length} />
-          <StatCard icon={Award} label="منشورة" value={publishedCount} />
-          <StatCard icon={Users} label="إجمالي الطلاب" value={totalStudents} />
+          <StatCard icon={BookOpen} label={t("statsCourses")} value={courses.length} />
+          <StatCard icon={Award} label={t("statsPublished")} value={publishedCount} />
+          <StatCard icon={Users} label={t("statsStudents")} value={totalStudents} />
         </div>
 
-        <h2 className="mb-4 text-lg font-bold">دوراتي</h2>
+        <h2 className="mb-4 text-lg font-bold">{t("myCourses")}</h2>
         {loading ? (
           <div className="flex justify-center py-16">
             <Spinner />
           </div>
         ) : courses.length === 0 ? (
-          <p className="text-[#8A93A6]">لم تنشئ أي دورة بعد.</p>
+          <p className="text-dim">{t("noCourses")}</p>
         ) : (
           <div className="space-y-3">
             {courses.map((c) => (

@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Menu, X } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { Logo } from "./Logo";
-import { NAV_LINKS } from "./NavLinks";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { LanguageSwitcher } from "@/components/theme/LanguageSwitcher";
 import { useAuth } from "@/context/AuthProvider";
 import { logoutUser } from "@/lib/firebase/auth";
 import { Button } from "@/components/ui/Button";
@@ -12,71 +14,79 @@ import { Button } from "@/components/ui/Button";
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const { profile, loading } = useAuth();
+  const t = useTranslations("nav");
   const dashboardHref = profile?.role === "teacher" ? "/dashboard/teacher" : "/dashboard/student";
 
+  const navLinks = [
+    { href: "/#stages", label: t("stages") },
+    { href: "/courses", label: t("courses") },
+    { href: "/#how", label: t("how") },
+    { href: "/verify", label: t("verify") },
+  ];
+
   return (
-    <header
-      className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#0B1224]/85 backdrop-blur-md"
-    >
+    <header className="sticky top-0 z-50 border-b border-border bg-bg/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
         <Link href="/" className="flex items-center gap-2">
           <Logo />
-          <span className="font-display text-xl text-[#F6EFDD]">مراحل</span>
+          <span className="font-display text-xl text-heading">مراحل</span>
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
-          {NAV_LINKS.map((l) => (
-            <Link key={l.href} href={l.href} className="text-sm text-[#C7CEE3] transition-colors hover:text-[#E8C878]">
+          {navLinks.map((l) => (
+            <Link key={l.href} href={l.href} className="text-sm text-muted transition-colors hover:text-primary-strong">
               {l.label}
             </Link>
           ))}
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          <LanguageSwitcher />
+          <ThemeToggle />
           {!loading && profile ? (
             <>
-              <Link href={dashboardHref} className="text-sm text-[#E7E9F2] hover:text-[#E8C878]">
-                لوحة التحكم
+              <Link href={dashboardHref} className="text-sm text-body hover:text-primary-strong">
+                {t("dashboard")}
               </Link>
               <Button variant="outline" onClick={() => logoutUser()} className="px-5 py-2 text-sm">
-                تسجيل الخروج
+                {t("logout")}
               </Button>
             </>
           ) : (
             <>
-              <Link href="/auth/login" className="text-sm text-[#E7E9F2] hover:text-[#E8C878]">
-                تسجيل الدخول
+              <Link href="/auth/login" className="text-sm text-body hover:text-primary-strong">
+                {t("login")}
               </Link>
               <Link href="/auth/register">
-                <Button className="px-5 py-2 text-sm">ابدأ الآن</Button>
+                <Button className="px-5 py-2 text-sm">{t("startNow")}</Button>
               </Link>
             </>
           )}
         </div>
 
-        <button
-          className="text-[#F6EFDD] md:hidden"
-          onClick={() => setOpen(!open)}
-          aria-label="القائمة"
-        >
-          {open ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
+          <button className="text-heading" onClick={() => setOpen(!open)} aria-label={t("menu")}>
+            {open ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
 
       {open && (
-        <div className="flex flex-col gap-4 border-t border-white/[0.06] bg-[#0B1224] px-5 py-4 md:hidden">
-          {NAV_LINKS.map((l) => (
-            <Link key={l.href} href={l.href} className="text-sm text-[#C7CEE3]" onClick={() => setOpen(false)}>
+        <div className="flex flex-col gap-4 border-t border-border bg-bg px-5 py-4 md:hidden">
+          {navLinks.map((l) => (
+            <Link key={l.href} href={l.href} className="text-sm text-muted" onClick={() => setOpen(false)}>
               {l.label}
             </Link>
           ))}
+          <LanguageSwitcher />
           {profile ? (
-            <Link href={dashboardHref} className="text-sm text-[#E8C878]" onClick={() => setOpen(false)}>
-              لوحة التحكم
+            <Link href={dashboardHref} className="text-sm text-primary-strong" onClick={() => setOpen(false)}>
+              {t("dashboard")}
             </Link>
           ) : (
             <Link href="/auth/register" onClick={() => setOpen(false)}>
-              <Button className="w-fit px-5 py-2 text-sm">ابدأ الآن</Button>
+              <Button className="w-fit px-5 py-2 text-sm">{t("startNow")}</Button>
             </Link>
           )}
         </div>
