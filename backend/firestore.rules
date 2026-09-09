@@ -58,18 +58,20 @@ service cloud.firestore {
         && request.resource.data.teacherId == request.auth.uid
         && request.resource.data.published == false
         && isApproved(request.auth.uid);
-      allow update: if isOwner(resource.data.teacherId)
-        && request.resource.data.teacherId == resource.data.teacherId;
-      allow delete: if false;
+      allow update: if (isOwner(resource.data.teacherId) && request.resource.data.teacherId == resource.data.teacherId)
+        || isAdmin();
+      // Only admin can delete a course outright — a teacher still can't
+      // hard-delete their own (they can only unpublish it).
+      allow delete: if isAdmin();
 
       match /lessons/{lessonId} {
         function course() {
           return get(/databases/$(database)/documents/courses/$(courseId)).data;
         }
 
-        allow read: if course().published == true || isOwner(course().teacherId);
-        allow create, update: if isOwner(course().teacherId);
-        allow delete: if false;
+        allow read: if course().published == true || isOwner(course().teacherId) || isAdmin();
+        allow create: if isOwner(course().teacherId);
+        allow update, delete: if isOwner(course().teacherId) || isAdmin();
       }
     }
 
@@ -120,7 +122,24 @@ service cloud.firestore {
         && request.resource.data.courseTitle == courseData(request.resource.data.courseId).title
         && request.resource.data.teacherName == courseData(request.resource.data.courseId).teacherName
         && request.resource.data.studentName == userData(request.auth.uid).name;
+      // Admin can correct a typo or revoke a fraudulently-issued certificate;
+      // a client can still never create/update its own.
+      allow update, delete: if isAdmin();
+    }
+
+    // --- adminAuditLog (append-only, admin-only) --------------------------
+    match /adminAuditLog/{entryId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin() && request.resource.data.adminUid == request.auth.uid;
       allow update, delete: if false;
+    }
+
+    // --- stageSubjects/{stageId} — admin-editable override of the static,
+    // per-stage subject list (see data/stages.ts / messages/*.json). Publicly
+    // readable since course creation/browsing needs it for every visitor.
+    match /stageSubjects/{stageId} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
   }
 }

@@ -231,7 +231,10 @@
       "statsCertificates": "الشهادات الصادرة",
       "statsPendingTeachers": "معلّمون بانتظار الموافقة",
       "manageUsers": "إدارة المستخدمين",
-      "manageCourses": "إدارة الدورات"
+      "manageCourses": "إدارة الدورات",
+      "manageCertificates": "إدارة الشهادات",
+      "manageStages": "إدارة المراحل والمواد",
+      "manageAuditLog": "سجلّ النشاط"
     },
     "users": {
       "title": "إدارة المستخدمين",
@@ -251,6 +254,50 @@
       "published": "منشورة",
       "draft": "مسودة",
       "noCourses": "لا توجد دورات بعد."
+    },
+    "manageCourse": {
+      "editTitle": "تعديل بيانات الدورة",
+      "delete": "حذف الدورة",
+      "deleteConfirm": "هل أنت متأكد؟ سيتم حذف الدورة وكل دروسها نهائيًا.",
+      "cancel": "إلغاء",
+      "lessons": "الدروس",
+      "editLesson": "تعديل الدرس",
+      "deleteLesson": "حذف الدرس",
+      "save": "حفظ",
+      "saving": "جارٍ الحفظ...",
+      "notFound": "لم يتم العثور على هذه الدورة."
+    },
+    "certificates": {
+      "title": "إدارة الشهادات",
+      "course": "الدورة",
+      "cancel": "إلغاء",
+      "save": "حفظ",
+      "saving": "جارٍ الحفظ...",
+      "edit": "تعديل",
+      "revoke": "سحب الشهادة",
+      "revokeConfirm": "سحب هذه الشهادة نهائيًا؟",
+      "noCertificates": "لا توجد شهادات صادرة بعد."
+    },
+    "stages": {
+      "title": "إدارة المراحل والمواد",
+      "addSubject": "إضافة مادة",
+      "removeSubject": "حذف المادة",
+      "save": "حفظ",
+      "saving": "جارٍ الحفظ...",
+      "saved": "تم الحفظ"
+    },
+    "auditLog": {
+      "title": "سجلّ نشاط الإدارة",
+      "noEntries": "لا يوجد نشاط مسجّل بعد.",
+      "action_roleChange": "تغيير دور مستخدم",
+      "action_approveTeacher": "الموافقة على معلّم",
+      "action_courseUpdate": "تعديل دورة",
+      "action_courseDelete": "حذف دورة",
+      "action_lessonUpdate": "تعديل درس",
+      "action_lessonDelete": "حذف درس",
+      "action_certificateUpdate": "تعديل شهادة",
+      "action_certificateDelete": "سحب شهادة",
+      "action_stageSubjectsUpdate": "تعديل مواد مرحلة دراسية"
     }
   },
   "lesson": {

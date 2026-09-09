@@ -1,4 +1,4 @@
-import { collection, doc, DocumentData, getDoc, getDocs, query, serverTimestamp, setDoc, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, DocumentData, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
 import { db } from "./client";
 import type { Certificate } from "@/types/certificate";
 import { generateSerial, generateVerifyCode } from "@/lib/utils/certificateSerial";
@@ -71,4 +71,17 @@ export async function listStudentCertificates(uid: string): Promise<Certificate[
 export async function listAllCertificates(): Promise<Certificate[]> {
   const snap = await getDocs(certificatesRef);
   return snap.docs.map((d) => mapCertificate(d.id, d.data()));
+}
+
+/** Admin-only — fixes a typo in the denormalized display fields. */
+export async function updateCertificate(
+  certId: string,
+  patch: Partial<Pick<Certificate, "studentName" | "courseTitle" | "teacherName">>
+): Promise<void> {
+  await updateDoc(doc(db, "certificates", certId), patch);
+}
+
+/** Admin-only — revokes a certificate (e.g. issued in error or fraudulently). */
+export async function deleteCertificate(certId: string): Promise<void> {
+  await deleteDoc(doc(db, "certificates", certId));
 }

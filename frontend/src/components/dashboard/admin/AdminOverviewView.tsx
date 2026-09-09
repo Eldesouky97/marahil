@@ -51,6 +51,21 @@ export function AdminOverviewView() {
               {t("manageCourses")}
             </Button>
           </Link>
+          <Link href="/dashboard/admin/certificates">
+            <Button variant="outline" className="px-5 py-2.5 text-sm">
+              {t("manageCertificates")}
+            </Button>
+          </Link>
+          <Link href="/dashboard/admin/stages">
+            <Button variant="outline" className="px-5 py-2.5 text-sm">
+              {t("manageStages")}
+            </Button>
+          </Link>
+          <Link href="/dashboard/admin/audit-log">
+            <Button variant="outline" className="px-5 py-2.5 text-sm">
+              {t("manageAuditLog")}
+            </Button>
+          </Link>
         </div>
       </Container>
     </section>

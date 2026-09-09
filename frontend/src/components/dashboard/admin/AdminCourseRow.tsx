@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Users } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { useStageLabel } from "@/lib/hooks/useStages";
 import { cn } from "@/lib/utils/cn";
 import type { Course } from "@/types/course";
@@ -13,7 +14,9 @@ export function AdminCourseRow({ course }: { course: Course }) {
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <div className="font-medium">{course.title}</div>
+        <Link href={`/dashboard/admin/courses/${course.id}`} className="font-medium hover:text-primary-strong">
+          {course.title}
+        </Link>
         <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-dim">
           <span>{t("teacher")}: {course.teacherName}</span>
           <span>{stageLabel(course.stage)}</span>

@@ -231,7 +231,10 @@
       "statsCertificates": "Certificates Issued",
       "statsPendingTeachers": "Teachers Awaiting Approval",
       "manageUsers": "Manage Users",
-      "manageCourses": "Manage Courses"
+      "manageCourses": "Manage Courses",
+      "manageCertificates": "Manage Certificates",
+      "manageStages": "Manage Stages & Subjects",
+      "manageAuditLog": "Audit Log"
     },
     "users": {
       "title": "Manage Users",
@@ -251,6 +254,50 @@
       "published": "Published",
       "draft": "Draft",
       "noCourses": "No courses yet."
+    },
+    "manageCourse": {
+      "editTitle": "Edit Course Details",
+      "delete": "Delete Course",
+      "deleteConfirm": "Are you sure? This will permanently delete the course and all its lessons.",
+      "cancel": "Cancel",
+      "lessons": "Lessons",
+      "editLesson": "Edit lesson",
+      "deleteLesson": "Delete lesson",
+      "save": "Save",
+      "saving": "Saving...",
+      "notFound": "This course could not be found."
+    },
+    "certificates": {
+      "title": "Manage Certificates",
+      "course": "Course",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving...",
+      "edit": "Edit",
+      "revoke": "Revoke",
+      "revokeConfirm": "Permanently revoke this certificate?",
+      "noCertificates": "No certificates issued yet."
+    },
+    "stages": {
+      "title": "Manage Stages & Subjects",
+      "addSubject": "Add Subject",
+      "removeSubject": "Remove subject",
+      "save": "Save",
+      "saving": "Saving...",
+      "saved": "Saved"
+    },
+    "auditLog": {
+      "title": "Admin Audit Log",
+      "noEntries": "No activity logged yet.",
+      "action_roleChange": "Changed a user's role",
+      "action_approveTeacher": "Approved a teacher",
+      "action_courseUpdate": "Edited a course",
+      "action_courseDelete": "Deleted a course",
+      "action_lessonUpdate": "Edited a lesson",
+      "action_lessonDelete": "Deleted a lesson",
+      "action_certificateUpdate": "Edited a certificate",
+      "action_certificateDelete": "Revoked a certificate",
+      "action_stageSubjectsUpdate": "Updated a stage's subjects"
     }
   },
   "lesson": {

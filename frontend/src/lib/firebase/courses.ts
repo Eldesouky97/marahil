@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   DocumentData,
   getDoc,
@@ -80,6 +81,20 @@ export async function setCoursePublished(courseId: string, published: boolean) {
   await updateDoc(doc(db, "courses", courseId), { published });
 }
 
+export async function updateCourse(
+  courseId: string,
+  patch: Partial<Pick<Course, "title" | "description" | "stage" | "subject">>
+): Promise<void> {
+  await updateDoc(doc(db, "courses", courseId), patch);
+}
+
+/** Admin-only. Deletes every lesson first (Firestore doesn't cascade-delete subcollections), then the course itself. */
+export async function deleteCourse(courseId: string): Promise<void> {
+  const lessonsSnap = await getDocs(collection(db, "courses", courseId, "lessons"));
+  await Promise.all(lessonsSnap.docs.map((d) => deleteDoc(d.ref)));
+  await deleteDoc(doc(db, "courses", courseId));
+}
+
 export async function listLessons(courseId: string): Promise<Lesson[]> {
   const snap = await getDocs(collection(db, "courses", courseId, "lessons"));
   return snap.docs
@@ -101,4 +116,19 @@ export async function addLesson(
     lessonsCount: (await listLessons(courseId)).length,
   });
   return created.id;
+}
+
+export async function updateLesson(
+  courseId: string,
+  lessonId: string,
+  patch: Partial<Omit<Lesson, "id">>
+): Promise<void> {
+  await updateDoc(doc(db, "courses", courseId, "lessons", lessonId), patch);
+}
+
+export async function deleteLesson(courseId: string, lessonId: string): Promise<void> {
+  await deleteDoc(doc(db, "courses", courseId, "lessons", lessonId));
+  await updateDoc(doc(db, "courses", courseId), {
+    lessonsCount: (await listLessons(courseId)).length,
+  });
 }

@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@/context/AuthProvider";
 import { updateUserRole, updateUserStatus } from "@/lib/firebase/users";
+import { logAdminAction } from "@/lib/firebase/auditLog";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import type { AppUser, UserRole, UserStatus } from "@/types/user";
 
 export function AdminUserRow({ user, isSelf }: { user: AppUser; isSelf: boolean }) {
+  const { profile } = useAuth();
   const [role, setRole] = useState<UserRole>(user.role);
   const [status, setStatus] = useState<UserStatus | undefined>(user.status);
   const [saving, setSaving] = useState(false);
@@ -18,6 +21,7 @@ export function AdminUserRow({ user, isSelf }: { user: AppUser; isSelf: boolean 
     await updateUserRole(user.uid, next);
     setRole(next);
     setSaving(false);
+    if (profile) await logAdminAction(profile, "roleChange", "user", user.uid, `${user.name}: ${role} -> ${next}`);
   }
 
   async function handleApprove() {
@@ -25,6 +29,7 @@ export function AdminUserRow({ user, isSelf }: { user: AppUser; isSelf: boolean 
     await updateUserStatus(user.uid, "approved");
     setStatus("approved");
     setSaving(false);
+    if (profile) await logAdminAction(profile, "approveTeacher", "user", user.uid, user.name);
   }
 
   const pending = role === "teacher" && !!status && status !== "approved";
