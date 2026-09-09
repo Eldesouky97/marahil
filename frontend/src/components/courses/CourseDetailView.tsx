@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { useStageLabel } from "@/lib/hooks/useStages";
 import { useAuth } from "@/context/AuthProvider";
 import { useCourseDetail } from "@/lib/hooks/useCourseDetail";
@@ -36,6 +37,17 @@ export function CourseDetailView({ courseId }: { courseId: string }) {
     <section className="py-16">
       <Container className="grid grid-cols-1 gap-10 lg:grid-cols-3">
         <div className="lg:col-span-2">
+          {course.coverImageUrl && (
+            <div className="mb-6 h-56 w-full overflow-hidden rounded-2xl bg-surface-2">
+              <Image
+                src={course.coverImageUrl}
+                alt=""
+                width={900}
+                height={224}
+                className="h-full w-full object-cover"
+              />
+            </div>
+          )}
           <Badge className="mb-4">{stageLabel(course.stage)}</Badge>
           <h1 className="mb-3 font-display text-3xl text-heading">{course.title}</h1>
           <p className="mb-8 leading-relaxed text-dim">{course.description}</p>

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Menu, X } from "lucide-react";
+import Image from "next/image";
+import { Menu, User, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "./Logo";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -52,6 +53,19 @@ export function Navbar() {
               <Link href={dashboardHref} className="text-sm text-body hover:text-primary-strong">
                 {t("dashboard")}
               </Link>
+              <Link href="/profile" aria-label={t("profile")} className="text-dim hover:text-primary-strong">
+                {profile.photoURL ? (
+                  <Image
+                    src={profile.photoURL}
+                    alt=""
+                    width={28}
+                    height={28}
+                    className="h-7 w-7 rounded-full object-cover"
+                  />
+                ) : (
+                  <User size={20} />
+                )}
+              </Link>
               <Button variant="outline" onClick={() => logoutUser()} className="px-5 py-2 text-sm">
                 {t("logout")}
               </Button>
@@ -85,9 +99,14 @@ export function Navbar() {
           ))}
           <LanguageSwitcher />
           {profile ? (
-            <Link href={dashboardHref} className="text-sm text-primary-strong" onClick={() => setOpen(false)}>
-              {t("dashboard")}
-            </Link>
+            <>
+              <Link href={dashboardHref} className="text-sm text-primary-strong" onClick={() => setOpen(false)}>
+                {t("dashboard")}
+              </Link>
+              <Link href="/profile" className="text-sm text-muted" onClick={() => setOpen(false)}>
+                {t("profile")}
+              </Link>
+            </>
           ) : (
             <Link href="/auth/register" onClick={() => setOpen(false)}>
               <Button className="w-fit px-5 py-2 text-sm">{t("startNow")}</Button>

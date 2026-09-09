@@ -55,3 +55,7 @@ export async function updateUserRole(uid: string, role: UserRole): Promise<void>
 export async function updateUserStatus(uid: string, status: UserStatus): Promise<void> {
   await updateDoc(doc(db, "users", uid), { status });
 }
+
+export async function updateUserPhoto(uid: string, photoURL: string): Promise<void> {
+  await updateDoc(doc(db, "users", uid), { photoURL });
+}

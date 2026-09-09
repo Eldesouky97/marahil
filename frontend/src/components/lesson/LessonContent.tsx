@@ -1,8 +1,14 @@
+import Image from "next/image";
 import type { Lesson } from "@/types/course";
 
 export function LessonContent({ lesson }: { lesson: Lesson }) {
   return (
     <div>
+      {lesson.imageUrl && (
+        <div className="mb-6 overflow-hidden rounded-xl border border-border">
+          <Image src={lesson.imageUrl} alt="" width={900} height={400} className="w-full object-cover" />
+        </div>
+      )}
       {lesson.videoUrl && (
         <div className="mb-6 aspect-video overflow-hidden rounded-xl border border-border bg-black">
           <iframe

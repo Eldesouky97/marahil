@@ -27,6 +27,7 @@ function mapCourse(id: string, data: DocumentData): Course {
     teacherId: data.teacherId,
     teacherName: data.teacherName,
     coverIcon: data.coverIcon ?? "BookOpen",
+    coverImageUrl: data.coverImageUrl,
     published: !!data.published,
     lessonsCount: data.lessonsCount ?? 0,
     studentsCount: data.studentsCount ?? 0,
@@ -66,6 +67,7 @@ export async function createCourse(input: {
   teacherId: string;
   teacherName: string;
   coverIcon: string;
+  coverImageUrl?: string;
 }): Promise<string> {
   const created = await addDoc(coursesRef, {
     ...input,
@@ -83,7 +85,7 @@ export async function setCoursePublished(courseId: string, published: boolean) {
 
 export async function updateCourse(
   courseId: string,
-  patch: Partial<Pick<Course, "title" | "description" | "stage" | "subject">>
+  patch: Partial<Pick<Course, "title" | "description" | "stage" | "subject" | "coverImageUrl">>
 ): Promise<void> {
   await updateDoc(doc(db, "courses", courseId), patch);
 }

@@ -6,6 +6,7 @@ import { addLesson } from "@/lib/firebase/courses";
 import { QuizBuilder } from "./QuizBuilder";
 import { Button } from "@/components/ui/Button";
 import { FormField, inputClasses } from "@/components/ui/FormField";
+import { ImageUploadField } from "@/components/ui/ImageUploadField";
 import type { QuizQuestion } from "@/types/quiz";
 
 export function LessonForm({
@@ -20,6 +21,7 @@ export function LessonForm({
   const [title, setTitle] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [content, setContent] = useState("");
+  const [imageUrl, setImageUrl] = useState<string | undefined>();
   const [includeQuiz, setIncludeQuiz] = useState(false);
   const [quiz, setQuiz] = useState<QuizQuestion[]>([]);
   const [saving, setSaving] = useState(false);
@@ -33,11 +35,13 @@ export function LessonForm({
       order: nextOrder,
       videoUrl: videoUrl || undefined,
       content: content || undefined,
+      imageUrl,
       quiz: includeQuiz && quiz.length > 0 ? quiz : undefined,
     });
     setTitle("");
     setVideoUrl("");
     setContent("");
+    setImageUrl(undefined);
     setQuiz([]);
     setIncludeQuiz(false);
     setSaving(false);
@@ -62,6 +66,10 @@ export function LessonForm({
 
       <FormField label={t("contentLabel")}>
         <textarea rows={4} className={inputClasses} value={content} onChange={(e) => setContent(e.target.value)} />
+      </FormField>
+
+      <FormField label={t("image")}>
+        <ImageUploadField folder="lesson-images" onUploaded={setImageUrl} />
       </FormField>
 
       <label className="flex items-center gap-2 text-sm text-muted">

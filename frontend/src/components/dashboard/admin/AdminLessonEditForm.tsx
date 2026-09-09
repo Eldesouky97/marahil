@@ -6,6 +6,7 @@ import { updateLesson } from "@/lib/firebase/courses";
 import { QuizBuilder } from "@/components/dashboard/teacher/QuizBuilder";
 import { Button } from "@/components/ui/Button";
 import { FormField, inputClasses } from "@/components/ui/FormField";
+import { ImageUploadField } from "@/components/ui/ImageUploadField";
 import type { Lesson } from "@/types/course";
 import type { QuizQuestion } from "@/types/quiz";
 
@@ -26,6 +27,7 @@ export function AdminLessonEditForm({
   const [title, setTitle] = useState(lesson.title);
   const [videoUrl, setVideoUrl] = useState(lesson.videoUrl ?? "");
   const [content, setContent] = useState(lesson.content ?? "");
+  const [imageUrl, setImageUrl] = useState(lesson.imageUrl);
   const [includeQuiz, setIncludeQuiz] = useState(!!lesson.quiz?.length);
   const [quiz, setQuiz] = useState<QuizQuestion[]>(lesson.quiz ?? []);
   const [saving, setSaving] = useState(false);
@@ -38,6 +40,7 @@ export function AdminLessonEditForm({
       order: lesson.order,
       videoUrl: videoUrl || undefined,
       content: content || undefined,
+      imageUrl,
       quiz: includeQuiz && quiz.length > 0 ? quiz : undefined,
     });
     setSaving(false);
@@ -56,6 +59,10 @@ export function AdminLessonEditForm({
 
       <FormField label={tLessonForm("contentLabel")}>
         <textarea rows={4} className={inputClasses} value={content} onChange={(e) => setContent(e.target.value)} />
+      </FormField>
+
+      <FormField label={tLessonForm("image")}>
+        <ImageUploadField folder="lesson-images" currentUrl={imageUrl} onUploaded={setImageUrl} />
       </FormField>
 
       <label className="flex items-center gap-2 text-sm text-muted">

@@ -7,6 +7,7 @@ export interface Lesson {
   order: number;
   videoUrl?: string;
   content?: string;
+  imageUrl?: string;
   quiz?: QuizQuestion[];
 }
 
@@ -19,6 +20,7 @@ export interface Course {
   teacherId: string;
   teacherName: string;
   coverIcon: string;
+  coverImageUrl?: string;
   published: boolean;
   lessonsCount: number;
   studentsCount: number;

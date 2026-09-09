@@ -8,6 +8,7 @@ import { useStages } from "@/lib/hooks/useStages";
 import { useAuth } from "@/context/AuthProvider";
 import { Button } from "@/components/ui/Button";
 import { FormField, inputClasses } from "@/components/ui/FormField";
+import { ImageUploadField } from "@/components/ui/ImageUploadField";
 import type { StageId } from "@/types/stage";
 
 export function CourseForm() {
@@ -20,6 +21,7 @@ export function CourseForm() {
   const [description, setDescription] = useState("");
   const [stage, setStage] = useState<StageId>("primary");
   const [subject, setSubject] = useState(stages[1].subjects[0]);
+  const [coverImageUrl, setCoverImageUrl] = useState<string | undefined>();
   const [saving, setSaving] = useState(false);
 
   const currentStage = stages.find((s) => s.id === stage)!;
@@ -36,6 +38,7 @@ export function CourseForm() {
       teacherId: profile.uid,
       teacherName: profile.name,
       coverIcon: "BookOpen",
+      coverImageUrl,
     });
     router.push(`/dashboard/teacher/courses/${courseId}`);
   }
@@ -85,6 +88,10 @@ export function CourseForm() {
           </select>
         </FormField>
       </div>
+
+      <FormField label={t("coverImage")}>
+        <ImageUploadField folder="course-covers" onUploaded={setCoverImageUrl} />
+      </FormField>
 
       <Button type="submit" disabled={saving}>
         {saving ? t("submitting") : t("submit")}

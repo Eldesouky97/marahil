@@ -6,6 +6,7 @@ import { updateCourse } from "@/lib/firebase/courses";
 import { useStages } from "@/lib/hooks/useStages";
 import { Button } from "@/components/ui/Button";
 import { FormField, inputClasses } from "@/components/ui/FormField";
+import { ImageUploadField } from "@/components/ui/ImageUploadField";
 import type { Course } from "@/types/course";
 import type { StageId } from "@/types/stage";
 
@@ -18,6 +19,7 @@ export function AdminCourseEditForm({ course, onSaved }: { course: Course; onSav
   const [description, setDescription] = useState(course.description);
   const [stage, setStage] = useState<StageId>(course.stage);
   const [subject, setSubject] = useState(course.subject);
+  const [coverImageUrl, setCoverImageUrl] = useState(course.coverImageUrl);
   const [saving, setSaving] = useState(false);
 
   const currentStage = stages.find((s) => s.id === stage) ?? stages[0];
@@ -25,7 +27,7 @@ export function AdminCourseEditForm({ course, onSaved }: { course: Course; onSav
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
-    await updateCourse(course.id, { title, description, stage, subject });
+    await updateCourse(course.id, { title, description, stage, subject, coverImageUrl });
     setSaving(false);
     onSaved();
   }
@@ -75,6 +77,10 @@ export function AdminCourseEditForm({ course, onSaved }: { course: Course; onSav
           </select>
         </FormField>
       </div>
+
+      <FormField label={tCourseForm("coverImage")}>
+        <ImageUploadField folder="course-covers" currentUrl={coverImageUrl} onUploaded={setCoverImageUrl} />
+      </FormField>
 
       <Button type="submit" disabled={saving} className="px-5 py-2.5 text-sm">
         {saving ? t("saving") : t("save")}

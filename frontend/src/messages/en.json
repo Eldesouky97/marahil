@@ -11,6 +11,7 @@
     "login": "Log In",
     "logout": "Log Out",
     "dashboard": "Dashboard",
+    "profile": "Profile",
     "startNow": "Get Started",
     "menu": "Menu"
   },
@@ -182,6 +183,7 @@
       "description": "Short Description",
       "stage": "School Stage",
       "subject": "Subject",
+      "coverImage": "Course Cover Image",
       "submit": "Create Course",
       "submitting": "Creating..."
     },
@@ -198,6 +200,7 @@
       "title": "Lesson Title",
       "videoLabel": "Video Embed URL (optional)",
       "contentLabel": "Written Notes (optional)",
+      "image": "Lesson Illustration Image",
       "includeQuiz": "Add a short quiz for this lesson",
       "submit": "Add Lesson",
       "submitting": "Saving..."
@@ -344,6 +347,19 @@
     "loading": "Loading",
     "themeToLight": "Switch to light mode",
     "themeToDark": "Switch to dark mode",
-    "language": "العربية"
+    "language": "العربية",
+    "imageUpload": {
+      "choose": "Choose Image",
+      "tooLarge": "Image is larger than 5MB.",
+      "invalidType": "Unsupported file type — use JPEG, PNG, WebP, or GIF.",
+      "failed": "Couldn't upload the image. Please try again."
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "avatar": "Profile Photo",
+    "name": "Name",
+    "email": "Email",
+    "role": "Account Type"
   }
 }
