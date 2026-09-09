@@ -1,19 +1,22 @@
 # مراحل — الخلفية (Backend / Firebase)
 
-يحتوي هذا المجلد على كل ما يخص Firebase لمنصة "مراحل":
+المشروع يعمل بالكامل على باقة Firebase المجانية (Spark) — بدون Cloud Functions وبدون أي حاجة لبطاقة ائتمان.
 
-- `firestore.rules` — قواعد أمان Firestore (من يقرأ/يكتب كل مجموعة بيانات).
-- `storage.rules` — قواعد أمان Storage.
-- `firestore.indexes.json` — الفهارس المركّبة (فارغة حاليًا، كل الاستعلامات تعمل بفهارس Firestore التلقائية).
-- `functions/` — Cloud Functions (TypeScript)، ومسؤوليتها الوحيدة حاليًا إصدار الشهادات بعد اكتمال الدورة (`functions/src/certificates/issueOnCompletion.ts`)، حتى لا يقدر أي عميل يصدر شهادة لنفسه مباشرة.
+يحتوي هذا المجلد على:
+
+- `firestore.rules` — قواعد أمان Firestore. هي المسؤولة عن كل الحماية بدل أي كود خادم: تمنع الطالب من تزوير تقدّمه أو إصدار شهادة لنفسه بدون اجتياز الدورة فعليًا (راجع التعليقات داخل الملف لتفاصيل الموازنة بين الأمان والبساطة بدون خطة مدفوعة).
+- `storage.rules` — قواعد أمان Storage (مرفوضة بالكامل حاليًا، لحد ما تتضاف ميزة رفع ملفات).
+- `firestore.indexes.json` — فهارس مركّبة (فارغة حاليًا، كل الاستعلامات تعمل بالفهارس التلقائية).
 
 ## النشر
 
 ```bash
 firebase login          # مرة واحدة فقط
-firebase deploy          # من داخل هذا المجلد — ينشر القواعد + الدوال معًا
+firebase deploy          # من داخل هذا المجلد — ينشر قواعد Firestore وStorage
 ```
 
-أو بشكل منفصل: `firebase deploy --only firestore:rules,firestore:indexes,storage` و`firebase deploy --only functions`.
-
 المشروع مربوط مسبقًا بمعرّف Firebase `marahil-2026` عبر `.firebaserc`.
+
+## ترقية لاحقة (اختياري)
+
+لو احتجت لاحقًا حماية أقوى (منع أي تلاعب من طرف العميل تمامًا)، الحل هو الترقية لباقة Blaze وإضافة Cloud Function تصدر الشهادة من طرف الخادم بدل الاعتماد على قواعد Firestore وحدها — لكن ده مش لازم للتشغيل الحالي.

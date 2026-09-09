@@ -9,10 +9,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 The repo is a monorepo with two independently deployed halves:
 
 - **`frontend/`** — Next.js 16 (App Router, TypeScript, Tailwind CSS v4). Deployed to Vercel with **Root Directory = `frontend`**.
-- **`backend/`** — Firebase project config: Firestore/Storage security rules + one Cloud Function. Deployed via `firebase deploy` run from inside `backend/` (project id `marahil-2026`, set in `backend/.firebaserc`).
+- **`backend/`** — Firebase project config: Firestore/Storage security rules only. Deployed via `firebase deploy` run from inside `backend/` (project id `marahil-2026`, set in `backend/.firebaserc`).
 - **`design-reference/`** — a static JSX mockup from an earlier, unrelated concept ("أُفُق"/Ofoq). Kept only as a visual reference; not imported or built by anything.
 
-There is no separate Node/Express backend — Firebase (Auth, Firestore, Storage, Cloud Functions) *is* the backend.
+There is no separate Node/Express backend, and **no Cloud Functions** — the project intentionally stays on Firebase's free Spark plan (no billing account attached), so Auth + Firestore + Firestore security rules *are* the entire backend.
 
 ## Commands
 
@@ -21,12 +21,9 @@ Run from `frontend/`:
 - `npm run build` — production build (also runs the TypeScript check)
 - `npm run lint` — ESLint
 
-Run from `backend/functions/`:
-- `npm run build` — compile Cloud Functions TypeScript to `lib/`
-
 Run from `backend/` (requires `firebase login` once):
-- `firebase deploy` — deploys Firestore rules, Storage rules, and Cloud Functions together
-- `firebase deploy --only firestore:rules,firestore:indexes,storage` / `--only functions` — deploy a subset
+- `firebase deploy` — deploys Firestore rules, indexes, and Storage rules together
+- `firebase deploy --only firestore:rules` — deploy just the rules (the usual case)
 
 ## Architecture
 
@@ -36,17 +33,18 @@ Run from `backend/` (requires `firebase login` once):
 - `courses/{courseId}` — `{ title, description, stage, subject, teacherId, teacherName, published, lessonsCount, studentsCount, createdAt }`
   - `courses/{courseId}/lessons/{lessonId}` — `{ title, order, videoUrl?, content?, quiz?: QuizQuestion[] }`. A lesson either has a quiz (graded, drives progress) or is marked complete manually.
 - `enrollments/{uid}_{courseId}` — one doc per student per course; id is deterministic (`uid_courseId`), not auto-generated. Tracks `completedLessonIds`, `quizScores`, `progress` (0–100), `certificateIssued`.
-- `certificates/{certificateId}` — `{ uid, studentName, courseId, courseTitle, teacherName, serial, verifyCode, issuedAt }`. Publicly readable (verification page needs it), but **never client-writable**.
+- `certificates/{uid}_{courseId}` — `{ uid, studentName, courseId, courseTitle, teacherName, serial, verifyCode, issuedAt }`. Same deterministic-id scheme as `enrollments`. Publicly readable (verification page needs it).
 
-### Certificates are server-authoritative — this is the one thing not to casually "simplify"
+### Certificates are issued client-side, but gated entirely by Firestore rules — read `backend/firestore.rules` before touching this
 
-A client could otherwise call a Firestore write directly and forge a certificate for itself. So:
+There's no Cloud Function (see above — free plan, no billing account), so `frontend/src/lib/firebase/certificates.ts`'s `issueCertificate()` writes the `certificates` doc directly from the browser once `frontend/src/lib/hooks/useLessonPlayer.ts` sees `enrollment.progress` hit 100. The only thing standing between that and a student forging their own certificate is `backend/firestore.rules`:
 
-1. The frontend only ever updates `enrollments/*` (via `frontend/src/lib/firebase/enrollments.ts`), and Firestore rules (`backend/firestore.rules`) forbid a client from ever setting `certificateIssued: true` or writing to `certificates/*` at all.
-2. `backend/functions/src/certificates/issueOnCompletion.ts` is an `onDocumentWritten` trigger on `enrollments/{enrollmentId}`. When it sees `progress >= 100 && !certificateIssued`, it creates the `certificates` doc (via the Admin SDK, which bypasses rules) and flips `certificateIssued` itself.
-3. The frontend (`frontend/src/lib/hooks/useLessonPlayer.ts`) never issues a certificate — after progress hits 100%, it calls `watchCertificateForCourse` (`frontend/src/lib/firebase/certificates.ts`), an `onSnapshot` listener that resolves once the Cloud Function's write lands.
+- the `enrollments` update rule caps `completedLessonIds.size()` at the course's real `lessonsCount` and only allows `progress == 100` once that count is actually reached, and only allows `certificateIssued` to flip false→true (never back);
+- the `certificates` create rule re-derives `studentName`/`courseTitle`/`teacherName` from the real `users`/`courses` docs via `get()` (a client can't write fake display text onto its own certificate), and requires the matching `enrollments/{uid}_{courseId}` doc to already show `progress == 100`.
 
-If you change how progress/completion is computed, keep this split intact: client writes progress, server decides when that's "done" and mints the certificate.
+This is a deliberate trade-off, not an oversight: it's not as airtight as a server-side issuer (a sufficiently motivated user could still pad `completedLessonIds` with fabricated ids up to the real count, since rules can't iterate the `lessons` subcollection to check each id is real), but it needs no billing account. If that gap ever matters, the fix is a Blaze-plan Cloud Function trigger on `enrollments` writes that issues the certificate via the Admin SDK instead — don't try to close it further with more rules; Firestore rules can't enumerate a subcollection's real ids.
+
+If you change how progress/completion is computed, keep the invariant that `enrollments.progress` can only reach 100 in lockstep with the rules' `completedLessonIds.size()` check.
 
 ### Frontend structure (`frontend/src/`)
 
@@ -66,5 +64,4 @@ Visual design: colors/fonts are plain Tailwind arbitrary-value classes (`bg-[#0B
 
 ### Backend structure (`backend/`)
 
-- `firestore.rules` — the actual authorization logic; read this before assuming what a client can/can't write.
-- `functions/src/lib/` — tiny shared helpers (`admin.ts` for Admin SDK init, `certificateSerial.ts` for serial/verify-code generation). These live only here now — the frontend used to have its own copy back when certificate issuance ran client-side, but that code was deleted when issuance moved server-side (see above). Don't re-add serial/verify-code generation to the frontend.
+Just `firestore.rules`, `storage.rules`, and `firestore.indexes.json` — no server code. `firestore.rules` is the actual authorization logic for the whole app; read it before assuming what a client can or can't write.

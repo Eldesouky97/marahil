@@ -14,8 +14,8 @@ import { Container } from "@/components/ui/Container";
 
 export function LessonPlayer({ courseId, lessonId }: { courseId: string; lessonId: string }) {
   const { profile } = useAuth();
-  const { course, lesson, lessons, enrollment, loading, certificateId, awaitingCertificate, completeLesson } =
-    useLessonPlayer(courseId, lessonId, profile?.uid);
+  const { course, lesson, lessons, enrollment, loading, certificateId, completeLesson } =
+    useLessonPlayer(courseId, lessonId, profile?.uid, profile?.name);
   const [marking, setMarking] = useState(false);
 
   if (loading) {
@@ -63,11 +63,6 @@ export function LessonPlayer({ courseId, lessonId }: { courseId: string; lessonI
           )
         )}
 
-        {awaitingCertificate && !certificateId && (
-          <p className="mt-6 flex items-center gap-2 text-sm text-[#8A93A6]">
-            <Spinner className="h-4 w-4" /> جارٍ إصدار شهادتك...
-          </p>
-        )}
         {certificateId && <CertificateEarnedBanner certificateId={certificateId} />}
 
         {nextLesson && (alreadyDone || certificateId) && (

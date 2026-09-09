@@ -11,6 +11,14 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == uid;
     }
 
+    function courseData(courseId) {
+      return get(/databases/$(database)/documents/courses/$(courseId)).data;
+    }
+
+    function userData(uid) {
+      return get(/databases/$(database)/documents/users/$(uid)).data;
+    }
+
     // --- users ---------------------------------------------------------
     match /users/{uid} {
       allow read: if isOwner(uid);
@@ -44,6 +52,13 @@ service cloud.firestore {
     }
 
     // --- enrollments (id = "{uid}_{courseId}") ----------------------------
+    // No paid Cloud Functions on the free (Spark) plan, so these rules — not
+    // server code — are what stop a student from handing themselves 100%
+    // progress or a certificate for a course they never touched. It isn't
+    // perfect (a determined user could still pad completedLessonIds with
+    // made-up ids up to the real lesson count), but it enforces every check
+    // that doesn't require iterating the lessons subcollection, which rules
+    // can't do without a paid plan's Cloud Functions.
     match /enrollments/{enrollmentId} {
       allow read: if isOwner(resource.data.uid);
       allow create: if isOwner(request.resource.data.uid)
@@ -53,18 +68,37 @@ service cloud.firestore {
       allow update: if isOwner(resource.data.uid)
         && request.resource.data.uid == resource.data.uid
         && request.resource.data.courseId == resource.data.courseId
-        && request.resource.data.certificateIssued == resource.data.certificateIssued
-        && request.resource.data.progress >= resource.data.progress;
+        && request.resource.data.progress >= resource.data.progress
+        && request.resource.data.completedLessonIds.size() <= courseData(resource.data.courseId).lessonsCount
+        && (request.resource.data.progress < 100
+            || request.resource.data.completedLessonIds.size() >= courseData(resource.data.courseId).lessonsCount)
+        // certificateIssued may only flip false -> true, never back
+        && (request.resource.data.certificateIssued == resource.data.certificateIssued
+            || request.resource.data.certificateIssued == true);
       allow delete: if false;
     }
 
-    // --- certificates ------------------------------------------------------
+    // --- certificates (id = "{uid}_{courseId}", same scheme as enrollments) --
     // Publicly readable so anyone can verify a certificate by its code.
-    // Only ever written by the issueCertificateOnCompletion Cloud Function
-    // (backend/functions), which uses the Admin SDK and bypasses these rules.
+    // A client can create its own certificate doc, but only one matching its
+    // own completed enrollment, and only with names/titles copied from the
+    // real course/user docs — it can't forge someone else's certificate or
+    // put fake display text on its own.
     match /certificates/{certificateId} {
+      function matchingEnrollment() {
+        return get(/databases/$(database)/documents/enrollments/$(certificateId)).data;
+      }
+
       allow read: if true;
-      allow write: if false;
+      allow create: if isOwner(request.resource.data.uid)
+        && certificateId == request.auth.uid + '_' + request.resource.data.courseId
+        && matchingEnrollment().uid == request.auth.uid
+        && matchingEnrollment().courseId == request.resource.data.courseId
+        && matchingEnrollment().progress == 100
+        && request.resource.data.courseTitle == courseData(request.resource.data.courseId).title
+        && request.resource.data.teacherName == courseData(request.resource.data.courseId).teacherName
+        && request.resource.data.studentName == userData(request.auth.uid).name;
+      allow update, delete: if false;
     }
   }
 }

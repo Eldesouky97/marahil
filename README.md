@@ -9,9 +9,9 @@
 | المجلد | المحتوى | يُنشر على |
 |---|---|---|
 | [`frontend/`](frontend) | تطبيق Next.js (TypeScript + Tailwind CSS) — كل واجهات الطالب والمعلّم | Vercel |
-| [`backend/`](backend) | قواعد أمان Firestore/Storage + Cloud Functions | Firebase |
+| [`backend/`](backend) | قواعد أمان Firestore/Storage فقط | Firebase |
 
-قاعدة البيانات والمصادقة والتخزين عبر **Firebase** (مشروع `marahil-2026`): Firebase Auth للمصادقة، Firestore لكل البيانات (المستخدمون، الدورات، الدروس، الالتحاقات، الشهادات)، وCloud Function واحدة تُصدر الشهادة تلقائيًا عند اكتمال الدورة بنسبة 100% (منطق حسّاس يعمل من طرف الخادم فقط، وليس من المتصفح، حتى لا يقدر أحد يزوّر شهادة).
+قاعدة البيانات والمصادقة عبر **Firebase** (مشروع `marahil-2026`، باقة Spark المجانية بدون Cloud Functions): Firebase Auth للمصادقة، وFirestore لكل البيانات (المستخدمون، الدورات، الدروس، الالتحاقات، الشهادات). إصدار الشهادات يحدث من المتصفح، لكن قواعد أمان Firestore هي اللي تمنع أي طالب من تزوير تقدّمه أو إصدار شهادة لنفسه بدون اجتياز الدورة فعليًا — التفاصيل في `backend/firestore.rules`.
 
 راجع `frontend/README.md` و`backend/README.md` لتفاصيل كل جزء.
 
@@ -27,7 +27,7 @@ npm run dev
 
 ## النشر
 
-- **Firebase** (قواعد الأمان + Cloud Functions): من داخل `backend/` نفّذ `firebase deploy`.
+- **Firebase** (قواعد الأمان): من داخل `backend/` نفّذ `firebase deploy`.
 - **Vercel** (الواجهة): اربط مستودع GitHub بمشروع Vercel واجعل **Root Directory** = `frontend`، ثم أضف متغيرات البيئة نفسها الموجودة في `frontend/.env.example` من إعدادات المشروع على Vercel.
 - **GitHub**: [github.com/Eldesouky97/marahil](https://github.com/Eldesouky97/marahil).
 
