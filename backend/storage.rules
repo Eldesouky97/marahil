@@ -1,0 +1,11 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // No client uploads are implemented yet — deny by default so the bucket
+    // isn't left open if Storage is enabled ahead of that feature.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

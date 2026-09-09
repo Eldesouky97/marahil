@@ -1,0 +1,70 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // --- users ---------------------------------------------------------
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid)
+        && request.resource.data.role in ['teacher', 'student'];
+      allow update: if isOwner(uid)
+        && request.resource.data.role == resource.data.role;
+      allow delete: if false;
+    }
+
+    // --- courses ---------------------------------------------------------
+    match /courses/{courseId} {
+      allow read: if resource.data.published == true
+        || (isSignedIn() && request.auth.uid == resource.data.teacherId);
+      allow create: if isSignedIn()
+        && request.resource.data.teacherId == request.auth.uid
+        && request.resource.data.published == false;
+      allow update: if isOwner(resource.data.teacherId)
+        && request.resource.data.teacherId == resource.data.teacherId;
+      allow delete: if false;
+
+      match /lessons/{lessonId} {
+        function course() {
+          return get(/databases/$(database)/documents/courses/$(courseId)).data;
+        }
+
+        allow read: if course().published == true || isOwner(course().teacherId);
+        allow create, update: if isOwner(course().teacherId);
+        allow delete: if false;
+      }
+    }
+
+    // --- enrollments (id = "{uid}_{courseId}") ----------------------------
+    match /enrollments/{enrollmentId} {
+      allow read: if isOwner(resource.data.uid);
+      allow create: if isOwner(request.resource.data.uid)
+        && enrollmentId == request.auth.uid + '_' + request.resource.data.courseId
+        && request.resource.data.certificateIssued == false
+        && request.resource.data.progress == 0;
+      allow update: if isOwner(resource.data.uid)
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.courseId == resource.data.courseId
+        && request.resource.data.certificateIssued == resource.data.certificateIssued
+        && request.resource.data.progress >= resource.data.progress;
+      allow delete: if false;
+    }
+
+    // --- certificates ------------------------------------------------------
+    // Publicly readable so anyone can verify a certificate by its code.
+    // Only ever written by the issueCertificateOnCompletion Cloud Function
+    // (backend/functions), which uses the Admin SDK and bypasses these rules.
+    match /certificates/{certificateId} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}
