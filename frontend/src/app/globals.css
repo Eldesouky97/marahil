@@ -44,42 +44,12 @@
   --foreground: var(--body);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #08192b;
-    --bg-alt: #05111d;
-    --surface: #0f2439;
-    --surface-2: #0b1d2f;
-    --surface-3: #163350;
-
-    --heading: #eaf1f7;
-    --body: #d6e2ec;
-    --muted: #a9becf;
-    --dim: #7c93a9;
-    --faint: #4c6178;
-
-    --border: rgba(234, 241, 247, 0.1);
-    --border-strong: rgba(234, 241, 247, 0.16);
-    --overlay: rgba(234, 241, 247, 0.06);
-
-    --primary: #6fa8dc;
-    --primary-strong: #8fbee8;
-    --primary-ink: #06192b;
-
-    --accent: #2dd4c0;
-    --accent-strong: #5ce5d4;
-    --accent-ink: #042420;
-
-    --gold: #fbbf3d;
-    --gold-strong: #ffd166;
-    --gold-ink: #3a2600;
-
-    --danger: #e8827c;
-    --danger-ink: #4a100c;
-    --success: #34d399;
-  }
-}
-
+/*
+ * No `prefers-color-scheme: dark` block on purpose: the platform defaults to
+ * light regardless of system preference. Dark only applies when the user
+ * explicitly toggles it (ThemeProvider/ThemeToggle persist that choice, and
+ * ThemeScript re-applies it before paint on later visits).
+ */
 :root[data-theme="dark"] {
   --bg: #08192b;
   --bg-alt: #05111d;
