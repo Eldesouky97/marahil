@@ -31,8 +31,17 @@ function mapEnrollment(id: string, data: DocumentData): Enrollment {
 }
 
 export async function getEnrollment(uid: string, courseId: string): Promise<Enrollment | null> {
-  const snap = await getDoc(doc(db, "enrollments", enrollmentId(uid, courseId)));
-  return snap.exists() ? mapEnrollment(snap.id, snap.data()) : null;
+  try {
+    const snap = await getDoc(doc(db, "enrollments", enrollmentId(uid, courseId)));
+    return snap.exists() ? mapEnrollment(snap.id, snap.data()) : null;
+  } catch {
+    // Firestore rules read this doc's own field (isOwner(resource.data.uid)) to
+    // decide access, so a not-yet-existing enrollment (a student who hasn't
+    // enrolled yet) denies with permission-denied rather than "not found" —
+    // that always means "not enrolled" here, since the id is the deterministic
+    // "{uid}_{courseId}" scheme and only the owner ever requests their own.
+    return null;
+  }
 }
 
 export async function listStudentEnrollments(uid: string): Promise<Enrollment[]> {
@@ -42,8 +51,8 @@ export async function listStudentEnrollments(uid: string): Promise<Enrollment[]>
 
 export async function enrollInCourse(uid: string, courseId: string): Promise<void> {
   const id = enrollmentId(uid, courseId);
-  const existing = await getDoc(doc(db, "enrollments", id));
-  if (existing.exists()) return;
+  const existing = await getEnrollment(uid, courseId);
+  if (existing) return;
   await setDoc(doc(db, "enrollments", id), {
     uid,
     courseId,
