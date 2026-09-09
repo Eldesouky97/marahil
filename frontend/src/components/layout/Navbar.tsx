@@ -15,7 +15,7 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const { profile, loading } = useAuth();
   const t = useTranslations("nav");
-  const dashboardHref = profile?.role === "teacher" ? "/dashboard/teacher" : "/dashboard/student";
+  const dashboardHref = profile ? `/dashboard/${profile.role}` : "/dashboard/student";
 
   const navLinks = [
     { href: "/#stages", label: t("stages") },

@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useRouter, Link } from "@/i18n/navigation";
 import { registerUser } from "@/lib/firebase/auth";
 import { RoleSwitch } from "./RoleSwitch";
+import { GoogleSignInButton } from "./GoogleSignInButton";
 import { Button } from "@/components/ui/Button";
 import { FormField, inputClasses } from "@/components/ui/FormField";
 import type { UserRole } from "@/types/user";
@@ -29,7 +30,7 @@ export function RegisterForm() {
     setLoading(true);
     try {
       await registerUser(name, email, password, role);
-      router.push(role === "teacher" ? "/dashboard/teacher" : "/dashboard/student");
+      router.push(`/dashboard/${role}`);
     } catch {
       setError(t("error"));
     } finally {
@@ -71,6 +72,14 @@ export function RegisterForm() {
       <Button type="submit" disabled={loading} className="w-full">
         {loading ? t("submitting") : t("submit")}
       </Button>
+
+      <div className="flex items-center gap-3 text-xs text-faint">
+        <span className="h-px flex-1 bg-border" />
+        {t("orDivider")}
+        <span className="h-px flex-1 bg-border" />
+      </div>
+
+      <GoogleSignInButton />
 
       <p className="text-center text-sm text-dim">
         {t("haveAccount")}{" "}

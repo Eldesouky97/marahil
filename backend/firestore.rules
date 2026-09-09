@@ -19,20 +19,30 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/users/$(uid)).data;
     }
 
+    // isAdmin() can never be self-granted client-side: 'admin' is never in the
+    // role allowlist on `users` create below, and the only write path that can
+    // set role: 'admin' on a user doc is another admin (or a human editing
+    // Firestore directly in the Firebase Console, which bypasses rules). See
+    // CLAUDE.md for how the first admin gets bootstrapped.
+    function isAdmin() {
+      return isSignedIn() && userData(request.auth.uid).role == 'admin';
+    }
+
     // --- users ---------------------------------------------------------
     match /users/{uid} {
-      allow read: if isOwner(uid);
+      allow read: if isOwner(uid) || isAdmin();
       allow create: if isOwner(uid)
         && request.resource.data.role in ['teacher', 'student'];
-      allow update: if isOwner(uid)
-        && request.resource.data.role == resource.data.role;
+      allow update: if (isOwner(uid) && request.resource.data.role == resource.data.role)
+        || isAdmin();
       allow delete: if false;
     }
 
     // --- courses ---------------------------------------------------------
     match /courses/{courseId} {
       allow read: if resource.data.published == true
-        || (isSignedIn() && request.auth.uid == resource.data.teacherId);
+        || (isSignedIn() && request.auth.uid == resource.data.teacherId)
+        || isAdmin();
       allow create: if isSignedIn()
         && request.resource.data.teacherId == request.auth.uid
         && request.resource.data.published == false;
@@ -60,7 +70,7 @@ service cloud.firestore {
     // that doesn't require iterating the lessons subcollection, which rules
     // can't do without a paid plan's Cloud Functions.
     match /enrollments/{enrollmentId} {
-      allow read: if isOwner(resource.data.uid);
+      allow read: if isOwner(resource.data.uid) || isAdmin();
       allow create: if isOwner(request.resource.data.uid)
         && enrollmentId == request.auth.uid + '_' + request.resource.data.courseId
         && request.resource.data.certificateIssued == false

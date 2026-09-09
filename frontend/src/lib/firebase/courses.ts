@@ -46,6 +46,12 @@ export async function listTeacherCourses(teacherId: string): Promise<Course[]> {
   return snap.docs.map((d) => mapCourse(d.id, d.data()));
 }
 
+/** Admin-only (see backend/firestore.rules isAdmin()) — every course, any teacher, any publish state. */
+export async function listAllCourses(): Promise<Course[]> {
+  const snap = await getDocs(coursesRef);
+  return snap.docs.map((d) => mapCourse(d.id, d.data()));
+}
+
 export async function getCourse(courseId: string): Promise<Course | null> {
   const snap = await getDoc(doc(db, "courses", courseId));
   return snap.exists() ? mapCourse(snap.id, snap.data()) : null;

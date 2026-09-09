@@ -88,10 +88,14 @@
     "copyright": "© {year} منصة مراحل التعليمية"
   },
   "auth": {
+    "googleButton": "المتابعة عبر جوجل",
+    "googleError": "تعذّر تسجيل الدخول عبر جوجل. حاول مرة أخرى.",
     "login": {
       "title": "تسجيل الدخول",
       "email": "البريد الإلكتروني",
       "password": "كلمة المرور",
+      "forgotPassword": "نسيت كلمة المرور؟",
+      "orDivider": "أو",
       "submit": "تسجيل الدخول",
       "submitting": "جارٍ الدخول...",
       "noAccount": "ليس لديك حساب؟",
@@ -105,11 +109,28 @@
       "name": "الاسم الكامل",
       "email": "البريد الإلكتروني",
       "password": "كلمة المرور",
+      "orDivider": "أو",
       "submit": "إنشاء حساب",
       "submitting": "جارٍ الإنشاء...",
       "haveAccount": "لديك حساب بالفعل؟",
       "login": "سجّل الدخول",
       "error": "تعذّر إنشاء الحساب. تأكد من صحة البيانات أو أن البريد غير مستخدم من قبل."
+    },
+    "forgotPassword": {
+      "title": "نسيت كلمة المرور",
+      "email": "البريد الإلكتروني",
+      "submit": "إرسال رابط إعادة التعيين",
+      "submitting": "جارٍ الإرسال...",
+      "success": "إذا كان البريد الإلكتروني مسجلاً لدينا، ستصلك رسالة تحتوي على رابط لإعادة تعيين كلمة المرور.",
+      "backToLogin": "العودة لتسجيل الدخول",
+      "error": "حدث خطأ ما. حاول مرة أخرى لاحقًا."
+    },
+    "completeProfile": {
+      "title": "استكمال بيانات الحساب",
+      "name": "الاسم الكامل",
+      "submit": "متابعة",
+      "submitting": "جارٍ الحفظ...",
+      "error": "تعذّر حفظ البيانات. حاول مرة أخرى."
     }
   },
   "courses": {
@@ -180,6 +201,34 @@
     "myCertificates": "شهاداتي",
     "noCertificates": "أكمل دورة لتحصل على أول شهادة.",
     "progressComplete": "{progress}% مكتمل"
+  },
+  "dashboardAdmin": {
+    "overview": {
+      "statsUsers": "إجمالي المستخدمين",
+      "statsTeachers": "المعلّمون",
+      "statsStudents": "الطلاب",
+      "statsCourses": "الدورات",
+      "statsPublished": "المنشورة",
+      "statsCertificates": "الشهادات الصادرة",
+      "manageUsers": "إدارة المستخدمين",
+      "manageCourses": "إدارة الدورات"
+    },
+    "users": {
+      "title": "إدارة المستخدمين",
+      "searchPlaceholder": "ابحث بالاسم أو البريد الإلكتروني",
+      "noUsers": "لا يوجد مستخدمون.",
+      "role_student": "طالب",
+      "role_teacher": "معلّم",
+      "role_admin": "مدير"
+    },
+    "courses": {
+      "title": "إدارة الدورات",
+      "teacher": "المعلّم",
+      "lessonsCount": "{count} درس",
+      "published": "منشورة",
+      "draft": "مسودة",
+      "noCourses": "لا توجد دورات بعد."
+    }
   },
   "lesson": {
     "backToCourse": "العودة إلى الدورة",

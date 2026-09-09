@@ -66,3 +66,9 @@ export async function listStudentCertificates(uid: string): Promise<Certificate[
   const snap = await getDocs(query(certificatesRef, where("uid", "==", uid)));
   return snap.docs.map((d) => mapCertificate(d.id, d.data()));
 }
+
+/** Admin-only overview stat — certificates are publicly readable, so no rules change needed. */
+export async function listAllCertificates(): Promise<Certificate[]> {
+  const snap = await getDocs(certificatesRef);
+  return snap.docs.map((d) => mapCertificate(d.id, d.data()));
+}

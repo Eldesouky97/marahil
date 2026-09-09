@@ -88,10 +88,14 @@
     "copyright": "© {year} Marahil Learning Platform"
   },
   "auth": {
+    "googleButton": "Continue with Google",
+    "googleError": "Couldn't sign in with Google. Please try again.",
     "login": {
       "title": "Log In",
       "email": "Email",
       "password": "Password",
+      "forgotPassword": "Forgot password?",
+      "orDivider": "or",
       "submit": "Log In",
       "submitting": "Logging in...",
       "noAccount": "Don't have an account?",
@@ -105,11 +109,28 @@
       "name": "Full Name",
       "email": "Email",
       "password": "Password",
+      "orDivider": "or",
       "submit": "Create Account",
       "submitting": "Creating...",
       "haveAccount": "Already have an account?",
       "login": "Log in",
       "error": "Couldn't create the account. Check your details or the email may already be in use."
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "email": "Email",
+      "submit": "Send Reset Link",
+      "submitting": "Sending...",
+      "success": "If that email is registered with us, a password reset link has been sent to it.",
+      "backToLogin": "Back to log in",
+      "error": "Something went wrong. Please try again later."
+    },
+    "completeProfile": {
+      "title": "Complete Your Profile",
+      "name": "Full Name",
+      "submit": "Continue",
+      "submitting": "Saving...",
+      "error": "Couldn't save your details. Please try again."
     }
   },
   "courses": {
@@ -180,6 +201,34 @@
     "myCertificates": "My Certificates",
     "noCertificates": "Complete a course to earn your first certificate.",
     "progressComplete": "{progress}% complete"
+  },
+  "dashboardAdmin": {
+    "overview": {
+      "statsUsers": "Total Users",
+      "statsTeachers": "Teachers",
+      "statsStudents": "Students",
+      "statsCourses": "Courses",
+      "statsPublished": "Published",
+      "statsCertificates": "Certificates Issued",
+      "manageUsers": "Manage Users",
+      "manageCourses": "Manage Courses"
+    },
+    "users": {
+      "title": "Manage Users",
+      "searchPlaceholder": "Search by name or email",
+      "noUsers": "No users found.",
+      "role_student": "Student",
+      "role_teacher": "Teacher",
+      "role_admin": "Admin"
+    },
+    "courses": {
+      "title": "Manage Courses",
+      "teacher": "Teacher",
+      "lessonsCount": "{count} lessons",
+      "published": "Published",
+      "draft": "Draft",
+      "noCourses": "No courses yet."
+    }
   },
   "lesson": {
     "backToCourse": "Back to Course",

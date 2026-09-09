@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useRouter, Link } from "@/i18n/navigation";
 import { loginUser } from "@/lib/firebase/auth";
 import { getUserProfile } from "@/lib/firebase/users";
+import { GoogleSignInButton } from "./GoogleSignInButton";
 import { Button } from "@/components/ui/Button";
 import { FormField, inputClasses } from "@/components/ui/FormField";
 
@@ -23,7 +24,7 @@ export function LoginForm() {
     try {
       const user = await loginUser(email, password);
       const profile = await getUserProfile(user.uid);
-      router.push(profile?.role === "teacher" ? "/dashboard/teacher" : "/dashboard/student");
+      router.push(profile ? `/dashboard/${profile.role}` : "/auth/complete-profile");
     } catch {
       setError(t("error"));
     } finally {
@@ -54,11 +55,25 @@ export function LoginForm() {
         />
       </FormField>
 
+      <div className="text-end">
+        <Link href="/auth/forgot-password" className="text-sm text-dim hover:text-primary-strong">
+          {t("forgotPassword")}
+        </Link>
+      </div>
+
       {error && <p className="text-sm text-danger-ink">{error}</p>}
 
       <Button type="submit" disabled={loading} className="w-full">
         {loading ? t("submitting") : t("submit")}
       </Button>
+
+      <div className="flex items-center gap-3 text-xs text-faint">
+        <span className="h-px flex-1 bg-border" />
+        {t("orDivider")}
+        <span className="h-px flex-1 bg-border" />
+      </div>
+
+      <GoogleSignInButton />
 
       <p className="text-center text-sm text-dim">
         {t("noAccount")}{" "}
