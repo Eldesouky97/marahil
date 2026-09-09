@@ -13,3 +13,6 @@ ui-debug.log
 
 # Local Claude Code session artifacts
 .claude/
+
+.vercel
+.env*
