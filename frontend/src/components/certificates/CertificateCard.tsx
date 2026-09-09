@@ -23,7 +23,7 @@ export function CertificateCard({ certificate }: { certificate: Certificate }) {
       <div className="pointer-events-none absolute inset-1.5 rounded-xl border-2 border-primary/40" />
 
       <div className="relative mb-8 flex items-start justify-between">
-        <Logo />
+        <Logo size={56} />
         <ShieldCheck size={22} className="text-[#8A6E2F]" />
       </div>
 

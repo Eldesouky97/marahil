@@ -6,9 +6,8 @@ export async function Footer() {
   return (
     <footer className="bg-bg-alt py-12">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-5 sm:flex-row sm:px-8">
-        <div className="flex items-center gap-2">
-          <Logo />
-          <span className="font-display text-lg text-heading">مراحل</span>
+        <div className="flex items-center">
+          <Logo size={56} />
         </div>
         <p className="text-xs text-faint">{t("copyright", { year: new Date().getFullYear() })}</p>
       </div>

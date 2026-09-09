@@ -27,9 +27,8 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-bg/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
-        <Link href="/" className="flex items-center gap-2">
-          <Logo />
-          <span className="font-display text-xl text-heading">مراحل</span>
+        <Link href="/" className="flex items-center">
+          <Logo size={48} />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
