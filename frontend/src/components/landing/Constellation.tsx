@@ -35,15 +35,15 @@ export function Constellation() {
     let dpr = 1;
     let nodes: Node[] = [];
     let rafId: number | null = null;
-    let lineRgb: [number, number, number] = [147, 160, 190];
-    let dimRgb: [number, number, number] = [226, 230, 245];
-    let accentRgb: [number, number, number] = [212, 169, 79];
+    let lineRgb: [number, number, number] = [173, 187, 200];
+    let dimRgb: [number, number, number] = [94, 114, 134];
+    let accentRgb: [number, number, number] = [245, 158, 11];
 
     function readThemeColors() {
       const styles = getComputedStyle(root);
-      lineRgb = hexToRgb(styles.getPropertyValue("--faint") || "#7b8598");
-      dimRgb = hexToRgb(styles.getPropertyValue("--muted") || "#e2e6f5");
-      accentRgb = hexToRgb(styles.getPropertyValue("--primary") || "#d4a94f");
+      lineRgb = hexToRgb(styles.getPropertyValue("--faint") || "#adbbc8");
+      dimRgb = hexToRgb(styles.getPropertyValue("--muted") || "#5e7286");
+      accentRgb = hexToRgb(styles.getPropertyValue("--gold") || "#f59e0b");
     }
 
     function initNodes() {

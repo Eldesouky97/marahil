@@ -1,39 +1,44 @@
 @import "tailwindcss";
 
 /*
- * Calm, focus-oriented palette: cool neutrals + a quiet indigo/teal duotone
- * instead of the earlier high-energy gold. Light values live on bare :root;
- * dark overrides twice (media query for system preference, [data-theme] for
+ * Marahil brand palette: deep navy blue (trust/knowledge) + teal
+ * (growth/progress) + gold (achievement — the star in the mark) on
+ * light-blue/soft-gray neutrals. Light values live on bare :root; dark
+ * overrides twice (media query for system preference, [data-theme] for
  * the manual toggle) so the toggle always wins. See ThemeToggle/ThemeProvider.
  */
 :root {
-  --bg: #f6f7fb;
-  --bg-alt: #eef1f7;
+  --bg: #f5f7fa;
+  --bg-alt: #eaf1f7;
   --surface: #ffffff;
-  --surface-2: #f1f4f9;
-  --surface-3: #e4e9f7;
+  --surface-2: #eaf1f7;
+  --surface-3: #dce9f5;
 
-  --heading: #1b2130;
-  --body: #333b4d;
-  --muted: #5a6478;
-  --dim: #7b8598;
-  --faint: #9aa3b4;
+  --heading: #0b3b6f;
+  --body: #33475c;
+  --muted: #5e7286;
+  --dim: #8598aa;
+  --faint: #adbbc8;
 
-  --border: rgba(20, 26, 40, 0.08);
-  --border-strong: rgba(20, 26, 40, 0.14);
-  --overlay: rgba(20, 26, 40, 0.06);
+  --border: rgba(11, 59, 111, 0.1);
+  --border-strong: rgba(11, 59, 111, 0.18);
+  --overlay: rgba(11, 59, 111, 0.05);
 
-  --primary: #4a63d6;
-  --primary-strong: #3a50b8;
+  --primary: #0b3b6f;
+  --primary-strong: #082c54;
   --primary-ink: #ffffff;
 
-  --accent: #2e9c8c;
-  --accent-strong: #24806f;
-  --accent-ink: #0d2b26;
+  --accent: #14b8a6;
+  --accent-strong: #0e9488;
+  --accent-ink: #06332c;
+
+  --gold: #f59e0b;
+  --gold-strong: #d9840a;
+  --gold-ink: #3a2600;
 
   --danger: #d65c54;
   --danger-ink: #4a100c;
-  --success: #2e9c6d;
+  --success: #17a768;
 
   --background: var(--bg);
   --foreground: var(--body);
@@ -41,64 +46,77 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0f1420;
-    --bg-alt: #0a0d14;
-    --surface: #161c2a;
-    --surface-2: #101623;
-    --surface-3: #1b2540;
+    --bg: #08192b;
+    --bg-alt: #05111d;
+    --surface: #0f2439;
+    --surface-2: #0b1d2f;
+    --surface-3: #163350;
 
-    --heading: #f1f3f9;
-    --body: #dde1ea;
-    --muted: #aeb6c4;
-    --dim: #838da0;
-    --faint: #565f72;
+    --heading: #eaf1f7;
+    --body: #d6e2ec;
+    --muted: #a9becf;
+    --dim: #7c93a9;
+    --faint: #4c6178;
 
-    --border: rgba(255, 255, 255, 0.08);
-    --border-strong: rgba(255, 255, 255, 0.14);
-    --overlay: rgba(255, 255, 255, 0.07);
+    --border: rgba(234, 241, 247, 0.1);
+    --border-strong: rgba(234, 241, 247, 0.16);
+    --overlay: rgba(234, 241, 247, 0.06);
 
-    --primary: #6e8cf5;
-    --primary-strong: #8aa3f8;
-    --primary-ink: #0e1330;
+    --primary: #6fa8dc;
+    --primary-strong: #8fbee8;
+    --primary-ink: #06192b;
 
-    --accent: #45bbaa;
-    --accent-strong: #5fd0bf;
-    --accent-ink: #d8fdf6;
+    --accent: #2dd4c0;
+    --accent-strong: #5ce5d4;
+    --accent-ink: #042420;
+
+    --gold: #fbbf3d;
+    --gold-strong: #ffd166;
+    --gold-ink: #3a2600;
 
     --danger: #e8827c;
     --danger-ink: #4a100c;
-    --success: #6bdbae;
+    --success: #34d399;
   }
 }
 
 :root[data-theme="dark"] {
-  --bg: #0f1420;
-  --bg-alt: #0a0d14;
-  --surface: #161c2a;
-  --surface-2: #101623;
-  --surface-3: #1b2540;
+  --bg: #08192b;
+  --bg-alt: #05111d;
+  --surface: #0f2439;
+  --surface-2: #0b1d2f;
+  --surface-3: #163350;
 
-  --heading: #f1f3f9;
-  --body: #dde1ea;
-  --muted: #aeb6c4;
-  --dim: #838da0;
-  --faint: #565f72;
+  --heading: #eaf1f7;
+  --body: #d6e2ec;
+  --muted: #a9becf;
+  --dim: #7c93a9;
+  --faint: #4c6178;
 
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.14);
-  --overlay: rgba(255, 255, 255, 0.07);
+  --border: rgba(234, 241, 247, 0.1);
+  --border-strong: rgba(234, 241, 247, 0.16);
+  --overlay: rgba(234, 241, 247, 0.06);
 
-  --primary: #6e8cf5;
-  --primary-strong: #8aa3f8;
-  --primary-ink: #0e1330;
+  --primary: #6fa8dc;
+  --primary-strong: #8fbee8;
+  --primary-ink: #06192b;
 
-  --accent: #45bbaa;
-  --accent-strong: #5fd0bf;
-  --accent-ink: #d8fdf6;
+  --accent: #2dd4c0;
+  --accent-strong: #5ce5d4;
+  --accent-ink: #042420;
+
+  --gold: #fbbf3d;
+  --gold-strong: #ffd166;
+  --gold-ink: #3a2600;
 
   --danger: #e8827c;
   --danger-ink: #4a100c;
-  --success: #6bdbae;
+  --success: #34d399;
+}
+
+html[lang="en"] {
+  --font-display: var(--font-poppins), var(--font-cairo), sans-serif;
+  --font-body: var(--font-poppins), var(--font-cairo), sans-serif;
 }
 
 @theme inline {
@@ -129,12 +147,16 @@
   --color-accent-strong: var(--accent-strong);
   --color-accent-ink: var(--accent-ink);
 
+  --color-gold: var(--gold);
+  --color-gold-strong: var(--gold-strong);
+  --color-gold-ink: var(--gold-ink);
+
   --color-danger: var(--danger);
   --color-danger-ink: var(--danger-ink);
   --color-success: var(--success);
 
-  --font-display: var(--font-amiri), "Traditional Arabic", serif;
-  --font-body: var(--font-tajawal), "Segoe UI", sans-serif;
+  --font-display: var(--font-cairo), "Segoe UI", sans-serif;
+  --font-body: var(--font-cairo), "Segoe UI", sans-serif;
 }
 
 body {

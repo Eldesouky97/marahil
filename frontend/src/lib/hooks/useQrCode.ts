@@ -8,7 +8,7 @@ export function useQrCode(text: string) {
 
   useEffect(() => {
     let cancelled = false;
-    QRCode.toDataURL(text, { margin: 1, width: 160, color: { dark: "#2B2013", light: "#00000000" } }).then(
+    QRCode.toDataURL(text, { margin: 1, width: 160, color: { dark: "#0B3B6F", light: "#00000000" } }).then(
       (url) => {
         if (!cancelled) setDataUrl(url);
       }

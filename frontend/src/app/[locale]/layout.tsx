@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Amiri, Tajawal } from "next/font/google";
+import { Cairo, Poppins } from "next/font/google";
 import "../globals.css";
 import { routing } from "@/i18n/routing";
 import { AuthProvider } from "@/context/AuthProvider";
@@ -13,16 +13,16 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { AnalyticsInit } from "@/components/analytics/AnalyticsInit";
 
-const amiri = Amiri({
-  weight: ["400", "700"],
+const cairo = Cairo({
+  weight: ["400", "500", "600", "700", "800"],
   subsets: ["arabic", "latin"],
-  variable: "--font-amiri",
+  variable: "--font-cairo",
 });
 
-const tajawal = Tajawal({
-  weight: ["300", "400", "500", "700", "800"],
-  subsets: ["arabic", "latin"],
-  variable: "--font-tajawal",
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-poppins",
 });
 
 export function generateStaticParams() {
@@ -56,7 +56,7 @@ export default async function RootLayout({
     <html
       lang={locale}
       dir={dir}
-      className={`${amiri.variable} ${tajawal.variable} h-full antialiased`}
+      className={`${cairo.variable} ${poppins.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>
