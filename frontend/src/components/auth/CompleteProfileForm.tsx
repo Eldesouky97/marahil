@@ -54,7 +54,13 @@ function CompleteProfileFields({ firebaseUser }: { firebaseUser: User }) {
     setError(null);
     setSubmitting(true);
     try {
-      await createUserProfile(firebaseUser.uid, { name, email: firebaseUser.email ?? "", role, ...details });
+      await createUserProfile(firebaseUser.uid, {
+        name,
+        email: firebaseUser.email ?? "",
+        role,
+        photoURL: firebaseUser.photoURL ?? undefined,
+        ...details,
+      });
       router.push(role === "teacher" ? "/auth/pending-approval" : `/dashboard/${role}`);
     } catch {
       setError(t("error"));

@@ -1,6 +1,33 @@
-import { collection, deleteDoc, doc, DocumentData, getDoc, getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  deleteField,
+  doc,
+  DocumentData,
+  getDoc,
+  getDocs,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "./client";
 import type { AppUser, PersonalDetails, UserRole, UserStatus } from "@/types/user";
+
+const OPTIONAL_DETAIL_KEYS: (keyof PersonalDetails)[] = [
+  "phone",
+  "age",
+  "governorate",
+  "stage",
+  "school",
+  "subject",
+  "workplace",
+  "jobTitle",
+];
+
+/** Firestore's `setDoc`/`updateDoc` throw on an explicit `undefined` field — drop those instead of sending them. */
+function withoutUndefined<T extends object>(obj: T): Partial<T> {
+  return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined)) as Partial<T>;
+}
 
 function mapUser(uid: string, data: DocumentData): AppUser {
   return {
@@ -30,10 +57,10 @@ export async function getUserProfile(uid: string): Promise<AppUser | null> {
 
 export async function createUserProfile(
   uid: string,
-  input: { name: string; email: string; role: UserRole } & PersonalDetails
+  input: { name: string; email: string; role: UserRole; photoURL?: string } & PersonalDetails
 ): Promise<void> {
   const status: UserStatus = input.role === "teacher" ? "pending" : "approved";
-  await setDoc(doc(db, "users", uid), { ...input, status, createdAt: serverTimestamp() });
+  await setDoc(doc(db, "users", uid), { ...withoutUndefined(input), status, createdAt: serverTimestamp() });
 }
 
 /** Admin-only (see backend/firestore.rules isAdmin()) — lists every user for the admin dashboard. */
@@ -65,6 +92,22 @@ export async function setUserDisabled(uid: string, disabled: boolean): Promise<v
 
 export async function updateUserPhoto(uid: string, photoURL: string): Promise<void> {
   await updateDoc(doc(db, "users", uid), { photoURL });
+}
+
+/**
+ * Self-service (ProfileEditForm) — updates the caller's own name and
+ * personal details. Never touches role/status/disabled, so it's always
+ * allowed by the owner branch of the `users` update rule regardless of who's
+ * calling it. An optional detail field left empty removes it from the doc
+ * (via `deleteField()`) instead of silently keeping the old value.
+ */
+export async function updateUserProfileFields(uid: string, fields: { name: string } & PersonalDetails): Promise<void> {
+  const payload: Record<string, unknown> = { name: fields.name };
+  for (const key of OPTIONAL_DETAIL_KEYS) {
+    const value = fields[key];
+    payload[key] = value === undefined || value === "" ? deleteField() : value;
+  }
+  await updateDoc(doc(db, "users", uid), payload);
 }
 
 /**

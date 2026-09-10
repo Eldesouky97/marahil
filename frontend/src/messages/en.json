@@ -431,6 +431,15 @@
     "avatar": "Profile Photo",
     "name": "Name",
     "email": "Email",
-    "role": "Account Type"
+    "role": "Account Type",
+    "editDetails": "Edit Details",
+    "save": "Save Changes",
+    "saving": "Saving...",
+    "saved": "Saved successfully",
+    "changePassword": "Password",
+    "changePasswordDesc": "We'll email you a link to change your password.",
+    "changePasswordCta": "Send Password Reset Link",
+    "changePasswordSending": "Sending...",
+    "changePasswordSent": "The link has been sent to your email."
   }
 }
