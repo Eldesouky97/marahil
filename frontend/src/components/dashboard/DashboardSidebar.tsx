@@ -5,6 +5,8 @@ import { Home, LogOut, User, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Logo } from "@/components/layout/Logo";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { LanguageSwitcher } from "@/components/theme/LanguageSwitcher";
 import { logoutUser } from "@/lib/firebase/auth";
 import { cn } from "@/lib/utils/cn";
 
@@ -27,11 +29,14 @@ function navLinkClasses(active: boolean) {
  * The one sidebar every signed-in role gets under /dashboard — same shell,
  * different `navItems` per role (see each role's layout.tsx). Fixed rail on
  * desktop, off-canvas drawer below `md` (logical `start-0`/translate classes
- * so it flips side automatically between the `ar` and `en` locales). "Site
- * home" (top, above the role's own nav items) and "profile" + "logout"
- * (bottom footer) are the same for every role, so they're sourced from the
- * `nav` namespace here directly instead of being threaded through as props
- * or included in each role's `navItems`.
+ * so it flips side automatically between the `ar` and `en` locales). Theme +
+ * language (top, right under the logo), "site home" (top of the nav list),
+ * and "profile" + "logout" (bottom footer) are the same for every role, so
+ * they're sourced here directly instead of being threaded through as props
+ * or included in each role's `navItems`. Theme/language live only here now
+ * — not duplicated on DashboardTopbar too — using the `sidebar` variant of
+ * `ThemeToggle`/`LanguageSwitcher`, since their default styling assumes a
+ * light surface and reads poorly on this dark gradient background.
  */
 export function DashboardSidebar({
   navItems,
@@ -69,6 +74,11 @@ export function DashboardSidebar({
           <button onClick={onClose} className="text-white/70 hover:text-white md:hidden" aria-label="close">
             <X size={20} />
           </button>
+        </div>
+
+        <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3">
+          <LanguageSwitcher variant="sidebar" />
+          <ThemeToggle variant="sidebar" />
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-5">
