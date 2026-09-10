@@ -50,10 +50,12 @@ service cloud.firestore {
     // --- users ---------------------------------------------------------
     match /users/{uid} {
       allow read: if isOwner(uid) || isAdmin();
-      // Self-registration keeps the pending-teacher workflow; an admin
-      // creating a user directly (AdminAddUserForm) can hand out any role,
-      // including 'admin', and skips straight to 'approved' — the admin
-      // already vetted the account by creating it themselves.
+      // An admin creating a user directly (AdminAddUserForm) can hand out
+      // any role, including 'admin' — but a teacher account still needs the
+      // same pending -> approved review whether it was self-registered or
+      // admin-created (createUserByAdmin sets status accordingly), so this
+      // branch doesn't constrain `status` the way the self-registration one
+      // does; it's just not the thing being guarded against here.
       allow create: if (isOwner(uid)
           && request.resource.data.role in ['teacher', 'student']
           && request.resource.data.status == (request.resource.data.role == 'teacher' ? 'pending' : 'approved'))

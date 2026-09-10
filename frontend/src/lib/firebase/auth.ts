@@ -77,7 +77,11 @@ export async function createUserByAdmin(input: {
     name: input.name,
     email: input.email,
     role: input.role,
-    status: "approved",
+    // Same rule as self-registration: a teacher account still needs an
+    // admin's explicit approval before it counts as active, even when an
+    // admin was the one who created it — creating it isn't the same as
+    // approving it.
+    status: input.role === "teacher" ? "pending" : "approved",
     createdAt: serverTimestamp(),
   });
   return uid;

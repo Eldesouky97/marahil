@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { Clock, GraduationCap, UserCheck, UserPlus, UserX, Users } from "lucide-react";
+import { Search, UserPlus, Users as UsersIcon } from "lucide-react";
 import { useAuth } from "@/context/AuthProvider";
 import { useAdminUsers } from "@/lib/hooks/useAdminUsers";
 import { setUserDisabled } from "@/lib/firebase/users";
@@ -13,17 +13,18 @@ import { PROTECTED_ADMIN_EMAIL } from "@/lib/constants";
 import { AdminUserRow } from "./AdminUserRow";
 import { AdminAddUserForm } from "./AdminAddUserForm";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
-import { StatCard } from "@/components/dashboard/StatCard";
 import { Spinner } from "@/components/ui/Spinner";
 import { Button } from "@/components/ui/Button";
-import { inputClasses } from "@/components/ui/FormField";
+import { Badge } from "@/components/ui/Badge";
 import type { AppUser, UserRole } from "@/types/user";
 
 type RoleFilter = "all" | UserRole;
 type StatusFilter = "all" | "pending" | "approved" | "disabled";
 type SortKey = "newest" | "oldest" | "name";
 
-const selectClasses = "rounded-lg border border-border bg-surface px-3 py-1.5 text-xs text-body";
+const selectClasses =
+  "w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-body outline-none focus:border-accent/50";
+const filterLabelClasses = "mb-1.5 block text-xs font-medium text-dim";
 
 export function AdminUsersView() {
   const { profile } = useAuth();
@@ -39,17 +40,6 @@ export function AdminUsersView() {
   const [listVersion, setListVersion] = useState(0);
   const [bulkSaving, setBulkSaving] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
-
-  const stats = useMemo(
-    () => ({
-      total: users.length,
-      teachers: users.filter((u) => u.role === "teacher").length,
-      students: users.filter((u) => u.role === "student").length,
-      pending: users.filter((u) => u.role === "teacher" && !!u.status && u.status !== "approved" && !u.disabled).length,
-      disabled: users.filter((u) => u.disabled === true).length,
-    }),
-    [users]
-  );
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -174,70 +164,88 @@ export function AdminUsersView() {
         }
       />
 
-      {!loading && (
-        <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          <StatCard icon={Users} label={t("statsTotal")} value={stats.total} tone="primary" />
-          <StatCard icon={GraduationCap} label={t("role_teacher")} value={stats.teachers} tone="accent" />
-          <StatCard icon={UserCheck} label={t("role_student")} value={stats.students} tone="accent" />
-          <StatCard icon={Clock} label={t("statusPending")} value={stats.pending} tone="gold" />
-          <StatCard icon={UserX} label={t("statusDisabled")} value={stats.disabled} tone="primary" />
-        </div>
-      )}
-
       {showAddForm && <AdminAddUserForm onCreated={handleUserAdded} onCancel={() => setShowAddForm(false)} />}
 
-      <div className="mb-6 flex flex-wrap items-center gap-3 rounded-xl border border-border bg-surface p-4">
-        <input
-          type="search"
-          placeholder={t("searchPlaceholder")}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className={`${inputClasses} max-w-sm`}
-        />
-        <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value as RoleFilter)} className={selectClasses}>
-          <option value="all">{t("filterAllRoles")}</option>
-          <option value="student">{t("role_student")}</option>
-          <option value="teacher">{t("role_teacher")}</option>
-          <option value="admin">{t("role_admin")}</option>
-        </select>
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-          className={selectClasses}
-        >
-          <option value="all">{t("filterAllStatuses")}</option>
-          <option value="pending">{t("statusPending")}</option>
-          <option value="approved">{t("statusApproved")}</option>
-          <option value="disabled">{t("statusDisabled")}</option>
-        </select>
-        <select value={sortKey} onChange={(e) => setSortKey(e.target.value as SortKey)} className={selectClasses}>
-          <option value="newest">{t("sortNewest")}</option>
-          <option value="oldest">{t("sortOldest")}</option>
-          <option value="name">{t("sortNameAsc")}</option>
-        </select>
-        <span className="text-xs text-dim">{t("resultsCount", { count: filtered.length })}</span>
+      <div className="mb-6 rounded-2xl border border-border bg-surface p-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <label className="block sm:col-span-2 lg:col-span-1">
+            <span className={filterLabelClasses}>{t("searchPlaceholder")}</span>
+            <div className="relative">
+              <Search size={15} className="absolute top-1/2 -translate-y-1/2 text-faint start-3.5" />
+              <input
+                type="search"
+                placeholder={t("searchPlaceholder")}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full rounded-lg border border-border bg-surface py-2.5 text-sm text-body placeholder:text-faint outline-none ps-9 pe-4 focus:border-accent/50"
+              />
+            </div>
+          </label>
+
+          <label className="block">
+            <span className={filterLabelClasses}>{t("colRole")}</span>
+            <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value as RoleFilter)} className={selectClasses}>
+              <option value="all">{t("filterAllRoles")}</option>
+              <option value="student">{t("role_student")}</option>
+              <option value="teacher">{t("role_teacher")}</option>
+              <option value="admin">{t("role_admin")}</option>
+            </select>
+          </label>
+
+          <label className="block">
+            <span className={filterLabelClasses}>{t("colStatus")}</span>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+              className={selectClasses}
+            >
+              <option value="all">{t("filterAllStatuses")}</option>
+              <option value="pending">{t("statusPending")}</option>
+              <option value="approved">{t("statusApproved")}</option>
+              <option value="disabled">{t("statusDisabled")}</option>
+            </select>
+          </label>
+
+          <label className="block">
+            <span className={filterLabelClasses}>{t("sortNewest")}</span>
+            <select value={sortKey} onChange={(e) => setSortKey(e.target.value as SortKey)} className={selectClasses}>
+              <option value="newest">{t("sortNewest")}</option>
+              <option value="oldest">{t("sortOldest")}</option>
+              <option value="name">{t("sortNameAsc")}</option>
+            </select>
+          </label>
+        </div>
+
+        <div className="mt-4 flex items-center gap-2 border-t border-border pt-4">
+          <UsersIcon size={14} className="text-faint" />
+          <span className="text-xs text-dim">{t("resultsCount", { count: filtered.length })}</span>
+        </div>
       </div>
 
       {selectableIds.length > 0 && (
-        <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-border bg-surface-2 px-4 py-3">
-          <label className="flex items-center gap-2 text-xs text-body">
+        <div className="mb-4 flex flex-wrap items-center gap-3 rounded-2xl border border-border bg-surface-2 px-5 py-3.5">
+          <label className="flex items-center gap-2 text-xs font-medium text-body">
             <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} className="h-4 w-4" />
             {t("selectAll")}
           </label>
           {selected.size > 0 && (
             <>
-              <span className="text-xs text-dim">{t("selectedCount", { count: selected.size })}</span>
-              <Button
-                variant="outline"
-                disabled={bulkSaving}
-                onClick={() => handleBulkDisable(true)}
-                className="border-danger/40 px-4 py-1.5 text-xs text-danger-ink hover:border-danger/60"
-              >
-                {t("bulkDisable")}
-              </Button>
-              <Button variant="outline" disabled={bulkSaving} onClick={() => handleBulkDisable(false)} className="px-4 py-1.5 text-xs">
-                {t("bulkEnable")}
-              </Button>
+              <Badge className="border-primary/30 bg-primary/10 text-primary-strong">
+                {t("selectedCount", { count: selected.size })}
+              </Badge>
+              <div className="ms-auto flex gap-2">
+                <Button
+                  variant="outline"
+                  disabled={bulkSaving}
+                  onClick={() => handleBulkDisable(true)}
+                  className="border-danger/40 px-4 py-1.5 text-xs text-danger-ink hover:border-danger/60"
+                >
+                  {t("bulkDisable")}
+                </Button>
+                <Button variant="outline" disabled={bulkSaving} onClick={() => handleBulkDisable(false)} className="px-4 py-1.5 text-xs">
+                  {t("bulkEnable")}
+                </Button>
+              </div>
             </>
           )}
         </div>
@@ -248,7 +256,10 @@ export function AdminUsersView() {
           <Spinner />
         </div>
       ) : filtered.length === 0 ? (
-        <p className="text-dim">{t("noUsers")}</p>
+        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border py-16 text-center">
+          <UsersIcon size={28} className="text-faint" />
+          <p className="text-dim">{t("noUsers")}</p>
+        </div>
       ) : (
         <div className="space-y-3">
           {filtered.map((u) => (

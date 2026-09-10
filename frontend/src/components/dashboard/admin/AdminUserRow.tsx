@@ -104,7 +104,7 @@ export function AdminUserRow({ user, isSelf, selected, selectable, onToggleSelec
   const details = DETAIL_FIELDS.filter((field) => user[field] != null && user[field] !== "");
 
   return (
-    <div className="rounded-xl border border-border bg-surface p-4">
+    <div className="rounded-2xl border border-border bg-surface p-4 transition-colors hover:border-primary/20">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex min-w-0 items-center gap-3">
           <input

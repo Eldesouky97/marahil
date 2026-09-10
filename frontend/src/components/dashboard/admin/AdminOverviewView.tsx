@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { Award, BookOpen, CheckCircle2, Clock, GraduationCap, UserCheck, Users } from "lucide-react";
+import { Award, BookOpen, CheckCircle2, Clock, GraduationCap, UserCheck, UserX, Users } from "lucide-react";
 import { useAuth } from "@/context/AuthProvider";
 import { useTheme } from "@/context/ThemeProvider";
 import { useAdminOverview } from "@/lib/hooks/useAdminOverview";
@@ -104,12 +104,15 @@ export function AdminOverviewView() {
           <Spinner />
         </div>
       ) : (
-        <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-7">
+        <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-8">
           <StatCard icon={Users} label={t("statsUsers")} value={overview.userCount} tone="primary" />
           <StatCard icon={GraduationCap} label={t("statsTeachers")} value={overview.teacherCount} tone="accent" />
           <StatCard icon={UserCheck} label={t("statsStudents")} value={overview.studentCount} tone="accent" />
           <Link href="/dashboard/admin/users">
             <StatCard icon={Clock} label={t("statsPendingTeachers")} value={overview.pendingTeacherCount} tone="gold" />
+          </Link>
+          <Link href="/dashboard/admin/users">
+            <StatCard icon={UserX} label={t("statsDisabled")} value={overview.disabledCount} tone="primary" />
           </Link>
           <StatCard icon={BookOpen} label={t("statsCourses")} value={overview.courseCount} tone="primary" />
           <StatCard icon={CheckCircle2} label={t("statsPublished")} value={overview.publishedCourseCount} tone="success" />

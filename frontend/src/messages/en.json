@@ -252,6 +252,7 @@
       "statsPublished": "Published",
       "statsCertificates": "Certificates Issued",
       "statsPendingTeachers": "Teachers Awaiting Approval",
+      "statsDisabled": "Disabled Accounts",
       "recentUsers": "Recent Signups",
       "recentActivity": "Recent Activity",
       "viewAll": "View All",
