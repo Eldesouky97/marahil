@@ -85,8 +85,20 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2 md:hidden">
-          <button className="text-heading" onClick={() => setOpen(!open)} aria-label={t("menu")}>
-            {open ? <X size={22} /> : <Menu size={22} />}
+          <button onClick={() => setOpen(!open)} aria-label={t("menu")} className="flex items-center">
+            {open ? (
+              <X size={22} className="text-heading" />
+            ) : profile ? (
+              profile.photoURL ? (
+                <Image src={profile.photoURL} alt="" width={32} height={32} className="h-8 w-8 rounded-full object-cover" />
+              ) : (
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <User size={16} />
+                </span>
+              )
+            ) : (
+              <Menu size={22} className="text-heading" />
+            )}
           </button>
         </div>
       </div>
