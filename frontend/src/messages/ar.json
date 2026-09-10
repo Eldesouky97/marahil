@@ -298,7 +298,20 @@
       "colStatus": "الحالة",
       "colDisabled": "معطّل",
       "yes": "نعم",
-      "no": "لا"
+      "no": "لا",
+      "statsTotal": "إجمالي المستخدمين",
+      "resultsCount": "{count} نتيجة",
+      "addUser": "إضافة حساب",
+      "addUserSubmit": "إنشاء الحساب",
+      "addUserSaving": "جارٍ الإنشاء...",
+      "addUserError": "تعذّر إنشاء الحساب. حاول مرة أخرى.",
+      "addUserErrorEmailExists": "البريد الإلكتروني مستخدم بالفعل.",
+      "addUserErrorWeakPassword": "كلمة المرور ضعيفة، يجب أن تكون 6 أحرف على الأقل.",
+      "addUserErrorInvalidEmail": "صيغة البريد الإلكتروني غير صحيحة.",
+      "cancel": "إلغاء",
+      "delete": "حذف الحساب",
+      "confirmDelete": "متأكد من الحذف؟",
+      "confirmDeleteYes": "تأكيد الحذف"
     },
     "courses": {
       "title": "إدارة الدورات",
@@ -355,7 +368,9 @@
       "action_enableUser": "تفعيل حساب مستخدم",
       "action_bulkDisableUsers": "تعطيل عدة حسابات دفعة واحدة",
       "action_bulkEnableUsers": "تفعيل عدة حسابات دفعة واحدة",
-      "action_passwordReset": "إعادة تعيين كلمة مرور مستخدم"
+      "action_passwordReset": "إعادة تعيين كلمة مرور مستخدم",
+      "action_createUser": "إنشاء حساب مستخدم",
+      "action_deleteUser": "حذف حساب مستخدم"
     }
   },
   "lesson": {

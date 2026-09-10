@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
+import { Clock, GraduationCap, UserCheck, UserPlus, UserX, Users } from "lucide-react";
 import { useAuth } from "@/context/AuthProvider";
 import { useAdminUsers } from "@/lib/hooks/useAdminUsers";
 import { setUserDisabled } from "@/lib/firebase/users";
@@ -10,7 +11,9 @@ import { logAdminAction } from "@/lib/firebase/auditLog";
 import { downloadCsv } from "@/lib/utils/exportCsv";
 import { PROTECTED_ADMIN_EMAIL } from "@/lib/constants";
 import { AdminUserRow } from "./AdminUserRow";
+import { AdminAddUserForm } from "./AdminAddUserForm";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { StatCard } from "@/components/dashboard/StatCard";
 import { Spinner } from "@/components/ui/Spinner";
 import { Button } from "@/components/ui/Button";
 import { inputClasses } from "@/components/ui/FormField";
@@ -35,6 +38,18 @@ export function AdminUsersView() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [listVersion, setListVersion] = useState(0);
   const [bulkSaving, setBulkSaving] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+
+  const stats = useMemo(
+    () => ({
+      total: users.length,
+      teachers: users.filter((u) => u.role === "teacher").length,
+      students: users.filter((u) => u.role === "student").length,
+      pending: users.filter((u) => u.role === "teacher" && !!u.status && u.status !== "approved" && !u.disabled).length,
+      disabled: users.filter((u) => u.disabled === true).length,
+    }),
+    [users]
+  );
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -92,6 +107,22 @@ export function AdminUsersView() {
     setListVersion((v) => v + 1);
   }
 
+  async function handleUserDeleted(uid: string) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      next.delete(uid);
+      return next;
+    });
+    await refresh();
+    setListVersion((v) => v + 1);
+  }
+
+  async function handleUserAdded() {
+    setShowAddForm(false);
+    await refresh();
+    setListVersion((v) => v + 1);
+  }
+
   function handleExportCsv() {
     const headers = [
       t("colName"),
@@ -131,13 +162,31 @@ export function AdminUsersView() {
       <DashboardHeader
         title={t("title")}
         action={
-          <Button variant="outline" onClick={handleExportCsv} className="px-4 py-2 text-xs">
-            {t("exportCsv")}
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={handleExportCsv} className="px-4 py-2 text-xs">
+              {t("exportCsv")}
+            </Button>
+            <Button onClick={() => setShowAddForm((v) => !v)} className="gap-1.5 px-4 py-2 text-xs">
+              <UserPlus size={14} />
+              {t("addUser")}
+            </Button>
+          </div>
         }
       />
 
-      <div className="mb-6 flex flex-wrap items-center gap-3">
+      {!loading && (
+        <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          <StatCard icon={Users} label={t("statsTotal")} value={stats.total} tone="primary" />
+          <StatCard icon={GraduationCap} label={t("role_teacher")} value={stats.teachers} tone="accent" />
+          <StatCard icon={UserCheck} label={t("role_student")} value={stats.students} tone="accent" />
+          <StatCard icon={Clock} label={t("statusPending")} value={stats.pending} tone="gold" />
+          <StatCard icon={UserX} label={t("statusDisabled")} value={stats.disabled} tone="primary" />
+        </div>
+      )}
+
+      {showAddForm && <AdminAddUserForm onCreated={handleUserAdded} onCancel={() => setShowAddForm(false)} />}
+
+      <div className="mb-6 flex flex-wrap items-center gap-3 rounded-xl border border-border bg-surface p-4">
         <input
           type="search"
           placeholder={t("searchPlaceholder")}
@@ -166,6 +215,7 @@ export function AdminUsersView() {
           <option value="oldest">{t("sortOldest")}</option>
           <option value="name">{t("sortNameAsc")}</option>
         </select>
+        <span className="text-xs text-dim">{t("resultsCount", { count: filtered.length })}</span>
       </div>
 
       {selectableIds.length > 0 && (
@@ -209,6 +259,7 @@ export function AdminUsersView() {
               selected={selected.has(u.uid)}
               selectable={selectableIds.includes(u.uid)}
               onToggleSelect={toggleSelect}
+              onDeleted={handleUserDeleted}
             />
           ))}
         </div>

@@ -7,7 +7,8 @@ import {
   signOut as firebaseSignOut,
   updateProfile,
 } from "firebase/auth";
-import { auth } from "./client";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { auth, db } from "./client";
 import { createUserProfile } from "./users";
 import type { PersonalDetails, UserRole } from "@/types/user";
 
@@ -42,6 +43,44 @@ export async function signInWithGoogle() {
 
 export function resetPassword(email: string) {
   return sendPasswordResetEmail(auth, email);
+}
+
+/**
+ * Admin-only (see AdminAddUserForm). Creates the Firebase Auth account via
+ * Firebase's own public Identity Toolkit REST endpoint instead of the client
+ * SDK's createUserWithEmailAndPassword — that call signs the *browser* into
+ * the new account, which would kick the admin out of their own session. The
+ * REST call is a plain fetch, so the admin's `auth` session is untouched.
+ * Throws with the Identity Toolkit error code (e.g. "EMAIL_EXISTS") as the
+ * message on failure.
+ */
+export async function createUserByAdmin(input: {
+  name: string;
+  email: string;
+  password: string;
+  role: UserRole;
+}): Promise<string> {
+  const res = await fetch(
+    `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.NEXT_PUBLIC_FIREBASE_API_KEY}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: input.email, password: input.password, returnSecureToken: false }),
+    }
+  );
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.error?.message ?? "UNKNOWN_ERROR");
+  }
+  const uid = data.localId as string;
+  await setDoc(doc(db, "users", uid), {
+    name: input.name,
+    email: input.email,
+    role: input.role,
+    status: "approved",
+    createdAt: serverTimestamp(),
+  });
+  return uid;
 }
 
 export function logoutUser() {

@@ -298,7 +298,20 @@
       "colStatus": "Status",
       "colDisabled": "Disabled",
       "yes": "Yes",
-      "no": "No"
+      "no": "No",
+      "statsTotal": "Total Users",
+      "resultsCount": "{count} results",
+      "addUser": "Add Account",
+      "addUserSubmit": "Create Account",
+      "addUserSaving": "Creating...",
+      "addUserError": "Couldn't create the account. Try again.",
+      "addUserErrorEmailExists": "This email is already in use.",
+      "addUserErrorWeakPassword": "Weak password — must be at least 6 characters.",
+      "addUserErrorInvalidEmail": "Invalid email format.",
+      "cancel": "Cancel",
+      "delete": "Delete Account",
+      "confirmDelete": "Are you sure?",
+      "confirmDeleteYes": "Confirm Delete"
     },
     "courses": {
       "title": "Manage Courses",
@@ -353,6 +366,8 @@
       "action_stageSubjectsUpdate": "Updated a stage's subjects",
       "action_disableUser": "Disabled a user account",
       "action_enableUser": "Enabled a user account",
+      "action_createUser": "Created a user account",
+      "action_deleteUser": "Deleted a user account",
       "action_bulkDisableUsers": "Bulk-disabled multiple accounts",
       "action_bulkEnableUsers": "Bulk-enabled multiple accounts",
       "action_passwordReset": "Reset a user's password"

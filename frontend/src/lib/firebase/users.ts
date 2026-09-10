@@ -1,4 +1,4 @@
-import { collection, doc, DocumentData, getDoc, getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, DocumentData, getDoc, getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "./client";
 import type { AppUser, PersonalDetails, UserRole, UserStatus } from "@/types/user";
 
@@ -42,12 +42,7 @@ export async function listAllUsers(): Promise<AppUser[]> {
   return snap.docs.map((d) => mapUser(d.id, d.data()));
 }
 
-/**
- * Admin-only. Only changes the `role` field — there's no way to delete a
- * Firebase Auth account from the client (needs the Admin SDK, which this
- * no-backend project doesn't have). To fully remove a user, an admin has to
- * do it manually via the Firebase Console.
- */
+/** Admin-only. */
 export async function updateUserRole(uid: string, role: UserRole): Promise<void> {
   await updateDoc(doc(db, "users", uid), { role });
 }
@@ -70,4 +65,15 @@ export async function setUserDisabled(uid: string, disabled: boolean): Promise<v
 
 export async function updateUserPhoto(uid: string, photoURL: string): Promise<void> {
   await updateDoc(doc(db, "users", uid), { photoURL });
+}
+
+/**
+ * Admin-only, rejected for the protected account (see backend/firestore.rules
+ * isProtectedAccount()). Only removes the `users/{uid}` Firestore doc — the
+ * underlying Firebase Auth account survives (needs the Admin SDK to remove,
+ * which this project doesn't have) and enrollments/certificates aren't
+ * cascade-deleted, so a certificate the user earned stays valid/verifiable.
+ */
+export async function deleteUserProfile(uid: string): Promise<void> {
+  await deleteDoc(doc(db, "users", uid));
 }

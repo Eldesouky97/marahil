@@ -50,9 +50,14 @@ service cloud.firestore {
     // --- users ---------------------------------------------------------
     match /users/{uid} {
       allow read: if isOwner(uid) || isAdmin();
-      allow create: if isOwner(uid)
-        && request.resource.data.role in ['teacher', 'student']
-        && request.resource.data.status == (request.resource.data.role == 'teacher' ? 'pending' : 'approved');
+      // Self-registration keeps the pending-teacher workflow; an admin
+      // creating a user directly (AdminAddUserForm) can hand out any role,
+      // including 'admin', and skips straight to 'approved' — the admin
+      // already vetted the account by creating it themselves.
+      allow create: if (isOwner(uid)
+          && request.resource.data.role in ['teacher', 'student']
+          && request.resource.data.status == (request.resource.data.role == 'teacher' ? 'pending' : 'approved'))
+        || (isAdmin() && request.resource.data.role in ['teacher', 'student', 'admin']);
       // Nobody — not even another admin — can change the protected account's
       // email, role, or disabled flag through this rule; only a human editing
       // Firestore directly in the Firebase Console can. Everything else about
@@ -66,7 +71,13 @@ service cloud.firestore {
                 || (request.resource.data.email == resource.data.email
                     && request.resource.data.role == resource.data.role
                     && request.resource.data.get('disabled', false) == resource.data.get('disabled', false))));
-      allow delete: if false;
+      // Only removes the users/{uid} doc — it can't touch the underlying
+      // Firebase Auth account (needs the Admin SDK, see CLAUDE.md), and
+      // deliberately doesn't cascade-delete the user's enrollments/certificates
+      // (certificates are meant to stay valid/verifiable even if the earner's
+      // account is later removed). AdminUserRow's delete button makes this
+      // limitation explicit to the admin before they confirm.
+      allow delete: if isAdmin() && !isProtectedAccount();
     }
 
     // --- courses ---------------------------------------------------------
