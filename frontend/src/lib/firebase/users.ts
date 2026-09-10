@@ -22,6 +22,7 @@ const OPTIONAL_DETAIL_KEYS: (keyof PersonalDetails)[] = [
   "subject",
   "workplace",
   "jobTitle",
+  "nationalId",
 ];
 
 /** Firestore's `setDoc`/`updateDoc` throw on an explicit `undefined` field — drop those instead of sending them. */
@@ -47,6 +48,7 @@ function mapUser(uid: string, data: DocumentData): AppUser {
     subject: data.subject,
     workplace: data.workplace,
     jobTitle: data.jobTitle,
+    nationalId: data.nationalId,
   };
 }
 

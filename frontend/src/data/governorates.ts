@@ -1,0 +1,32 @@
+import type { GovernorateId } from "@/types/governorate";
+
+/** Egypt's 27 governorates, in the conventional Cairo-first admin-division order. Labels live in messages/*.json under "governorates". */
+export const GOVERNORATE_IDS: GovernorateId[] = [
+  "cairo",
+  "giza",
+  "alexandria",
+  "qalyubia",
+  "portSaid",
+  "suez",
+  "dakahlia",
+  "sharqia",
+  "gharbia",
+  "monufia",
+  "beheira",
+  "kafrElSheikh",
+  "damietta",
+  "ismailia",
+  "fayoum",
+  "beniSuef",
+  "minya",
+  "assiut",
+  "sohag",
+  "qena",
+  "luxor",
+  "aswan",
+  "redSea",
+  "newValley",
+  "matrouh",
+  "northSinai",
+  "southSinai",
+];

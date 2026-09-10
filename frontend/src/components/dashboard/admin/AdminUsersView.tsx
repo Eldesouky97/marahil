@@ -8,7 +8,8 @@ import { useAuth } from "@/context/AuthProvider";
 import { useAdminUsers } from "@/lib/hooks/useAdminUsers";
 import { setUserDisabled } from "@/lib/firebase/users";
 import { logAdminAction } from "@/lib/firebase/auditLog";
-import { downloadCsv } from "@/lib/utils/exportCsv";
+import { downloadExcel } from "@/lib/utils/exportExcel";
+import { useGovernorateLabel } from "@/lib/hooks/useGovernorates";
 import { PROTECTED_ADMIN_EMAIL } from "@/lib/constants";
 import { AdminUserRow } from "./AdminUserRow";
 import { AdminAddUserForm } from "./AdminAddUserForm";
@@ -31,6 +32,7 @@ export function AdminUsersView() {
   const { users, loading, refresh } = useAdminUsers();
   const t = useTranslations("dashboardAdmin.users");
   const tDetails = useTranslations("auth.personalDetails");
+  const governorateLabel = useGovernorateLabel();
   const initialQuery = useSearchParams().get("q") ?? "";
   const [search, setSearch] = useState(initialQuery);
   const [roleFilter, setRoleFilter] = useState<RoleFilter>("all");
@@ -113,7 +115,7 @@ export function AdminUsersView() {
     setListVersion((v) => v + 1);
   }
 
-  function handleExportCsv() {
+  function handleExportExcel() {
     const headers = [
       t("colName"),
       t("colEmail"),
@@ -122,6 +124,7 @@ export function AdminUsersView() {
       t("colDisabled"),
       t("joined"),
       tDetails("phone"),
+      tDetails("nationalId"),
       tDetails("age"),
       tDetails("governorate"),
       tDetails("school"),
@@ -137,14 +140,15 @@ export function AdminUsersView() {
       u.disabled ? t("yes") : t("no"),
       new Date(u.createdAt).toLocaleDateString(),
       u.phone ?? "",
+      u.nationalId ?? "",
       u.age ?? "",
-      u.governorate ?? "",
+      u.governorate ? governorateLabel(u.governorate) : "",
       u.school ?? "",
       u.subject ?? "",
       u.workplace ?? "",
       u.jobTitle ?? "",
     ]);
-    downloadCsv(`marahil-users-${Date.now()}.csv`, headers, rows);
+    downloadExcel(`marahil-users-${Date.now()}.xlsx`, headers, rows);
   }
 
   return (
@@ -153,8 +157,8 @@ export function AdminUsersView() {
         title={t("title")}
         action={
           <div className="flex gap-2">
-            <Button variant="outline" onClick={handleExportCsv} className="px-4 py-2 text-xs">
-              {t("exportCsv")}
+            <Button variant="outline" onClick={handleExportExcel} className="px-4 py-2 text-xs">
+              {t("exportExcel")}
             </Button>
             <Button onClick={() => setShowAddForm((v) => !v)} className="gap-1.5 px-4 py-2 text-xs">
               <UserPlus size={14} />

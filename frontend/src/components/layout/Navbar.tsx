@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { Menu, User, X } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu, User, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "./Logo";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -93,32 +93,70 @@ export function Navbar() {
       </div>
 
       {open && (
-        <div className="flex flex-col gap-4 border-t border-border bg-bg px-5 py-4 md:hidden">
-          {navLinks.map((l) => (
-            <Link key={l.href} href={l.href} className="text-sm text-muted" onClick={() => setOpen(false)}>
-              {l.label}
-            </Link>
-          ))}
-          <LanguageSwitcher />
-          {profile ? (
-            <>
-              <Link href={dashboardHref} className="text-sm text-primary-strong" onClick={() => setOpen(false)}>
-                {t("dashboard")}
+        <div className="border-t border-border bg-bg px-5 py-4 md:hidden">
+          <nav className="flex flex-col gap-1">
+            {navLinks.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                onClick={() => setOpen(false)}
+                className="rounded-xl px-3 py-2.5 text-sm text-muted transition-colors hover:bg-surface-2 hover:text-body"
+              >
+                {l.label}
               </Link>
-              <Link href="/profile" className="text-sm text-muted" onClick={() => setOpen(false)}>
-                {t("profile")}
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link href="/auth/login" className="text-sm text-body" onClick={() => setOpen(false)}>
-                {t("login")}
-              </Link>
-              <Link href="/auth/register" onClick={() => setOpen(false)}>
-                <Button className="w-fit px-5 py-2 text-sm">{t("startNow")}</Button>
-              </Link>
-            </>
-          )}
+            ))}
+          </nav>
+
+          <div className="my-3 flex items-center justify-between border-t border-border px-3 pt-3">
+            <ThemeToggle />
+            <LanguageSwitcher />
+          </div>
+
+          <div className="border-t border-border pt-3">
+            {profile ? (
+              <nav className="flex flex-col gap-1">
+                <Link
+                  href={dashboardHref}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-primary-strong transition-colors hover:bg-surface-2"
+                >
+                  <LayoutDashboard size={18} />
+                  {t("dashboard")}
+                </Link>
+                <Link
+                  href="/profile"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-body transition-colors hover:bg-surface-2"
+                >
+                  <User size={18} />
+                  {t("profile")}
+                </Link>
+                <button
+                  onClick={() => {
+                    setOpen(false);
+                    logoutUser();
+                  }}
+                  className="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-danger-ink transition-colors hover:bg-danger/10"
+                >
+                  <LogOut size={18} />
+                  {t("logout")}
+                </button>
+              </nav>
+            ) : (
+              <div className="flex flex-col gap-3">
+                <Link
+                  href="/auth/login"
+                  onClick={() => setOpen(false)}
+                  className="rounded-xl px-3 py-2.5 text-sm text-body transition-colors hover:bg-surface-2"
+                >
+                  {t("login")}
+                </Link>
+                <Link href="/auth/register" onClick={() => setOpen(false)}>
+                  <Button className="w-full px-5 py-2.5 text-sm">{t("startNow")}</Button>
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </header>

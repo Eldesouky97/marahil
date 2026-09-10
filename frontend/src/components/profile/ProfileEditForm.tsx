@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { updateUserProfileFields } from "@/lib/firebase/users";
 import { useStages } from "@/lib/hooks/useStages";
+import { useGovernorates } from "@/lib/hooks/useGovernorates";
+import { parseEgyptianNationalId } from "@/lib/utils/nationalId";
 import { Button } from "@/components/ui/Button";
 import { FormField, inputClasses } from "@/components/ui/FormField";
 import type { AppUser } from "@/types/user";
@@ -13,6 +15,8 @@ export function ProfileEditForm({ profile, onSaved }: { profile: AppUser; onSave
   const t = useTranslations("profile");
   const tDetails = useTranslations("auth.personalDetails");
   const stages = useStages();
+  const governorates = useGovernorates();
+  const hasNationalId = profile.role === "teacher" || profile.role === "admin";
 
   const [name, setName] = useState(profile.name);
   const [phone, setPhone] = useState(profile.phone ?? "");
@@ -23,19 +27,25 @@ export function ProfileEditForm({ profile, onSaved }: { profile: AppUser; onSave
   const [subject, setSubject] = useState(profile.subject ?? "");
   const [workplace, setWorkplace] = useState(profile.workplace ?? "");
   const [jobTitle, setJobTitle] = useState(profile.jobTitle ?? "");
+  const [nationalId, setNationalId] = useState(profile.nationalId ?? "");
 
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  const parsedNationalId = hasNationalId ? parseEgyptianNationalId(nationalId) : null;
+  const nationalIdError = hasNationalId && nationalId.length === 14 && !parsedNationalId;
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (hasNationalId && nationalId && !parsedNationalId) return;
     setSaving(true);
     setSaved(false);
     await updateUserProfileFields(profile.uid, {
       name,
       phone,
-      age: age ? Number(age) : undefined,
+      age: hasNationalId ? (parsedNationalId?.age ?? profile.age) : age ? Number(age) : undefined,
       governorate,
+      nationalId: hasNationalId ? nationalId : undefined,
       ...(profile.role === "student" ? { stage, school } : {}),
       ...(profile.role === "teacher" ? { subject, workplace, jobTitle } : {}),
     });
@@ -58,21 +68,56 @@ export function ProfileEditForm({ profile, onSaved }: { profile: AppUser; onSave
       </FormField>
 
       <div className="grid grid-cols-2 gap-4">
-        <FormField label={tDetails("age")}>
-          <input
-            type="number"
-            min={3}
-            max={120}
-            dir="ltr"
-            className={inputClasses}
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
-          />
-        </FormField>
+        {hasNationalId ? (
+          <FormField label={tDetails("age")}>
+            <input
+              disabled
+              dir="ltr"
+              className={`${inputClasses} disabled:opacity-70`}
+              value={parsedNationalId ? String(parsedNationalId.age) : age}
+              placeholder={tDetails("ageFromNationalId")}
+            />
+          </FormField>
+        ) : (
+          <FormField label={tDetails("age")}>
+            <input
+              type="number"
+              min={3}
+              max={120}
+              dir="ltr"
+              className={inputClasses}
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+            />
+          </FormField>
+        )}
         <FormField label={tDetails("governorate")}>
-          <input className={inputClasses} value={governorate} onChange={(e) => setGovernorate(e.target.value)} />
+          <select className={inputClasses} value={governorate} onChange={(e) => setGovernorate(e.target.value)}>
+            <option value="" disabled>
+              {tDetails("governoratePlaceholder")}
+            </option>
+            {governorates.map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.label}
+              </option>
+            ))}
+          </select>
         </FormField>
       </div>
+
+      {hasNationalId && (
+        <FormField label={tDetails("nationalId")}>
+          <input
+            inputMode="numeric"
+            dir="ltr"
+            maxLength={14}
+            className={inputClasses}
+            value={nationalId}
+            onChange={(e) => setNationalId(e.target.value.replace(/\D/g, "").slice(0, 14))}
+          />
+          {nationalIdError && <p className="mt-1 text-xs text-danger-ink">{tDetails("nationalIdInvalid")}</p>}
+        </FormField>
+      )}
 
       {profile.role === "student" && (
         <>
