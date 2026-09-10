@@ -110,9 +110,14 @@ export function Navbar() {
               </Link>
             </>
           ) : (
-            <Link href="/auth/register" onClick={() => setOpen(false)}>
-              <Button className="w-fit px-5 py-2 text-sm">{t("startNow")}</Button>
-            </Link>
+            <>
+              <Link href="/auth/login" className="text-sm text-body" onClick={() => setOpen(false)}>
+                {t("login")}
+              </Link>
+              <Link href="/auth/register" onClick={() => setOpen(false)}>
+                <Button className="w-fit px-5 py-2 text-sm">{t("startNow")}</Button>
+              </Link>
+            </>
           )}
         </div>
       )}
