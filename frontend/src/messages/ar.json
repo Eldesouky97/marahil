@@ -278,7 +278,27 @@
       "viewDetails": "عرض التفاصيل",
       "hideDetails": "إخفاء التفاصيل",
       "joined": "تاريخ الانضمام",
-      "noDetails": "لا توجد بيانات إضافية."
+      "noDetails": "لا توجد بيانات إضافية.",
+      "filterAllRoles": "كل الأدوار",
+      "filterAllStatuses": "كل الحالات",
+      "sortNewest": "الأحدث أولاً",
+      "sortOldest": "الأقدم أولاً",
+      "sortNameAsc": "الاسم (أ-ي)",
+      "exportCsv": "تصدير CSV",
+      "selectUser": "تحديد المستخدم",
+      "selectAll": "تحديد الكل",
+      "selectedCount": "تم تحديد {count}",
+      "bulkDisable": "تعطيل المحددين",
+      "bulkEnable": "تفعيل المحددين",
+      "resetPassword": "إعادة تعيين كلمة المرور",
+      "resetPasswordSent": "تم إرسال الرابط",
+      "colName": "الاسم",
+      "colEmail": "البريد الإلكتروني",
+      "colRole": "الدور",
+      "colStatus": "الحالة",
+      "colDisabled": "معطّل",
+      "yes": "نعم",
+      "no": "لا"
     },
     "courses": {
       "title": "إدارة الدورات",
@@ -332,7 +352,10 @@
       "action_certificateDelete": "سحب شهادة",
       "action_stageSubjectsUpdate": "تعديل مواد مرحلة دراسية",
       "action_disableUser": "تعطيل حساب مستخدم",
-      "action_enableUser": "تفعيل حساب مستخدم"
+      "action_enableUser": "تفعيل حساب مستخدم",
+      "action_bulkDisableUsers": "تعطيل عدة حسابات دفعة واحدة",
+      "action_bulkEnableUsers": "تفعيل عدة حسابات دفعة واحدة",
+      "action_passwordReset": "إعادة تعيين كلمة مرور مستخدم"
     }
   },
   "lesson": {

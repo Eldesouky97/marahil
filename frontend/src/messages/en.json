@@ -278,7 +278,27 @@
       "viewDetails": "View Details",
       "hideDetails": "Hide Details",
       "joined": "Joined",
-      "noDetails": "No additional details."
+      "noDetails": "No additional details.",
+      "filterAllRoles": "All Roles",
+      "filterAllStatuses": "All Statuses",
+      "sortNewest": "Newest First",
+      "sortOldest": "Oldest First",
+      "sortNameAsc": "Name (A-Z)",
+      "exportCsv": "Export CSV",
+      "selectUser": "Select user",
+      "selectAll": "Select All",
+      "selectedCount": "{count} selected",
+      "bulkDisable": "Disable Selected",
+      "bulkEnable": "Enable Selected",
+      "resetPassword": "Reset Password",
+      "resetPasswordSent": "Link Sent",
+      "colName": "Name",
+      "colEmail": "Email",
+      "colRole": "Role",
+      "colStatus": "Status",
+      "colDisabled": "Disabled",
+      "yes": "Yes",
+      "no": "No"
     },
     "courses": {
       "title": "Manage Courses",
@@ -332,7 +352,10 @@
       "action_certificateDelete": "Revoked a certificate",
       "action_stageSubjectsUpdate": "Updated a stage's subjects",
       "action_disableUser": "Disabled a user account",
-      "action_enableUser": "Enabled a user account"
+      "action_enableUser": "Enabled a user account",
+      "action_bulkDisableUsers": "Bulk-disabled multiple accounts",
+      "action_bulkEnableUsers": "Bulk-enabled multiple accounts",
+      "action_passwordReset": "Reset a user's password"
     }
   },
   "lesson": {

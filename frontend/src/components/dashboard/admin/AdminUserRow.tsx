@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/context/AuthProvider";
 import { updateUserRole, updateUserStatus, setUserDisabled } from "@/lib/firebase/users";
+import { resetPassword } from "@/lib/firebase/auth";
 import { logAdminAction } from "@/lib/firebase/auditLog";
 import { PROTECTED_ADMIN_EMAIL } from "@/lib/constants";
 import { Badge } from "@/components/ui/Badge";
@@ -21,13 +22,22 @@ const DETAIL_FIELDS: (keyof AppUser)[] = [
   "jobTitle",
 ];
 
-export function AdminUserRow({ user, isSelf }: { user: AppUser; isSelf: boolean }) {
+interface AdminUserRowProps {
+  user: AppUser;
+  isSelf: boolean;
+  selected: boolean;
+  selectable: boolean;
+  onToggleSelect: (uid: string) => void;
+}
+
+export function AdminUserRow({ user, isSelf, selected, selectable, onToggleSelect }: AdminUserRowProps) {
   const { profile } = useAuth();
   const [role, setRole] = useState<UserRole>(user.role);
   const [status, setStatus] = useState<UserStatus | undefined>(user.status);
   const [disabled, setDisabled] = useState(user.disabled === true);
   const [saving, setSaving] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
   const t = useTranslations("dashboardAdmin.users");
   const tDetails = useTranslations("auth.personalDetails");
 
@@ -61,16 +71,35 @@ export function AdminUserRow({ user, isSelf }: { user: AppUser; isSelf: boolean 
     }
   }
 
+  async function handleResetPassword() {
+    setSaving(true);
+    await resetPassword(user.email);
+    setSaving(false);
+    setResetSent(true);
+    setTimeout(() => setResetSent(false), 4000);
+    if (profile) await logAdminAction(profile, "passwordReset", "user", user.uid, user.name);
+  }
+
   const pending = role === "teacher" && !!status && status !== "approved";
   const details = DETAIL_FIELDS.filter((field) => user[field] != null && user[field] !== "");
 
   return (
     <div className="rounded-xl border border-border bg-surface p-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="font-medium">{user.name}</div>
-          <div className="mt-1 text-xs text-dim" dir="ltr">
-            {user.email}
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            checked={selected}
+            disabled={!selectable}
+            onChange={() => onToggleSelect(user.uid)}
+            className="h-4 w-4 shrink-0 disabled:opacity-30"
+            aria-label={t("selectUser")}
+          />
+          <div>
+            <div className="font-medium">{user.name}</div>
+            <div className="mt-1 text-xs text-dim" dir="ltr">
+              {user.email}
+            </div>
           </div>
         </div>
 
@@ -99,6 +128,10 @@ export function AdminUserRow({ user, isSelf }: { user: AppUser; isSelf: boolean 
             className={`px-4 py-1.5 text-xs ${disabled ? "" : "border-danger/40 text-danger-ink hover:border-danger/60 hover:text-danger-ink"}`}
           >
             {disabled ? t("enable") : t("disable")}
+          </Button>
+
+          <Button variant="outline" onClick={handleResetPassword} disabled={saving} className="px-4 py-1.5 text-xs">
+            {resetSent ? t("resetPasswordSent") : t("resetPassword")}
           </Button>
 
           <select
