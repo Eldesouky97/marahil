@@ -94,7 +94,12 @@ export function Navbar() {
 
       {open && (
         <div className="border-t border-border bg-bg px-5 py-4 md:hidden">
-          <nav className="flex flex-col gap-1">
+          <div className="mb-3 flex items-center justify-between px-3">
+            <ThemeToggle />
+            <LanguageSwitcher />
+          </div>
+
+          <nav className="flex flex-col gap-1 border-t border-border pt-3">
             {navLinks.map((l) => (
               <Link
                 key={l.href}
@@ -106,11 +111,6 @@ export function Navbar() {
               </Link>
             ))}
           </nav>
-
-          <div className="my-3 flex items-center justify-between border-t border-border px-3 pt-3">
-            <ThemeToggle />
-            <LanguageSwitcher />
-          </div>
 
           <div className="border-t border-border pt-3">
             {profile ? (
