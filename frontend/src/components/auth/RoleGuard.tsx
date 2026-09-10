@@ -13,13 +13,13 @@ export function RoleGuard({ role, children }: { role: UserRole; children: React.
   const disabled = isAccountDisabled(profile);
   const pending = isPendingTeacher(profile);
 
+  // No-profile / disabled / pending are redirected by AuthGate (site-wide,
+  // mounted in the root layout) — this effect only owns what's specific to
+  // being on a /dashboard/* route: signed-out, and a signed-in wrong role.
   useEffect(() => {
     if (loading) return;
     if (!firebaseUser) router.replace("/auth/login");
-    else if (!profile) router.replace("/auth/complete-profile");
-    else if (disabled) router.replace("/auth/account-disabled");
-    else if (profile.role !== role) router.replace(`/dashboard/${profile.role}`);
-    else if (pending) router.replace("/auth/pending-approval");
+    else if (profile && profile.role !== role && !disabled && !pending) router.replace(`/dashboard/${profile.role}`);
   }, [loading, firebaseUser, profile, role, disabled, pending, router]);
 
   if (loading || !profile || profile.role !== role || pending || disabled) {

@@ -10,6 +10,7 @@ import { AuthProvider } from "@/context/AuthProvider";
 import { ThemeProvider } from "@/context/ThemeProvider";
 import { ThemeScript } from "@/components/theme/ThemeScript";
 import { SiteChrome } from "@/components/layout/SiteChrome";
+import { AuthGate } from "@/components/auth/AuthGate";
 import { AnalyticsInit } from "@/components/analytics/AnalyticsInit";
 
 const cairo = Cairo({
@@ -66,7 +67,9 @@ export default async function RootLayout({
           <ThemeProvider>
             <AuthProvider>
               <AnalyticsInit />
-              <SiteChrome>{children}</SiteChrome>
+              <AuthGate>
+                <SiteChrome>{children}</SiteChrome>
+              </AuthGate>
             </AuthProvider>
           </ThemeProvider>
         </NextIntlClientProvider>

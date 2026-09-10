@@ -158,6 +158,9 @@
       "checkAgain": "Check Again",
       "checking": "Checking...",
       "signOut": "Sign Out"
+    },
+    "contactAdmin": {
+      "label": "To reach the platform admin:"
     }
   },
   "courses": {

@@ -6,6 +6,7 @@ import { useRouter } from "@/i18n/navigation";
 import { useAuth } from "@/context/AuthProvider";
 import { logoutUser } from "@/lib/firebase/auth";
 import { isAccountDisabled } from "@/lib/utils/userStatus";
+import { ContactAdminNotice } from "./ContactAdminNotice";
 import { Button } from "@/components/ui/Button";
 import { Spinner } from "@/components/ui/Spinner";
 
@@ -40,6 +41,7 @@ export function AccountDisabledNotice() {
   return (
     <div className="space-y-6 text-center">
       <p className="text-sm text-body">{t("message")}</p>
+      <ContactAdminNotice />
       <div className="flex flex-col gap-3 sm:flex-row">
         <Button variant="outline" onClick={handleCheckAgain} disabled={checking} className="flex-1">
           {checking ? t("checking") : t("checkAgain")}

@@ -158,6 +158,9 @@
       "checkAgain": "تحقّق مرة أخرى",
       "checking": "جارٍ التحقّق...",
       "signOut": "تسجيل الخروج"
+    },
+    "contactAdmin": {
+      "label": "للتواصل مع إدارة المنصة:"
     }
   },
   "courses": {
