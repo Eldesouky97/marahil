@@ -24,9 +24,8 @@ type RoleFilter = "all" | UserRole;
 type StatusFilter = "all" | "pending" | "approved" | "disabled";
 type SortKey = "newest" | "oldest" | "name";
 
-const selectClasses =
-  "w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-body outline-none focus:border-accent/50";
-const filterLabelClasses = "mb-1.5 block text-xs font-medium text-dim";
+const pillSelectClasses =
+  "rounded-full border border-border bg-bg px-3 py-1.5 text-xs text-body outline-none focus:border-accent/50";
 
 export function AdminUsersView() {
   const { profile } = useAuth();
@@ -171,60 +170,58 @@ export function AdminUsersView() {
 
       {showAddForm && <AdminAddUserForm onCreated={handleUserAdded} onCancel={() => setShowAddForm(false)} />}
 
-      <div className="mb-6 rounded-2xl border border-border bg-surface p-5">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <label className="block sm:col-span-2 lg:col-span-1">
-            <span className={filterLabelClasses}>{t("searchPlaceholder")}</span>
-            <div className="relative">
-              <Search size={15} className="absolute top-1/2 -translate-y-1/2 text-faint start-3.5" />
-              <input
-                type="search"
-                placeholder={t("searchPlaceholder")}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full rounded-lg border border-border bg-surface py-2.5 text-sm text-body placeholder:text-faint outline-none ps-9 pe-4 focus:border-accent/50"
-              />
-            </div>
-          </label>
-
-          <label className="block">
-            <span className={filterLabelClasses}>{t("colRole")}</span>
-            <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value as RoleFilter)} className={selectClasses}>
-              <option value="all">{t("filterAllRoles")}</option>
-              <option value="student">{t("role_student")}</option>
-              <option value="teacher">{t("role_teacher")}</option>
-              <option value="admin">{t("role_admin")}</option>
-            </select>
-          </label>
-
-          <label className="block">
-            <span className={filterLabelClasses}>{t("colStatus")}</span>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-              className={selectClasses}
-            >
-              <option value="all">{t("filterAllStatuses")}</option>
-              <option value="pending">{t("statusPending")}</option>
-              <option value="approved">{t("statusApproved")}</option>
-              <option value="disabled">{t("statusDisabled")}</option>
-            </select>
-          </label>
-
-          <label className="block">
-            <span className={filterLabelClasses}>{t("sortNewest")}</span>
-            <select value={sortKey} onChange={(e) => setSortKey(e.target.value as SortKey)} className={selectClasses}>
-              <option value="newest">{t("sortNewest")}</option>
-              <option value="oldest">{t("sortOldest")}</option>
-              <option value="name">{t("sortNameAsc")}</option>
-            </select>
-          </label>
+      <div className="mb-6 flex flex-wrap items-center gap-2 rounded-2xl border border-border bg-surface p-2.5">
+        <div className="relative min-w-35 flex-1">
+          <Search size={13} className="pointer-events-none absolute top-1/2 -translate-y-1/2 text-faint start-3" />
+          <input
+            type="search"
+            aria-label={t("searchPlaceholder")}
+            placeholder={t("searchPlaceholder")}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full rounded-full border border-border bg-bg py-1.5 text-xs text-body placeholder:text-faint outline-none ps-8 pe-3 focus:border-accent/50"
+          />
         </div>
 
-        <div className="mt-4 flex items-center gap-2 border-t border-border pt-4">
-          <UsersIcon size={14} className="text-faint" />
-          <span className="text-xs text-dim">{t("resultsCount", { count: filtered.length })}</span>
-        </div>
+        <select
+          aria-label={t("colRole")}
+          value={roleFilter}
+          onChange={(e) => setRoleFilter(e.target.value as RoleFilter)}
+          className={pillSelectClasses}
+        >
+          <option value="all">{t("filterAllRoles")}</option>
+          <option value="student">{t("role_student")}</option>
+          <option value="teacher">{t("role_teacher")}</option>
+          <option value="admin">{t("role_admin")}</option>
+        </select>
+
+        <select
+          aria-label={t("colStatus")}
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+          className={pillSelectClasses}
+        >
+          <option value="all">{t("filterAllStatuses")}</option>
+          <option value="pending">{t("statusPending")}</option>
+          <option value="approved">{t("statusApproved")}</option>
+          <option value="disabled">{t("statusDisabled")}</option>
+        </select>
+
+        <select
+          aria-label={t("sortNewest")}
+          value={sortKey}
+          onChange={(e) => setSortKey(e.target.value as SortKey)}
+          className={pillSelectClasses}
+        >
+          <option value="newest">{t("sortNewest")}</option>
+          <option value="oldest">{t("sortOldest")}</option>
+          <option value="name">{t("sortNameAsc")}</option>
+        </select>
+
+        <span className="ms-auto flex items-center gap-1.5 whitespace-nowrap ps-2 text-xs text-dim">
+          <UsersIcon size={12} className="text-faint" />
+          {t("resultsCount", { count: filtered.length })}
+        </span>
       </div>
 
       {selectableIds.length > 0 && (

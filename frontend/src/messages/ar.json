@@ -327,7 +327,7 @@
       "bulkEnable": "تفعيل المحددين",
       "resetPassword": "إعادة تعيين كلمة المرور",
       "resetPasswordSent": "تم إرسال الرابط",
-      "changeRoleTo": "تحويل إلى {role}",
+      "changeRoleTitle": "تغيير دور المستخدم",
       "colName": "الاسم",
       "colEmail": "البريد الإلكتروني",
       "colRole": "الدور",

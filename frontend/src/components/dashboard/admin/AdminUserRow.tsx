@@ -2,17 +2,16 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { CheckCircle2, KeyRound, Trash2, UserCog, UserRound, UserX, UserCheck as UserCheckIcon } from "lucide-react";
+import { CheckCircle2, KeyRound, Trash2, UserRound, UserX, UserCheck as UserCheckIcon } from "lucide-react";
 import { useAdminUserRowActions } from "@/lib/hooks/useAdminUserRowActions";
 import { initials } from "@/lib/utils/initials";
 import { AdminUserActionsMenu, type AdminUserMenuItem } from "./AdminUserActionsMenu";
 import { AdminUserIconButton } from "./AdminUserIconButton";
+import { AdminRoleBadgeButton } from "./AdminRoleBadgeButton";
 import { AdminUserDetails } from "./AdminUserDetails";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import type { AppUser, UserRole } from "@/types/user";
-
-const ROLES: UserRole[] = ["student", "teacher", "admin"];
+import type { AppUser } from "@/types/user";
 
 interface AdminUserRowProps {
   user: AppUser;
@@ -44,12 +43,6 @@ export function AdminUserRow({ user, selected, selectable, onToggleSelect, onDel
   } = useAdminUserRowActions(user, onDeleted);
 
   const menuItems: AdminUserMenuItem[] = [
-    ...ROLES.filter((r) => r !== role).map((r) => ({
-      label: t("changeRoleTo", { role: t(`role_${r}`) }),
-      icon: UserCog,
-      onClick: () => handleRoleChange(r),
-      disabled: locked,
-    })),
     {
       label: resetSent ? t("resetPasswordSent") : t("resetPassword"),
       icon: KeyRound,
@@ -97,7 +90,7 @@ export function AdminUserRow({ user, selected, selectable, onToggleSelect, onDel
       </div>
 
       <div className="mt-3 flex flex-wrap items-center gap-1.5">
-        <Badge>{t(`role_${role}`)}</Badge>
+        <AdminRoleBadgeButton role={role} disabled={locked} onChange={handleRoleChange} />
         {role === "teacher" && (
           <Badge className={pending ? "border-gold/40 bg-gold/10 text-gold-strong" : ""}>
             {pending ? t("statusPending") : t("statusApproved")}
