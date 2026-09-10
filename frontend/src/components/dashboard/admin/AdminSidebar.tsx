@@ -40,8 +40,8 @@ export function AdminSidebar({ open, onClose }: { open: boolean; onClose: () => 
       )}
       <aside
         className={cn(
-          "fixed inset-y-0 start-0 z-50 flex w-64 flex-col bg-gradient-to-b from-primary-strong to-primary text-white transition-transform duration-300 md:translate-x-0",
-          open ? "translate-x-0" : "ltr:-translate-x-full rtl:translate-x-full"
+          "fixed inset-y-0 start-0 z-50 flex w-64 flex-col bg-gradient-to-b from-primary-strong to-primary text-white transition-transform duration-300",
+          open ? "translate-x-0" : "max-md:ltr:-translate-x-full max-md:rtl:translate-x-full"
         )}
       >
         <div className="flex items-center justify-between gap-3 border-b border-white/10 px-5 py-6">
