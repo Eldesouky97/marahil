@@ -12,18 +12,23 @@ import { LanguageSwitcher } from "@/components/theme/LanguageSwitcher";
  * already on the users page itself (AdminUsersView), so it's gone. No
  * separate hamburger button either: the profile chip itself opens the
  * sidebar on mobile (tapping it on desktop is a no-op, since the sidebar
- * there is always visible regardless of the open/close state).
+ * there is always visible regardless of the open/close state). Language and
+ * theme come first, before the logo — same "put those first" ordering as
+ * the public Navbar's own mobile drawer.
  */
 export function DashboardTopbar({ onMenuClick, roleLabel }: { onMenuClick: () => void; roleLabel: string }) {
   const { profile } = useAuth();
 
   return (
     <header className="sticky top-0 z-30 flex items-center gap-4 border-b border-border bg-surface px-5 py-3">
+      <div className="flex items-center gap-2">
+        <LanguageSwitcher />
+        <ThemeToggle />
+      </div>
+
       <Logo size={32} />
 
       <div className="ms-auto flex items-center gap-3">
-        <LanguageSwitcher />
-        <ThemeToggle />
         {profile && (
           <button
             onClick={onMenuClick}
