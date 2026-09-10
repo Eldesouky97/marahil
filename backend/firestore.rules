@@ -30,10 +30,21 @@ service cloud.firestore {
 
     // Grandfathers accounts written before the `status` field existed (treats
     // a missing status as approved) so pre-existing teachers don't get locked
-    // out the moment this rule ships.
+    // out the moment this rule ships. Also false for any role once an admin
+    // has set `disabled: true` on the account (see AdminUserRow's disable
+    // toggle) — same "can't act on the platform" outcome as an unapproved
+    // teacher, just admin-triggered instead of self-inflicted.
     function isApproved(uid) {
       let u = userData(uid);
-      return !('status' in u) || u.status == 'approved';
+      return (!('status' in u) || u.status == 'approved') && u.get('disabled', false) != true;
+    }
+
+    // The one account an admin can never demote, disable, or otherwise lock
+    // themselves or another admin out of — eldesouky71@gmail.com. Kept as a
+    // literal (rules can't read frontend/src/lib/constants.ts) so it has to
+    // be updated in both places if it ever changes.
+    function isProtectedAccount() {
+      return resource.data.email == 'eldesouky71@gmail.com';
     }
 
     // --- users ---------------------------------------------------------
@@ -42,10 +53,19 @@ service cloud.firestore {
       allow create: if isOwner(uid)
         && request.resource.data.role in ['teacher', 'student']
         && request.resource.data.status == (request.resource.data.role == 'teacher' ? 'pending' : 'approved');
+      // Nobody — not even another admin — can change the protected account's
+      // email, role, or disabled flag through this rule; only a human editing
+      // Firestore directly in the Firebase Console can. Everything else about
+      // it (name, photo, personal details) stays normally admin-editable.
       allow update: if (isOwner(uid)
           && request.resource.data.role == resource.data.role
-          && request.resource.data.status == resource.data.status)
-        || isAdmin();
+          && request.resource.data.status == resource.data.status
+          && request.resource.data.get('disabled', false) == resource.data.get('disabled', false))
+        || (isAdmin()
+            && (!isProtectedAccount()
+                || (request.resource.data.email == resource.data.email
+                    && request.resource.data.role == resource.data.role
+                    && request.resource.data.get('disabled', false) == resource.data.get('disabled', false))));
       allow delete: if false;
     }
 
@@ -58,7 +78,9 @@ service cloud.firestore {
         && request.resource.data.teacherId == request.auth.uid
         && request.resource.data.published == false
         && isApproved(request.auth.uid);
-      allow update: if (isOwner(resource.data.teacherId) && request.resource.data.teacherId == resource.data.teacherId)
+      allow update: if (isOwner(resource.data.teacherId)
+          && request.resource.data.teacherId == resource.data.teacherId
+          && isApproved(request.auth.uid))
         || isAdmin();
       // Only admin can delete a course outright — a teacher still can't
       // hard-delete their own (they can only unpublish it).
@@ -70,8 +92,8 @@ service cloud.firestore {
         }
 
         allow read: if course().published == true || isOwner(course().teacherId) || isAdmin();
-        allow create: if isOwner(course().teacherId);
-        allow update, delete: if isOwner(course().teacherId) || isAdmin();
+        allow create: if isOwner(course().teacherId) && isApproved(request.auth.uid);
+        allow update, delete: if (isOwner(course().teacherId) && isApproved(request.auth.uid)) || isAdmin();
       }
     }
 
@@ -86,10 +108,12 @@ service cloud.firestore {
     match /enrollments/{enrollmentId} {
       allow read: if isOwner(resource.data.uid) || isAdmin();
       allow create: if isOwner(request.resource.data.uid)
+        && isApproved(request.auth.uid)
         && enrollmentId == request.auth.uid + '_' + request.resource.data.courseId
         && request.resource.data.certificateIssued == false
         && request.resource.data.progress == 0;
       allow update: if isOwner(resource.data.uid)
+        && isApproved(request.auth.uid)
         && request.resource.data.uid == resource.data.uid
         && request.resource.data.courseId == resource.data.courseId
         && request.resource.data.progress >= resource.data.progress

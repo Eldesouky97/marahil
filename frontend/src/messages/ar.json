@@ -151,6 +151,13 @@
       "checkAgain": "تحقّق مرة أخرى",
       "checking": "جارٍ التحقّق...",
       "signOut": "تسجيل الخروج"
+    },
+    "accountDisabled": {
+      "title": "الحساب معطّل",
+      "message": "تم تعطيل هذا الحساب من قبل إدارة المنصة، ولا يمكن استخدامه حاليًا. إذا كنت تعتقد أن هذا خطأ، تواصل مع الإدارة.",
+      "checkAgain": "تحقّق مرة أخرى",
+      "checking": "جارٍ التحقّق...",
+      "signOut": "تسجيل الخروج"
     }
   },
   "courses": {
@@ -263,7 +270,15 @@
       "role_admin": "مدير",
       "approve": "موافقة",
       "statusPending": "قيد المراجعة",
-      "statusApproved": "معتمد"
+      "statusApproved": "معتمد",
+      "statusDisabled": "معطّل",
+      "protected": "حساب محمي",
+      "disable": "تعطيل الحساب",
+      "enable": "تفعيل الحساب",
+      "viewDetails": "عرض التفاصيل",
+      "hideDetails": "إخفاء التفاصيل",
+      "joined": "تاريخ الانضمام",
+      "noDetails": "لا توجد بيانات إضافية."
     },
     "courses": {
       "title": "إدارة الدورات",
@@ -315,7 +330,9 @@
       "action_lessonDelete": "حذف درس",
       "action_certificateUpdate": "تعديل شهادة",
       "action_certificateDelete": "سحب شهادة",
-      "action_stageSubjectsUpdate": "تعديل مواد مرحلة دراسية"
+      "action_stageSubjectsUpdate": "تعديل مواد مرحلة دراسية",
+      "action_disableUser": "تعطيل حساب مستخدم",
+      "action_enableUser": "تفعيل حساب مستخدم"
     }
   },
   "lesson": {

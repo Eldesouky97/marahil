@@ -9,6 +9,7 @@ function mapUser(uid: string, data: DocumentData): AppUser {
     email: data.email,
     role: data.role,
     status: data.status,
+    disabled: data.disabled === true,
     photoURL: data.photoURL,
     createdAt: data.createdAt?.toMillis?.() ?? Date.now(),
     phone: data.phone,
@@ -54,6 +55,17 @@ export async function updateUserRole(uid: string, role: UserRole): Promise<void>
 /** Admin-only — approves a pending teacher (see backend/firestore.rules isApproved()). */
 export async function updateUserStatus(uid: string, status: UserStatus): Promise<void> {
   await updateDoc(doc(db, "users", uid), { status });
+}
+
+/**
+ * Admin-only. Flips the kill switch that blocks a user from signing into any
+ * dashboard and from writing courses/lessons/enrollments (see isApproved() in
+ * backend/firestore.rules) — the closest this no-backend project can get to
+ * "delete" without the Admin SDK. Rejected by the rules for the protected
+ * account (see lib/constants.ts).
+ */
+export async function setUserDisabled(uid: string, disabled: boolean): Promise<void> {
+  await updateDoc(doc(db, "users", uid), { disabled });
 }
 
 export async function updateUserPhoto(uid: string, photoURL: string): Promise<void> {

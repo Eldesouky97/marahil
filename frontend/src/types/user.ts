@@ -20,6 +20,8 @@ export interface AppUser extends PersonalDetails {
   email: string;
   role: UserRole;
   status: UserStatus;
+  /** Admin-set kill switch, independent of `status` — see backend/firestore.rules isApproved(). */
+  disabled?: boolean;
   photoURL?: string;
   createdAt: number;
 }

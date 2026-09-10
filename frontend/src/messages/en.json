@@ -151,6 +151,13 @@
       "checkAgain": "Check Again",
       "checking": "Checking...",
       "signOut": "Sign Out"
+    },
+    "accountDisabled": {
+      "title": "Account Disabled",
+      "message": "This account has been disabled by the platform admin and can't be used right now. If you think this is a mistake, contact the admin.",
+      "checkAgain": "Check Again",
+      "checking": "Checking...",
+      "signOut": "Sign Out"
     }
   },
   "courses": {
@@ -263,7 +270,15 @@
       "role_admin": "Admin",
       "approve": "Approve",
       "statusPending": "Pending Review",
-      "statusApproved": "Approved"
+      "statusApproved": "Approved",
+      "statusDisabled": "Disabled",
+      "protected": "Protected Account",
+      "disable": "Disable Account",
+      "enable": "Enable Account",
+      "viewDetails": "View Details",
+      "hideDetails": "Hide Details",
+      "joined": "Joined",
+      "noDetails": "No additional details."
     },
     "courses": {
       "title": "Manage Courses",
@@ -315,7 +330,9 @@
       "action_lessonDelete": "Deleted a lesson",
       "action_certificateUpdate": "Edited a certificate",
       "action_certificateDelete": "Revoked a certificate",
-      "action_stageSubjectsUpdate": "Updated a stage's subjects"
+      "action_stageSubjectsUpdate": "Updated a stage's subjects",
+      "action_disableUser": "Disabled a user account",
+      "action_enableUser": "Enabled a user account"
     }
   },
   "lesson": {
