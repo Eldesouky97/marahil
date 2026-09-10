@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { ArrowLeft, PlayCircle, Sparkles } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Constellation } from "./Constellation";
+import { Hero3D } from "./Hero3D";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -21,6 +22,8 @@ export function Hero() {
       <Constellation />
 
       <Container className="relative py-24 text-center sm:py-28" size="lg">
+        <Hero3D />
+
         <Badge className="mb-8">
           <Sparkles size={14} /> {t("badge")}
         </Badge>
