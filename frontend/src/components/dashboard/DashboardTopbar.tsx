@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useAuth } from "@/context/AuthProvider";
 import { Logo } from "@/components/layout/Logo";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { LanguageSwitcher } from "@/components/theme/LanguageSwitcher";
 
 /**
  * No search box here — it was only ever admin's, and duplicated the one
@@ -21,6 +22,7 @@ export function DashboardTopbar({ onMenuClick, roleLabel }: { onMenuClick: () =>
       <Logo size={32} />
 
       <div className="ms-auto flex items-center gap-3">
+        <LanguageSwitcher />
         <ThemeToggle />
         {profile && (
           <button
