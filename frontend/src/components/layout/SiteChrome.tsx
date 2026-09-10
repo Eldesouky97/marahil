@@ -5,21 +5,25 @@ import { useAuth } from "@/context/AuthProvider";
 import { useDashboardShellConfig } from "@/lib/hooks/useDashboardShellConfig";
 import { isAccountDisabled, isPendingTeacher } from "@/lib/utils/userStatus";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { LenisProvider } from "./LenisProvider";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 
-const EXEMPT_PREFIX = "/auth";
+const EXEMPT_PREFIXES = ["/auth"];
 
 /**
- * The single post-login nav for the whole site, not just /dashboard/* — a
- * signed-in user with a complete, approved, enabled profile gets the
- * DashboardShell (sidebar + topbar) on every route except /auth/* (kept
- * plain — mid sign-up isn't "in the app" yet), the same shell that used to
- * only wrap /dashboard/* pages from within their own layout.tsx. Those three
- * layouts now only run RoleGuard; rendering the shell here instead avoids
- * wrapping it twice on /dashboard/* itself. Anonymous visitors, and anyone
- * still mid-auth-resolution, get the normal public Navbar/Footer — matching
- * Navbar's own existing default-to-signed-out rendering while `loading`.
+ * The single post-login nav for the signed-in app, not just /dashboard/* —
+ * a signed-in user with a complete, approved, enabled profile gets the
+ * DashboardShell (sidebar + topbar) on every route except /auth/* and the
+ * bare home page `/` itself. `/` stays exempt deliberately: it's the
+ * marketing page the sidebar's own "site home" link points at, and that
+ * link means "step out of the app" — stacking the app shell's topbar back
+ * on top of the marketing Hero would defeat the point of that link (this
+ * was the "admin topbar sitting on the landing page" bug). Anonymous
+ * visitors, and anyone still mid-auth-resolution, get the normal public
+ * Navbar/Footer — matching Navbar's own existing default-to-signed-out
+ * rendering while `loading`. Lenis smooth-scroll wraps only that public
+ * branch (see LenisProvider.tsx for why it's kept out of the dashboard).
  */
 export function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -32,17 +36,18 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
     !!profile &&
     !isPendingTeacher(profile) &&
     !isAccountDisabled(profile) &&
-    !pathname.startsWith(EXEMPT_PREFIX);
+    pathname !== "/" &&
+    !EXEMPT_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 
   if (showAppShell && shellConfig) {
     return <DashboardShell {...shellConfig}>{children}</DashboardShell>;
   }
 
   return (
-    <>
+    <LenisProvider>
       <Navbar />
       <main className="flex-1">{children}</main>
       <Footer />
-    </>
+    </LenisProvider>
   );
 }

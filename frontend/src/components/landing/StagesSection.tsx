@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useStages } from "@/lib/hooks/useStages";
 import { SectionHeading } from "./SectionHeading";
+import { ScrollReveal } from "./ScrollReveal";
 import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/utils/cn";
 
@@ -18,7 +19,7 @@ export function StagesSection() {
       <Container>
         <SectionHeading eyebrow={t("eyebrow")} title={t("title")} description={t("description")} />
 
-        <div className="mb-10 flex flex-wrap items-center justify-center gap-2">
+        <ScrollReveal className="mb-10 flex flex-wrap items-center justify-center gap-2" stagger={0.04}>
           {stages.map((s, i) => (
             <button
               key={s.id}
@@ -32,7 +33,7 @@ export function StagesSection() {
               {s.label}
             </button>
           ))}
-        </div>
+        </ScrollReveal>
 
         <div className="flex flex-wrap justify-center gap-3">
           {stage.subjects.map((sub) => (

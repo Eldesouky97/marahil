@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Award, BookOpen, ClipboardCheck, Video } from "lucide-react";
 import { SectionHeading } from "./SectionHeading";
+import { ScrollReveal } from "./ScrollReveal";
 import { Container } from "@/components/ui/Container";
 
 const ICONS = [Video, BookOpen, ClipboardCheck, Award];
@@ -16,7 +17,7 @@ export function HowItWorks() {
       <Container>
         <SectionHeading eyebrow={t("eyebrow")} title={t("title")} />
 
-        <div className="relative grid grid-cols-1 gap-10 md:grid-cols-4 md:gap-6">
+        <ScrollReveal className="relative grid grid-cols-1 gap-10 md:grid-cols-4 md:gap-6">
           <div className="absolute top-8 right-[12%] left-[12%] hidden border-t-2 border-dashed border-primary/25 md:block" />
           {steps.map((s, i) => {
             const Icon = ICONS[i];
@@ -31,7 +32,7 @@ export function HowItWorks() {
               </div>
             );
           })}
-        </div>
+        </ScrollReveal>
       </Container>
     </section>
   );

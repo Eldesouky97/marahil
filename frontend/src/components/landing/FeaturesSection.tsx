@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Award, BarChart3, ClipboardCheck, ListChecks, MessageSquare, Video } from "lucide-react";
 import { FeatureCard } from "./FeatureCard";
+import { ScrollReveal } from "./ScrollReveal";
 import { Container } from "@/components/ui/Container";
 
 const ICONS = [Video, ListChecks, ClipboardCheck, Award, BarChart3, MessageSquare];
@@ -19,11 +20,11 @@ export function FeaturesSection() {
           <h2 className="mb-4 font-display text-3xl text-heading">{t("title")}</h2>
           <p className="leading-relaxed text-dim">{t("description")}</p>
         </div>
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <ScrollReveal className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((f, i) => (
             <FeatureCard key={f.title} icon={ICONS[i]} title={f.title} desc={f.desc} />
           ))}
-        </div>
+        </ScrollReveal>
       </Container>
     </section>
   );

@@ -1,56 +1,33 @@
 "use client";
 
-import { useState } from "react";
-import { Menu, Search, User as UserIcon } from "lucide-react";
+import { User as UserIcon } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthProvider";
+import { Logo } from "@/components/layout/Logo";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
-export interface DashboardTopbarSearch {
-  placeholder: string;
-  onSubmit: (query: string) => void;
-}
-
-export function DashboardTopbar({
-  onMenuClick,
-  roleLabel,
-  search,
-}: {
-  onMenuClick: () => void;
-  roleLabel: string;
-  search?: DashboardTopbarSearch;
-}) {
+/**
+ * No search box here — it was only ever admin's, and duplicated the one
+ * already on the users page itself (AdminUsersView), so it's gone. No
+ * separate hamburger button either: the profile chip itself opens the
+ * sidebar on mobile (tapping it on desktop is a no-op, since the sidebar
+ * there is always visible regardless of the open/close state).
+ */
+export function DashboardTopbar({ onMenuClick, roleLabel }: { onMenuClick: () => void; roleLabel: string }) {
   const { profile } = useAuth();
-  const [query, setQuery] = useState("");
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    search?.onSubmit(query.trim());
-  }
 
   return (
     <header className="sticky top-0 z-30 flex items-center gap-4 border-b border-border bg-surface px-5 py-3">
-      <button onClick={onMenuClick} className="text-heading md:hidden" aria-label="menu">
-        <Menu size={22} />
-      </button>
-
-      {search && (
-        <form onSubmit={handleSubmit} className="relative max-w-md flex-1">
-          <Search size={16} className="absolute top-1/2 -translate-y-1/2 text-faint start-4" />
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={search.placeholder}
-            className="w-full rounded-xl border border-border bg-bg py-2.5 text-sm text-body outline-none ps-10 pe-4 focus:border-accent/50"
-          />
-        </form>
-      )}
+      <Logo size={32} />
 
       <div className="ms-auto flex items-center gap-3">
         <ThemeToggle />
         {profile && (
-          <div className="flex items-center gap-2 rounded-full bg-bg py-1.5 ps-1.5 pe-3">
+          <button
+            onClick={onMenuClick}
+            aria-label="menu"
+            className="flex cursor-pointer items-center gap-2 rounded-full bg-bg py-1.5 ps-1.5 pe-3 transition-colors hover:bg-surface-2 md:cursor-default md:hover:bg-bg"
+          >
             {profile.photoURL ? (
               <Image src={profile.photoURL} alt="" width={32} height={32} className="h-8 w-8 rounded-full object-cover" />
             ) : (
@@ -58,11 +35,11 @@ export function DashboardTopbar({
                 <UserIcon size={16} />
               </span>
             )}
-            <div className="hidden sm:block">
+            <div className="hidden sm:block text-start">
               <p className="text-xs font-bold leading-tight">{profile.name}</p>
               <p className="text-[11px] leading-tight text-dim">{roleLabel}</p>
             </div>
-          </div>
+          </button>
         )}
       </div>
     </header>

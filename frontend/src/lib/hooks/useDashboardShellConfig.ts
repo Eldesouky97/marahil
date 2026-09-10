@@ -2,16 +2,13 @@
 
 import { useTranslations } from "next-intl";
 import { Award, BookOpen, History, LayoutDashboard, Plus, ShieldCheck, SlidersHorizontal, User, Users } from "lucide-react";
-import { useRouter } from "@/i18n/navigation";
 import { useAuth } from "@/context/AuthProvider";
 import type { DashboardNavItem } from "@/components/dashboard/DashboardSidebar";
-import type { DashboardTopbarSearch } from "@/components/dashboard/DashboardTopbar";
 
 interface DashboardShellConfig {
   navItems: DashboardNavItem[];
   homeHref: string;
   roleLabel: string;
-  search?: DashboardTopbarSearch;
 }
 
 /**
@@ -22,11 +19,9 @@ interface DashboardShellConfig {
  */
 export function useDashboardShellConfig(): DashboardShellConfig | null {
   const { profile } = useAuth();
-  const router = useRouter();
   const tNav = useTranslations("nav");
   const tUsers = useTranslations("dashboardAdmin.users");
   const tAdminSidebar = useTranslations("dashboardAdmin.sidebar");
-  const tAdminTopbar = useTranslations("dashboardAdmin.topbar");
   const tTeacher = useTranslations("dashboardTeacher");
 
   if (!profile) return null;
@@ -40,14 +35,10 @@ export function useDashboardShellConfig(): DashboardShellConfig | null {
         { href: "/dashboard/admin/certificates", icon: Award, label: tAdminSidebar("certificates") },
         { href: "/dashboard/admin/stages", icon: SlidersHorizontal, label: tAdminSidebar("stages") },
         { href: "/dashboard/admin/audit-log", icon: History, label: tAdminSidebar("auditLog") },
+        { href: "/profile", icon: User, label: tNav("profile") },
       ],
       homeHref: "/dashboard/admin",
       roleLabel: tUsers("role_admin"),
-      search: {
-        placeholder: tAdminTopbar("searchPlaceholder"),
-        onSubmit: (query) =>
-          router.push(query ? `/dashboard/admin/users?q=${encodeURIComponent(query)}` : "/dashboard/admin/users"),
-      },
     };
   }
 

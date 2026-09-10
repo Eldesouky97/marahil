@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { signInWithGoogle } from "@/lib/firebase/auth";
-import { getUserProfile } from "@/lib/firebase/users";
+import { getUserProfile, updateUserPhoto } from "@/lib/firebase/users";
 import { Button } from "@/components/ui/Button";
 
 /**
@@ -24,6 +24,13 @@ export function GoogleSignInButton() {
     try {
       const user = await signInWithGoogle();
       const profile = await getUserProfile(user.uid);
+      // Existing accounts made before photoURL was captured at signup (or
+      // that never got a Google photo for any other reason) get backfilled
+      // here on every Google sign-in — but only when they have none yet, so
+      // a manually-uploaded R2 avatar is never overwritten back to Google's.
+      if (profile && !profile.photoURL && user.photoURL) {
+        await updateUserPhoto(user.uid, user.photoURL);
+      }
       router.push(profile ? `/dashboard/${profile.role}` : "/auth/complete-profile");
     } catch {
       setError(t("googleError"));
