@@ -116,7 +116,6 @@
     "ctaStudent": "انضم كطالب"
   },
   "footer": {
-    "tagline": "منصة مراحل التعليمية",
     "copyright": "© {year} منصة مراحل التعليمية"
   },
   "auth": {
@@ -275,8 +274,7 @@
       "courses": "الدورات",
       "certificates": "الشهادات",
       "stages": "المراحل والمواد",
-      "auditLog": "سجلّ النشاط",
-      "logout": "تسجيل الخروج"
+      "auditLog": "سجلّ النشاط"
     },
     "overview": {
       "statsUsers": "إجمالي المستخدمين",
@@ -335,7 +333,6 @@
       "colDisabled": "معطّل",
       "yes": "نعم",
       "no": "لا",
-      "statsTotal": "إجمالي المستخدمين",
       "resultsCount": "{count} نتيجة",
       "addUser": "إضافة حساب",
       "addUserSubmit": "إنشاء الحساب",

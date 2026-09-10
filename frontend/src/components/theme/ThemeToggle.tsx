@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "@/context/ThemeProvider";
 import { cn } from "@/lib/utils/cn";
@@ -12,10 +13,11 @@ const VARIANT_CLASSES = {
 
 export function ThemeToggle({ variant = "default" }: { variant?: keyof typeof VARIANT_CLASSES }) {
   const { theme, toggleTheme } = useTheme();
+  const t = useTranslations("common");
   return (
     <button
       onClick={toggleTheme}
-      aria-label={theme === "dark" ? "التبديل للوضع الفاتح" : "التبديل للوضع الداكن"}
+      aria-label={theme === "dark" ? t("themeToLight") : t("themeToDark")}
       className={cn(
         "flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border transition-colors",
         VARIANT_CLASSES[variant]

@@ -116,7 +116,6 @@
     "ctaStudent": "Join as a Student"
   },
   "footer": {
-    "tagline": "Marahil Learning Platform",
     "copyright": "© {year} Marahil Learning Platform"
   },
   "auth": {
@@ -275,8 +274,7 @@
       "courses": "Courses",
       "certificates": "Certificates",
       "stages": "Stages & Subjects",
-      "auditLog": "Audit Log",
-      "logout": "Log Out"
+      "auditLog": "Audit Log"
     },
     "overview": {
       "statsUsers": "Total Users",
@@ -335,7 +333,6 @@
       "colDisabled": "Disabled",
       "yes": "Yes",
       "no": "No",
-      "statsTotal": "Total Users",
       "resultsCount": "{count} results",
       "addUser": "Add Account",
       "addUserSubmit": "Create Account",
