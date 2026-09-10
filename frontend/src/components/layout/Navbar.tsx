@@ -85,7 +85,6 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2 md:hidden">
-          <ThemeToggle />
           <button className="text-heading" onClick={() => setOpen(!open)} aria-label={t("menu")}>
             {open ? <X size={22} /> : <Menu size={22} />}
           </button>
