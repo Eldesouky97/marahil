@@ -13,12 +13,10 @@ import { DashboardTopbar } from "./DashboardTopbar";
  */
 export function DashboardShell({
   navItems,
-  homeHref,
   roleLabel,
   children,
 }: {
   navItems: DashboardNavItem[];
-  homeHref: string;
   roleLabel: string;
   children: React.ReactNode;
 }) {
@@ -27,12 +25,7 @@ export function DashboardShell({
 
   return (
     <div className="min-h-screen bg-bg">
-      <DashboardSidebar
-        navItems={navItems}
-        homeHref={homeHref}
-        open={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
+      <DashboardSidebar navItems={navItems} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="ms-0 md:ms-64">
         <DashboardTopbar onMenuClick={() => setSidebarOpen(true)} roleLabel={roleLabel} />
         <main className="p-5 md:p-8">

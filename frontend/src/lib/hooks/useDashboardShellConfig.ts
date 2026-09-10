@@ -7,7 +7,6 @@ import type { DashboardNavItem } from "@/components/dashboard/DashboardSidebar";
 
 interface DashboardShellConfig {
   navItems: DashboardNavItem[];
-  homeHref: string;
   roleLabel: string;
 }
 
@@ -38,7 +37,6 @@ export function useDashboardShellConfig(): DashboardShellConfig | null {
         { href: "/dashboard/admin/stages", icon: SlidersHorizontal, label: tAdminSidebar("stages") },
         { href: "/dashboard/admin/audit-log", icon: History, label: tAdminSidebar("auditLog") },
       ],
-      homeHref: "/dashboard/admin",
       roleLabel: tUsers("role_admin"),
     };
   }
@@ -50,7 +48,6 @@ export function useDashboardShellConfig(): DashboardShellConfig | null {
         { href: "/dashboard/teacher/courses/new", icon: Plus, label: tTeacher("newCourse") },
         { href: "/courses", icon: BookOpen, label: tNav("courses") },
       ],
-      homeHref: "/dashboard/teacher",
       roleLabel: tUsers("role_teacher"),
     };
   }
@@ -61,7 +58,6 @@ export function useDashboardShellConfig(): DashboardShellConfig | null {
       { href: "/courses", icon: BookOpen, label: tNav("courses") },
       { href: "/verify", icon: ShieldCheck, label: tNav("verify") },
     ],
-    homeHref: "/dashboard/student",
     roleLabel: tUsers("role_student"),
   };
 }
