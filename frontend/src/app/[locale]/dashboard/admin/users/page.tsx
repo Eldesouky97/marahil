@@ -1,10 +1,10 @@
-import { RoleGuard } from "@/components/auth/RoleGuard";
+import { Suspense } from "react";
 import { AdminUsersView } from "@/components/dashboard/admin/AdminUsersView";
 
 export default function AdminUsersPage() {
   return (
-    <RoleGuard role="admin">
+    <Suspense>
       <AdminUsersView />
-    </RoleGuard>
+    </Suspense>
   );
 }

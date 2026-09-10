@@ -225,6 +225,18 @@
     "progressComplete": "{progress}% مكتمل"
   },
   "dashboardAdmin": {
+    "sidebar": {
+      "overview": "الرئيسية",
+      "users": "المستخدمون",
+      "courses": "الدورات",
+      "certificates": "الشهادات",
+      "stages": "المراحل والمواد",
+      "auditLog": "سجلّ النشاط",
+      "logout": "تسجيل الخروج"
+    },
+    "topbar": {
+      "searchPlaceholder": "ابحث عن مستخدم..."
+    },
     "overview": {
       "statsUsers": "إجمالي المستخدمين",
       "statsTeachers": "المعلّمون",
@@ -233,11 +245,14 @@
       "statsPublished": "المنشورة",
       "statsCertificates": "الشهادات الصادرة",
       "statsPendingTeachers": "معلّمون بانتظار الموافقة",
-      "manageUsers": "إدارة المستخدمين",
-      "manageCourses": "إدارة الدورات",
-      "manageCertificates": "إدارة الشهادات",
-      "manageStages": "إدارة المراحل والمواد",
-      "manageAuditLog": "سجلّ النشاط"
+      "recentUsers": "آخر المسجَّلين",
+      "recentActivity": "آخر الأنشطة",
+      "viewAll": "عرض الكل",
+      "newSignupsChart": "تسجيلات جديدة (آخر 6 أشهر)",
+      "usersByRoleChart": "توزيع المستخدمين",
+      "roleStudents": "طلاب",
+      "roleTeachers": "معلّمون",
+      "roleAdmins": "مديرون"
     },
     "users": {
       "title": "إدارة المستخدمين",

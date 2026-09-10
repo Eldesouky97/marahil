@@ -225,6 +225,18 @@
     "progressComplete": "{progress}% complete"
   },
   "dashboardAdmin": {
+    "sidebar": {
+      "overview": "Overview",
+      "users": "Users",
+      "courses": "Courses",
+      "certificates": "Certificates",
+      "stages": "Stages & Subjects",
+      "auditLog": "Audit Log",
+      "logout": "Log Out"
+    },
+    "topbar": {
+      "searchPlaceholder": "Search for a user..."
+    },
     "overview": {
       "statsUsers": "Total Users",
       "statsTeachers": "Teachers",
@@ -233,11 +245,14 @@
       "statsPublished": "Published",
       "statsCertificates": "Certificates Issued",
       "statsPendingTeachers": "Teachers Awaiting Approval",
-      "manageUsers": "Manage Users",
-      "manageCourses": "Manage Courses",
-      "manageCertificates": "Manage Certificates",
-      "manageStages": "Manage Stages & Subjects",
-      "manageAuditLog": "Audit Log"
+      "recentUsers": "Recent Signups",
+      "recentActivity": "Recent Activity",
+      "viewAll": "View All",
+      "newSignupsChart": "New Signups (Last 6 Months)",
+      "usersByRoleChart": "Users by Role",
+      "roleStudents": "Students",
+      "roleTeachers": "Teachers",
+      "roleAdmins": "Admins"
     },
     "users": {
       "title": "Manage Users",

@@ -40,6 +40,15 @@
   --danger-ink: #4a100c;
   --success: #17a768;
 
+  /* Chart-only categorical steps (line/doughnut marks in the admin dashboard).
+     --primary is too dark to pass a chart mark's lightness band, so slot 1 is
+     a lighter on-brand blue instead of --primary itself; slots 2/3 reuse the
+     real --accent/--gold since those already sit in range. Validated with
+     dataviz's scripts/validate_palette.js — see CLAUDE.md's color-token section. */
+  --chart-1: #2a78d6;
+  --chart-2: var(--accent);
+  --chart-3: var(--gold);
+
   --background: var(--bg);
   --foreground: var(--body);
 }
@@ -82,6 +91,13 @@
   --danger: #e8827c;
   --danger-ink: #4a100c;
   --success: #34d399;
+
+  /* Dark-mode chart steps are NOT var(--accent)/var(--gold) here — those dark
+     UI values are tuned for text contrast and sit too light for a chart mark's
+     dark-mode lightness band. Re-validated separately for the dark surface. */
+  --chart-1: #3987e5;
+  --chart-2: #199e70;
+  --chart-3: #c98500;
 }
 
 html[lang="en"] {
@@ -124,6 +140,10 @@ html[lang="en"] {
   --color-danger: var(--danger);
   --color-danger-ink: var(--danger-ink);
   --color-success: var(--success);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
 
   --font-display: var(--font-cairo), "Segoe UI", sans-serif;
   --font-body: var(--font-cairo), "Segoe UI", sans-serif;

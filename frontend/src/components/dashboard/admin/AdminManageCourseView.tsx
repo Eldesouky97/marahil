@@ -13,7 +13,6 @@ import { AdminLessonEditForm } from "./AdminLessonEditForm";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { Button } from "@/components/ui/Button";
 import { Spinner } from "@/components/ui/Spinner";
-import { Container } from "@/components/ui/Container";
 
 export function AdminManageCourseView({ courseId }: { courseId: string }) {
   const router = useRouter();
@@ -53,9 +52,8 @@ export function AdminManageCourseView({ courseId }: { courseId: string }) {
   }
 
   return (
-    <section className="py-12">
-      <Container>
-        <DashboardHeader
+    <>
+      <DashboardHeader
           title={course.title}
           action={
             confirmingDelete ? (
@@ -113,7 +111,6 @@ export function AdminManageCourseView({ courseId }: { courseId: string }) {
             )
           )}
         </div>
-      </Container>
-    </section>
+    </>
   );
 }

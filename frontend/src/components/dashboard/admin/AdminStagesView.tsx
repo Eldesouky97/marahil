@@ -7,7 +7,6 @@ import { getStageSubjectsOverrides } from "@/lib/firebase/stages";
 import { AdminStageSubjectsEditor } from "./AdminStageSubjectsEditor";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { Spinner } from "@/components/ui/Spinner";
-import { Container } from "@/components/ui/Container";
 import type { StageId } from "@/types/stage";
 
 export function AdminStagesView() {
@@ -26,29 +25,25 @@ export function AdminStagesView() {
 
   if (overrides === null) {
     return (
-      <section className="py-12">
-        <Container>
-          <DashboardHeader title={t("title")} />
-          <div className="flex justify-center py-16">
-            <Spinner />
-          </div>
-        </Container>
-      </section>
+      <>
+        <DashboardHeader title={t("title")} />
+        <div className="flex justify-center py-16">
+          <Spinner />
+        </div>
+      </>
     );
   }
 
   const stages = staticStages.map((s) => (overrides[s.id] ? { ...s, subjects: overrides[s.id]! } : s));
 
   return (
-    <section className="py-12">
-      <Container>
-        <DashboardHeader title={t("title")} />
-        <div className="space-y-4">
-          {stages.map((stage) => (
-            <AdminStageSubjectsEditor key={stage.id} stage={stage} />
-          ))}
-        </div>
-      </Container>
-    </section>
+    <>
+      <DashboardHeader title={t("title")} />
+      <div className="space-y-4">
+        {stages.map((stage) => (
+          <AdminStageSubjectsEditor key={stage.id} stage={stage} />
+        ))}
+      </div>
+    </>
   );
 }
