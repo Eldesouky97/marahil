@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Award, BookOpen, History, LayoutDashboard, Plus, ShieldCheck, SlidersHorizontal, User, Users } from "lucide-react";
+import { Award, BookOpen, History, LayoutDashboard, Plus, ShieldCheck, SlidersHorizontal, Users } from "lucide-react";
 import { useAuth } from "@/context/AuthProvider";
 import type { DashboardNavItem } from "@/components/dashboard/DashboardSidebar";
 
@@ -16,6 +16,8 @@ interface DashboardShellConfig {
  * dashboard/{admin,teacher,student}/layout.tsx. Now also consumed by
  * SiteChrome so the same shell can wrap every route a signed-in user visits
  * (not just /dashboard/*) without those layouts rendering it a second time.
+ * "Site home" and "profile" aren't in these lists — DashboardSidebar.tsx
+ * renders both itself (top and bottom respectively) for every role.
  */
 export function useDashboardShellConfig(): DashboardShellConfig | null {
   const { profile } = useAuth();
@@ -35,7 +37,6 @@ export function useDashboardShellConfig(): DashboardShellConfig | null {
         { href: "/dashboard/admin/certificates", icon: Award, label: tAdminSidebar("certificates") },
         { href: "/dashboard/admin/stages", icon: SlidersHorizontal, label: tAdminSidebar("stages") },
         { href: "/dashboard/admin/audit-log", icon: History, label: tAdminSidebar("auditLog") },
-        { href: "/profile", icon: User, label: tNav("profile") },
       ],
       homeHref: "/dashboard/admin",
       roleLabel: tUsers("role_admin"),
@@ -48,7 +49,6 @@ export function useDashboardShellConfig(): DashboardShellConfig | null {
         { href: "/dashboard/teacher", icon: LayoutDashboard, label: tNav("dashboard") },
         { href: "/dashboard/teacher/courses/new", icon: Plus, label: tTeacher("newCourse") },
         { href: "/courses", icon: BookOpen, label: tNav("courses") },
-        { href: "/profile", icon: User, label: tNav("profile") },
       ],
       homeHref: "/dashboard/teacher",
       roleLabel: tUsers("role_teacher"),
@@ -60,7 +60,6 @@ export function useDashboardShellConfig(): DashboardShellConfig | null {
       { href: "/dashboard/student", icon: LayoutDashboard, label: tNav("dashboard") },
       { href: "/courses", icon: BookOpen, label: tNav("courses") },
       { href: "/verify", icon: ShieldCheck, label: tNav("verify") },
-      { href: "/profile", icon: User, label: tNav("profile") },
     ],
     homeHref: "/dashboard/student",
     roleLabel: tUsers("role_student"),

@@ -1,7 +1,7 @@
 "use client";
 
 import type { LucideIcon } from "lucide-react";
-import { Home, LogOut, X } from "lucide-react";
+import { Home, LogOut, User, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Logo } from "@/components/layout/Logo";
@@ -14,14 +14,24 @@ export interface DashboardNavItem {
   label: string;
 }
 
+function navLinkClasses(active: boolean) {
+  return cn(
+    "flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-white/80 transition-colors",
+    active
+      ? "bg-gradient-to-l from-accent to-accent-strong text-accent-ink shadow-[0_4px_15px_rgba(0,0,0,0.25)]"
+      : "hover:bg-white/10 hover:text-white"
+  );
+}
+
 /**
  * The one sidebar every signed-in role gets under /dashboard — same shell,
  * different `navItems` per role (see each role's layout.tsx). Fixed rail on
  * desktop, off-canvas drawer below `md` (logical `start-0`/translate classes
- * so it flips side automatically between the `ar` and `en` locales). The
- * "site home" and "logout" links at the bottom are the same for every role,
- * so they're sourced from the `nav` namespace here directly instead of being
- * threaded through as props from each role's layout.tsx.
+ * so it flips side automatically between the `ar` and `en` locales). "Site
+ * home" (top, above the role's own nav items) and "profile" + "logout"
+ * (bottom footer) are the same for every role, so they're sourced from the
+ * `nav` namespace here directly instead of being threaded through as props
+ * or included in each role's `navItems`.
  */
 export function DashboardSidebar({
   navItems,
@@ -62,35 +72,23 @@ export function DashboardSidebar({
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-5">
-          {navItems.map((item) => {
-            const active = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={onClose}
-                className={cn(
-                  "flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-white/80 transition-colors",
-                  active
-                    ? "bg-gradient-to-l from-accent to-accent-strong text-accent-ink shadow-[0_4px_15px_rgba(0,0,0,0.25)]"
-                    : "hover:bg-white/10 hover:text-white"
-                )}
-              >
-                <item.icon size={18} />
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
+          <Link href="/" onClick={onClose} className={navLinkClasses(pathname === "/")}>
+            <Home size={18} />
+            <span>{t("siteHome")}</span>
+          </Link>
+
+          {navItems.map((item) => (
+            <Link key={item.href} href={item.href} onClick={onClose} className={navLinkClasses(pathname === item.href)}>
+              <item.icon size={18} />
+              <span>{item.label}</span>
+            </Link>
+          ))}
         </nav>
 
         <div className="space-y-1 border-t border-white/10 p-3">
-          <Link
-            href="/"
-            onClick={onClose}
-            className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white"
-          >
-            <Home size={18} />
-            <span>{t("siteHome")}</span>
+          <Link href="/profile" onClick={onClose} className={navLinkClasses(pathname === "/profile")}>
+            <User size={18} />
+            <span>{t("profile")}</span>
           </Link>
           <button
             onClick={() => logoutUser()}
