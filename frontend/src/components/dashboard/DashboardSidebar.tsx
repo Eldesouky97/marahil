@@ -1,7 +1,8 @@
 "use client";
 
 import type { LucideIcon } from "lucide-react";
-import { LogOut, X } from "lucide-react";
+import { Home, LogOut, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Logo } from "@/components/layout/Logo";
 import { logoutUser } from "@/lib/firebase/auth";
@@ -17,22 +18,24 @@ export interface DashboardNavItem {
  * The one sidebar every signed-in role gets under /dashboard — same shell,
  * different `navItems` per role (see each role's layout.tsx). Fixed rail on
  * desktop, off-canvas drawer below `md` (logical `start-0`/translate classes
- * so it flips side automatically between the `ar` and `en` locales).
+ * so it flips side automatically between the `ar` and `en` locales). The
+ * "site home" and "logout" links at the bottom are the same for every role,
+ * so they're sourced from the `nav` namespace here directly instead of being
+ * threaded through as props from each role's layout.tsx.
  */
 export function DashboardSidebar({
   navItems,
   homeHref,
-  logoutLabel,
   open,
   onClose,
 }: {
   navItems: DashboardNavItem[];
   homeHref: string;
-  logoutLabel: string;
   open: boolean;
   onClose: () => void;
 }) {
   const pathname = usePathname();
+  const t = useTranslations("nav");
 
   return (
     <>
@@ -80,13 +83,21 @@ export function DashboardSidebar({
           })}
         </nav>
 
-        <div className="border-t border-white/10 p-3">
+        <div className="space-y-1 border-t border-white/10 p-3">
+          <Link
+            href="/"
+            onClick={onClose}
+            className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            <Home size={18} />
+            <span>{t("siteHome")}</span>
+          </Link>
           <button
             onClick={() => logoutUser()}
             className="flex w-full cursor-pointer items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-white/70 transition-colors hover:bg-danger/20 hover:text-white"
           >
             <LogOut size={18} />
-            <span>{logoutLabel}</span>
+            <span>{t("logout")}</span>
           </button>
         </div>
       </aside>

@@ -14,7 +14,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const tNav = useTranslations("nav");
 
   const navItems = [
-    { href: "/dashboard/admin", icon: LayoutDashboard, label: t("overview") },
+    { href: "/dashboard/admin", icon: LayoutDashboard, label: tNav("dashboard") },
     { href: "/dashboard/admin/users", icon: Users, label: t("users") },
     { href: "/dashboard/admin/courses", icon: BookOpen, label: t("courses") },
     { href: "/dashboard/admin/certificates", icon: Award, label: t("certificates") },
@@ -28,7 +28,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         navItems={navItems}
         homeHref="/dashboard/admin"
         roleLabel={tUsers("role_admin")}
-        logoutLabel={tNav("logout")}
         search={{
           placeholder: tTopbar("searchPlaceholder"),
           onSubmit: (query) =>

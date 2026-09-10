@@ -13,7 +13,8 @@
     "dashboard": "Dashboard",
     "profile": "Profile",
     "startNow": "Get Started",
-    "menu": "Menu"
+    "menu": "Menu",
+    "siteHome": "Site Home Page"
   },
   "hero": {
     "badge": "Marahil Learning Platform",
@@ -236,7 +237,6 @@
   },
   "dashboardAdmin": {
     "sidebar": {
-      "overview": "Overview",
       "users": "Users",
       "courses": "Courses",
       "certificates": "Certificates",

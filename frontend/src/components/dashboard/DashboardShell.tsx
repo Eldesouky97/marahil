@@ -14,14 +14,12 @@ export function DashboardShell({
   navItems,
   homeHref,
   roleLabel,
-  logoutLabel,
   search,
   children,
 }: {
   navItems: DashboardNavItem[];
   homeHref: string;
   roleLabel: string;
-  logoutLabel: string;
   search?: DashboardTopbarSearch;
   children: React.ReactNode;
 }) {
@@ -32,7 +30,6 @@ export function DashboardShell({
       <DashboardSidebar
         navItems={navItems}
         homeHref={homeHref}
-        logoutLabel={logoutLabel}
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
       />

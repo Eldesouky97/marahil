@@ -19,12 +19,7 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
 
   return (
     <RoleGuard role="teacher">
-      <DashboardShell
-        navItems={navItems}
-        homeHref="/dashboard/teacher"
-        roleLabel={tUsers("role_teacher")}
-        logoutLabel={t("logout")}
-      >
+      <DashboardShell navItems={navItems} homeHref="/dashboard/teacher" roleLabel={tUsers("role_teacher")}>
         {children}
       </DashboardShell>
     </RoleGuard>

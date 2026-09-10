@@ -13,7 +13,8 @@
     "dashboard": "لوحة التحكم",
     "profile": "الملف الشخصي",
     "startNow": "ابدأ الآن",
-    "menu": "القائمة"
+    "menu": "القائمة",
+    "siteHome": "الصفحة الرئيسية للموقع"
   },
   "hero": {
     "badge": "منصة مراحل التعليمية",
@@ -236,7 +237,6 @@
   },
   "dashboardAdmin": {
     "sidebar": {
-      "overview": "الرئيسية",
       "users": "المستخدمون",
       "courses": "الدورات",
       "certificates": "الشهادات",

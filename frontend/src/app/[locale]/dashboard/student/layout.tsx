@@ -18,12 +18,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
 
   return (
     <RoleGuard role="student">
-      <DashboardShell
-        navItems={navItems}
-        homeHref="/dashboard/student"
-        roleLabel={tUsers("role_student")}
-        logoutLabel={t("logout")}
-      >
+      <DashboardShell navItems={navItems} homeHref="/dashboard/student" roleLabel={tUsers("role_student")}>
         {children}
       </DashboardShell>
     </RoleGuard>
