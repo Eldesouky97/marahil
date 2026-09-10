@@ -327,6 +327,7 @@
       "bulkEnable": "Enable Selected",
       "resetPassword": "Reset Password",
       "resetPasswordSent": "Link Sent",
+      "changeRoleTo": "Change to {role}",
       "colName": "Name",
       "colEmail": "Email",
       "colRole": "Role",

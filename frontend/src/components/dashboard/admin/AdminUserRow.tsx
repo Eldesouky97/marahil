@@ -2,14 +2,17 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { KeyRound, Trash2, UserRound } from "lucide-react";
+import { CheckCircle2, KeyRound, Trash2, UserCog, UserRound, UserX, UserCheck as UserCheckIcon } from "lucide-react";
 import { useAdminUserRowActions } from "@/lib/hooks/useAdminUserRowActions";
 import { initials } from "@/lib/utils/initials";
 import { AdminUserActionsMenu, type AdminUserMenuItem } from "./AdminUserActionsMenu";
+import { AdminUserIconButton } from "./AdminUserIconButton";
 import { AdminUserDetails } from "./AdminUserDetails";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import type { AppUser } from "@/types/user";
+import type { AppUser, UserRole } from "@/types/user";
+
+const ROLES: UserRole[] = ["student", "teacher", "admin"];
 
 interface AdminUserRowProps {
   user: AppUser;
@@ -41,6 +44,12 @@ export function AdminUserRow({ user, selected, selectable, onToggleSelect, onDel
   } = useAdminUserRowActions(user, onDeleted);
 
   const menuItems: AdminUserMenuItem[] = [
+    ...ROLES.filter((r) => r !== role).map((r) => ({
+      label: t("changeRoleTo", { role: t(`role_${r}`) }),
+      icon: UserCog,
+      onClick: () => handleRoleChange(r),
+      disabled: locked,
+    })),
     {
       label: resetSent ? t("resetPasswordSent") : t("resetPassword"),
       icon: KeyRound,
@@ -53,7 +62,7 @@ export function AdminUserRow({ user, selected, selectable, onToggleSelect, onDel
 
   return (
     <div className="rounded-2xl border border-border bg-surface p-4 transition-colors hover:border-primary/20">
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex items-center gap-3">
         <input
           type="checkbox"
           checked={selected}
@@ -66,51 +75,36 @@ export function AdminUserRow({ user, selected, selectable, onToggleSelect, onDel
           {initials(user.name)}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="truncate font-medium">{user.name}</span>
-            <Badge>{t(`role_${role}`)}</Badge>
-            {role === "teacher" && (
-              <Badge className={pending ? "border-gold/40 bg-gold/10 text-gold-strong" : ""}>
-                {pending ? t("statusPending") : t("statusApproved")}
-              </Badge>
-            )}
-            {disabled && <Badge className="border-danger/40 bg-danger/10 text-danger-ink">{t("statusDisabled")}</Badge>}
-            {protectedAccount && <Badge className="border-gold/40 bg-gold/10 text-gold-strong">{t("protected")}</Badge>}
-          </div>
+          <div className="truncate font-medium">{user.name}</div>
           <div className="truncate text-xs text-dim" dir="ltr">
             {user.email}
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1">
           {pending && (
-            <Button variant="outline" onClick={handleApprove} disabled={saving} className="px-4 py-1.5 text-xs">
-              {t("approve")}
-            </Button>
+            <AdminUserIconButton icon={CheckCircle2} label={t("approve")} onClick={handleApprove} disabled={saving} tone="success" />
           )}
-
-          <Button
-            variant="outline"
+          <AdminUserIconButton
+            icon={disabled ? UserCheckIcon : UserX}
+            label={disabled ? t("enable") : t("disable")}
             onClick={handleToggleDisabled}
             disabled={locked}
-            className={`px-4 py-1.5 text-xs ${disabled ? "" : "border-danger/40 text-danger-ink hover:border-danger/60 hover:text-danger-ink"}`}
-          >
-            {disabled ? t("enable") : t("disable")}
-          </Button>
-
-          <select
-            value={role}
-            disabled={locked}
-            onChange={(e) => handleRoleChange(e.target.value as AppUser["role"])}
-            className="rounded-lg border border-border bg-surface px-3 py-1.5 text-xs text-body disabled:opacity-50"
-          >
-            <option value="student">{t("role_student")}</option>
-            <option value="teacher">{t("role_teacher")}</option>
-            <option value="admin">{t("role_admin")}</option>
-          </select>
-
+            tone={disabled ? "default" : "danger"}
+          />
           <AdminUserActionsMenu items={menuItems} />
         </div>
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-1.5">
+        <Badge>{t(`role_${role}`)}</Badge>
+        {role === "teacher" && (
+          <Badge className={pending ? "border-gold/40 bg-gold/10 text-gold-strong" : ""}>
+            {pending ? t("statusPending") : t("statusApproved")}
+          </Badge>
+        )}
+        {disabled && <Badge className="border-danger/40 bg-danger/10 text-danger-ink">{t("statusDisabled")}</Badge>}
+        {protectedAccount && <Badge className="border-gold/40 bg-gold/10 text-gold-strong">{t("protected")}</Badge>}
       </div>
 
       {confirmingDelete && (

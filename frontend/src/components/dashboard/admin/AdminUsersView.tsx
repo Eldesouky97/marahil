@@ -285,7 +285,7 @@ export function AdminUsersView() {
                   <th className="px-3 py-3 text-start">{t("colName")}</th>
                   <th className="px-3 py-3 text-start">{t("colRole")}</th>
                   <th className="px-3 py-3 text-start">{t("colStatus")}</th>
-                  <th className="px-3 py-3 text-start">{t("joined")}</th>
+                  <th className="hidden px-3 py-3 text-start lg:table-cell">{t("joined")}</th>
                   <th className="px-3 py-3" />
                 </tr>
               </thead>

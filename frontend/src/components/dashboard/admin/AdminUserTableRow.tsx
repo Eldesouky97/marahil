@@ -2,14 +2,17 @@
 
 import { Fragment, useState } from "react";
 import { useTranslations } from "next-intl";
-import { KeyRound, Trash2, UserRound } from "lucide-react";
+import { CheckCircle2, KeyRound, Trash2, UserCog, UserRound, UserX, UserCheck as UserCheckIcon } from "lucide-react";
 import { useAdminUserRowActions } from "@/lib/hooks/useAdminUserRowActions";
 import { initials } from "@/lib/utils/initials";
 import { AdminUserActionsMenu, type AdminUserMenuItem } from "./AdminUserActionsMenu";
+import { AdminUserIconButton } from "./AdminUserIconButton";
 import { AdminUserDetails } from "./AdminUserDetails";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import type { AppUser } from "@/types/user";
+import type { AppUser, UserRole } from "@/types/user";
+
+const ROLES: UserRole[] = ["student", "teacher", "admin"];
 
 interface AdminUserTableRowProps {
   user: AppUser;
@@ -41,6 +44,12 @@ export function AdminUserTableRow({ user, selected, selectable, onToggleSelect, 
   } = useAdminUserRowActions(user, onDeleted);
 
   const menuItems: AdminUserMenuItem[] = [
+    ...ROLES.filter((r) => r !== role).map((r) => ({
+      label: t("changeRoleTo", { role: t(`role_${r}`) }),
+      icon: UserCog,
+      onClick: () => handleRoleChange(r),
+      disabled: locked,
+    })),
     {
       label: resetSent ? t("resetPasswordSent") : t("resetPassword"),
       icon: KeyRound,
@@ -80,16 +89,7 @@ export function AdminUserTableRow({ user, selected, selectable, onToggleSelect, 
         </td>
 
         <td className="px-3 py-3">
-          <select
-            value={role}
-            disabled={locked}
-            onChange={(e) => handleRoleChange(e.target.value as AppUser["role"])}
-            className="rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs text-body disabled:opacity-50"
-          >
-            <option value="student">{t("role_student")}</option>
-            <option value="teacher">{t("role_teacher")}</option>
-            <option value="admin">{t("role_admin")}</option>
-          </select>
+          <Badge>{t(`role_${role}`)}</Badge>
         </td>
 
         <td className="px-3 py-3">
@@ -104,23 +104,22 @@ export function AdminUserTableRow({ user, selected, selectable, onToggleSelect, 
           </div>
         </td>
 
-        <td className="px-3 py-3 text-xs text-dim">{new Date(user.createdAt).toLocaleDateString()}</td>
+        <td className="hidden px-3 py-3 text-xs text-dim lg:table-cell">
+          {new Date(user.createdAt).toLocaleDateString()}
+        </td>
 
         <td className="px-3 py-3">
-          <div className="flex items-center justify-end gap-2">
+          <div className="flex items-center justify-end gap-1">
             {pending && (
-              <Button variant="outline" onClick={handleApprove} disabled={saving} className="px-3 py-1.5 text-xs">
-                {t("approve")}
-              </Button>
+              <AdminUserIconButton icon={CheckCircle2} label={t("approve")} onClick={handleApprove} disabled={saving} tone="success" />
             )}
-            <Button
-              variant="outline"
+            <AdminUserIconButton
+              icon={disabled ? UserCheckIcon : UserX}
+              label={disabled ? t("enable") : t("disable")}
               onClick={handleToggleDisabled}
               disabled={locked}
-              className={`px-3 py-1.5 text-xs ${disabled ? "" : "border-danger/40 text-danger-ink hover:border-danger/60 hover:text-danger-ink"}`}
-            >
-              {disabled ? t("enable") : t("disable")}
-            </Button>
+              tone={disabled ? "default" : "danger"}
+            />
             <AdminUserActionsMenu items={menuItems} />
           </div>
         </td>
