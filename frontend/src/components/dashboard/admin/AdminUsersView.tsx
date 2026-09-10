@@ -12,6 +12,7 @@ import { downloadExcel } from "@/lib/utils/exportExcel";
 import { useGovernorateLabel } from "@/lib/hooks/useGovernorates";
 import { PROTECTED_ADMIN_EMAIL } from "@/lib/constants";
 import { AdminUserRow } from "./AdminUserRow";
+import { AdminUserTableRow } from "./AdminUserTableRow";
 import { AdminAddUserForm } from "./AdminAddUserForm";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { Spinner } from "@/components/ui/Spinner";
@@ -265,19 +266,58 @@ export function AdminUsersView() {
           <p className="text-dim">{t("noUsers")}</p>
         </div>
       ) : (
-        <div className="space-y-3">
-          {filtered.map((u) => (
-            <AdminUserRow
-              key={`${u.uid}:${listVersion}`}
-              user={u}
-              isSelf={u.uid === profile?.uid}
-              selected={selected.has(u.uid)}
-              selectable={selectableIds.includes(u.uid)}
-              onToggleSelect={toggleSelect}
-              onDeleted={handleUserDeleted}
-            />
-          ))}
-        </div>
+        <>
+          {/* Desktop: a real table — much easier to scan a long user list than a stack of cards. */}
+          <div className="hidden overflow-x-auto rounded-2xl border border-border md:block">
+            <table className="w-full border-collapse text-start">
+              <thead className="border-b border-border bg-surface-2 text-xs font-medium text-dim">
+                <tr>
+                  <th className="w-10 px-3 py-3">
+                    <input
+                      type="checkbox"
+                      checked={allSelected}
+                      disabled={selectableIds.length === 0}
+                      onChange={toggleSelectAll}
+                      className="h-4 w-4 disabled:opacity-30"
+                      aria-label={t("selectAll")}
+                    />
+                  </th>
+                  <th className="px-3 py-3 text-start">{t("colName")}</th>
+                  <th className="px-3 py-3 text-start">{t("colRole")}</th>
+                  <th className="px-3 py-3 text-start">{t("colStatus")}</th>
+                  <th className="px-3 py-3 text-start">{t("joined")}</th>
+                  <th className="px-3 py-3" />
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((u) => (
+                  <AdminUserTableRow
+                    key={`${u.uid}:${listVersion}`}
+                    user={u}
+                    selected={selected.has(u.uid)}
+                    selectable={selectableIds.includes(u.uid)}
+                    onToggleSelect={toggleSelect}
+                    onDeleted={handleUserDeleted}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile: cards — a table doesn't fit a narrow screen. */}
+          <div className="space-y-3 md:hidden">
+            {filtered.map((u) => (
+              <AdminUserRow
+                key={`${u.uid}:${listVersion}`}
+                user={u}
+                selected={selected.has(u.uid)}
+                selectable={selectableIds.includes(u.uid)}
+                onToggleSelect={toggleSelect}
+                onDeleted={handleUserDeleted}
+              />
+            ))}
+          </div>
+        </>
       )}
     </>
   );
