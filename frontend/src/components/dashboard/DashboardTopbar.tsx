@@ -1,23 +1,31 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
 import { Menu, Search, User as UserIcon } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "@/i18n/navigation";
 import { useAuth } from "@/context/AuthProvider";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
-export function AdminTopbar({ onMenuClick }: { onMenuClick: () => void }) {
-  const router = useRouter();
+export interface DashboardTopbarSearch {
+  placeholder: string;
+  onSubmit: (query: string) => void;
+}
+
+export function DashboardTopbar({
+  onMenuClick,
+  roleLabel,
+  search,
+}: {
+  onMenuClick: () => void;
+  roleLabel: string;
+  search?: DashboardTopbarSearch;
+}) {
   const { profile } = useAuth();
-  const t = useTranslations("dashboardAdmin.topbar");
-  const tRole = useTranslations("dashboardAdmin.users");
   const [query, setQuery] = useState("");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    router.push(query.trim() ? `/dashboard/admin/users?q=${encodeURIComponent(query.trim())}` : "/dashboard/admin/users");
+    search?.onSubmit(query.trim());
   }
 
   return (
@@ -26,16 +34,18 @@ export function AdminTopbar({ onMenuClick }: { onMenuClick: () => void }) {
         <Menu size={22} />
       </button>
 
-      <form onSubmit={handleSubmit} className="relative max-w-md flex-1">
-        <Search size={16} className="absolute top-1/2 -translate-y-1/2 text-faint start-4" />
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={t("searchPlaceholder")}
-          className="w-full rounded-xl border border-border bg-bg py-2.5 text-sm text-body outline-none ps-10 pe-4 focus:border-accent/50"
-        />
-      </form>
+      {search && (
+        <form onSubmit={handleSubmit} className="relative max-w-md flex-1">
+          <Search size={16} className="absolute top-1/2 -translate-y-1/2 text-faint start-4" />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={search.placeholder}
+            className="w-full rounded-xl border border-border bg-bg py-2.5 text-sm text-body outline-none ps-10 pe-4 focus:border-accent/50"
+          />
+        </form>
+      )}
 
       <div className="ms-auto flex items-center gap-3">
         <ThemeToggle />
@@ -50,7 +60,7 @@ export function AdminTopbar({ onMenuClick }: { onMenuClick: () => void }) {
             )}
             <div className="hidden sm:block">
               <p className="text-xs font-bold leading-tight">{profile.name}</p>
-              <p className="text-[11px] leading-tight text-dim">{tRole("role_admin")}</p>
+              <p className="text-[11px] leading-tight text-dim">{roleLabel}</p>
             </div>
           </div>
         )}

@@ -1,33 +1,38 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import {
-  Award,
-  BookOpen,
-  History,
-  LayoutDashboard,
-  LogOut,
-  SlidersHorizontal,
-  Users,
-  X,
-} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { LogOut, X } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Logo } from "@/components/layout/Logo";
 import { logoutUser } from "@/lib/firebase/auth";
 import { cn } from "@/lib/utils/cn";
 
-export function AdminSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const pathname = usePathname();
-  const t = useTranslations("dashboardAdmin.sidebar");
+export interface DashboardNavItem {
+  href: string;
+  icon: LucideIcon;
+  label: string;
+}
 
-  const navItems = [
-    { href: "/dashboard/admin", icon: LayoutDashboard, label: t("overview") },
-    { href: "/dashboard/admin/users", icon: Users, label: t("users") },
-    { href: "/dashboard/admin/courses", icon: BookOpen, label: t("courses") },
-    { href: "/dashboard/admin/certificates", icon: Award, label: t("certificates") },
-    { href: "/dashboard/admin/stages", icon: SlidersHorizontal, label: t("stages") },
-    { href: "/dashboard/admin/audit-log", icon: History, label: t("auditLog") },
-  ];
+/**
+ * The one sidebar every signed-in role gets under /dashboard — same shell,
+ * different `navItems` per role (see each role's layout.tsx). Fixed rail on
+ * desktop, off-canvas drawer below `md` (logical `start-0`/translate classes
+ * so it flips side automatically between the `ar` and `en` locales).
+ */
+export function DashboardSidebar({
+  navItems,
+  homeHref,
+  logoutLabel,
+  open,
+  onClose,
+}: {
+  navItems: DashboardNavItem[];
+  homeHref: string;
+  logoutLabel: string;
+  open: boolean;
+  onClose: () => void;
+}) {
+  const pathname = usePathname();
 
   return (
     <>
@@ -45,7 +50,7 @@ export function AdminSidebar({ open, onClose }: { open: boolean; onClose: () => 
         )}
       >
         <div className="flex items-center justify-between gap-3 border-b border-white/10 px-5 py-6">
-          <Link href="/dashboard/admin" className="flex items-center gap-2">
+          <Link href={homeHref} className="flex items-center gap-2">
             <Logo size={36} />
           </Link>
           <button onClick={onClose} className="text-white/70 hover:text-white md:hidden" aria-label="close">
@@ -81,7 +86,7 @@ export function AdminSidebar({ open, onClose }: { open: boolean; onClose: () => 
             className="flex w-full cursor-pointer items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-white/70 transition-colors hover:bg-danger/20 hover:text-white"
           >
             <LogOut size={18} />
-            <span>{t("logout")}</span>
+            <span>{logoutLabel}</span>
           </button>
         </div>
       </aside>

@@ -9,8 +9,7 @@ import { routing } from "@/i18n/routing";
 import { AuthProvider } from "@/context/AuthProvider";
 import { ThemeProvider } from "@/context/ThemeProvider";
 import { ThemeScript } from "@/components/theme/ThemeScript";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
+import { SiteChrome } from "@/components/layout/SiteChrome";
 import { AnalyticsInit } from "@/components/analytics/AnalyticsInit";
 
 const cairo = Cairo({
@@ -67,9 +66,7 @@ export default async function RootLayout({
           <ThemeProvider>
             <AuthProvider>
               <AnalyticsInit />
-              <Navbar />
-              <main className="flex-1">{children}</main>
-              <Footer />
+              <SiteChrome>{children}</SiteChrome>
             </AuthProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
