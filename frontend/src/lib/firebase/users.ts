@@ -49,6 +49,9 @@ function mapUser(uid: string, data: DocumentData): AppUser {
     workplace: data.workplace,
     jobTitle: data.jobTitle,
     nationalId: data.nationalId,
+    xp: data.xp ?? 0,
+    streakCount: data.streakCount ?? 0,
+    lastActiveDate: data.lastActiveDate,
   };
 }
 
@@ -121,4 +124,42 @@ export async function updateUserProfileFields(uid: string, fields: { name: strin
  */
 export async function deleteUserProfile(uid: string): Promise<void> {
   await deleteDoc(doc(db, "users", uid));
+}
+
+/** Must stay equal to the per-write XP cap in backend/firestore.rules' users update rule. */
+export const XP_PER_LESSON = 10;
+
+export interface LessonCompletionRewards {
+  xp: number;
+  streakCount: number;
+  lastActiveDate: string;
+}
+
+/**
+ * Self-service — called from useLessonPlayer.completeLesson() right after
+ * every lesson completion (quiz or plain "mark complete"). Same "no Cloud
+ * Function to verify a real lesson was completed" limitation as
+ * enrollments.completedLessonIds — the matching Firestore rule caps how much
+ * xp/streakCount can move per write, it can't verify the lesson was real.
+ * Streak increments once per UTC calendar day, resets to 1 after a gap of
+ * more than 1.5 days (grace window for date-boundary edge cases).
+ */
+export async function awardLessonCompletionRewards(
+  uid: string,
+  currentXp: number,
+  currentStreak: number,
+  lastActiveDate: string | undefined
+): Promise<LessonCompletionRewards> {
+  const today = new Date().toISOString().slice(0, 10);
+  let streakCount = currentStreak;
+
+  if (lastActiveDate !== today) {
+    const oneDayMs = 24 * 60 * 60 * 1000;
+    const dayGapMs = lastActiveDate ? new Date(today).getTime() - new Date(lastActiveDate).getTime() : Infinity;
+    streakCount = dayGapMs <= oneDayMs * 1.5 ? currentStreak + 1 : 1;
+  }
+
+  const xp = currentXp + XP_PER_LESSON;
+  await updateDoc(doc(db, "users", uid), { xp, streakCount, lastActiveDate: today });
+  return { xp, streakCount, lastActiveDate: today };
 }

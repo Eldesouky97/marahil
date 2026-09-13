@@ -5,6 +5,7 @@ import { ArrowLeft, PlayCircle, Sparkles } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Constellation } from "./Constellation";
 import { FeaturedCoursesSlider } from "./FeaturedCoursesSlider";
+import { AvatarStack } from "./AvatarStack";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -47,6 +48,11 @@ export function Hero() {
               <PlayCircle size={18} /> {t("ctaStudent")}
             </Button>
           </Link>
+        </div>
+
+        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <AvatarStack />
+          <p className="text-sm text-dim">{t("trustBar", { students: "8,600+", teachers: "300+" })}</p>
         </div>
       </Container>
     </section>

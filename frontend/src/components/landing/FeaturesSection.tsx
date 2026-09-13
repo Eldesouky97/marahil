@@ -7,6 +7,8 @@ import { ScrollReveal } from "./ScrollReveal";
 import { Container } from "@/components/ui/Container";
 
 const ICONS = [Video, ListChecks, ClipboardCheck, Award, BarChart3, MessageSquare];
+const SPANS = ["lg", "md", "sm", "sm", "sm", "lg"] as const;
+const WIDGETS = [undefined, undefined, "quiz", undefined, "chart", undefined] as const;
 
 export function FeaturesSection() {
   const t = useTranslations("features");
@@ -20,9 +22,9 @@ export function FeaturesSection() {
           <h2 className="mb-4 font-display text-3xl text-heading">{t("title")}</h2>
           <p className="leading-relaxed text-dim">{t("description")}</p>
         </div>
-        <ScrollReveal className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <ScrollReveal className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-12">
           {items.map((f, i) => (
-            <FeatureCard key={f.title} icon={ICONS[i]} title={f.title} desc={f.desc} />
+            <FeatureCard key={f.title} icon={ICONS[i]} title={f.title} desc={f.desc} span={SPANS[i]} widget={WIDGETS[i]} />
           ))}
         </ScrollReveal>
       </Container>

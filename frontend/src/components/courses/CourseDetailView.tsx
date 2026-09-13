@@ -58,6 +58,7 @@ export function CourseDetailView({ courseId }: { courseId: string }) {
             lessons={lessons}
             completedLessonIds={enrollment?.completedLessonIds ?? []}
             canAccess={canAccess}
+            isTeacherPreview={profile?.uid === course.teacherId}
           />
         </div>
 

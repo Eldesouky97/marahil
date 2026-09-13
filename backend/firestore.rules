@@ -64,10 +64,30 @@ service cloud.firestore {
       // email, role, or disabled flag through this rule; only a human editing
       // Firestore directly in the Firebase Console can. Everything else about
       // it (name, photo, personal details) stays normally admin-editable.
+      //
+      // xp/streakCount/lastActiveDate are self-reported client-side rewards
+      // (see lib/firebase/users.ts awardLessonCompletionRewards(), called
+      // after completeLesson()) — same "no Cloud Function to verify a real
+      // lesson was completed" limitation as enrollments.completedLessonIds
+      // above. The best available guard on Spark: xp/streakCount can only
+      // move forward, and a single write can never grant more than one
+      // lesson's worth of xp (10 below must stay equal to XP_PER_LESSON in
+      // lib/firebase/users.ts). streakCount may only stay unchanged, go up
+      // by exactly 1, or reset to exactly 1 (a legitimate streak-break reset
+      // — a plain "non-decreasing" check would wrongly reject that). This
+      // can't stop someone from calling completeLesson() once per real lesson
+      // as fast as they can click through a course — same trade-off already
+      // accepted for completedLessonIds padding.
       allow update: if (isOwner(uid)
           && request.resource.data.role == resource.data.role
           && request.resource.data.status == resource.data.status
-          && request.resource.data.get('disabled', false) == resource.data.get('disabled', false))
+          && request.resource.data.get('disabled', false) == resource.data.get('disabled', false)
+          && request.resource.data.get('xp', 0) >= resource.data.get('xp', 0)
+          && request.resource.data.get('xp', 0) - resource.data.get('xp', 0) <= 10
+          && (request.resource.data.get('streakCount', 0) == resource.data.get('streakCount', 0)
+              || request.resource.data.get('streakCount', 0) == resource.data.get('streakCount', 0) + 1
+              || request.resource.data.get('streakCount', 0) == 1)
+          && request.resource.data.get('lastActiveDate', '') >= resource.data.get('lastActiveDate', ''))
         || (isAdmin()
             && (!isProtectedAccount()
                 || (request.resource.data.email == resource.data.email

@@ -40,6 +40,14 @@
   --danger-ink: #4a100c;
   --success: #17a768;
 
+  /* A dark "island" surface for panels dropped into an otherwise-light page
+     (e.g. the "how it works" section) — distinct from the dark-mode :root
+     override below, which recolors the whole page instead. Values lifted
+     from the brand's own navy family, not a new palette. */
+  --surface-inverse: #0e1f3c;
+  --surface-inverse-2: #0a1730;
+  --surface-inverse-ink: #eaf1f7;
+
   /* Chart-only categorical steps (line/doughnut marks in the admin dashboard).
      --primary is too dark to pass a chart mark's lightness band, so slot 1 is
      a lighter on-brand blue instead of --primary itself; slots 2/3 reuse the
@@ -91,6 +99,12 @@
   --danger: #e8827c;
   --danger-ink: #4a100c;
   --success: #34d399;
+
+  /* The page background is already navy here, so the island needs to read as
+     a *raised* surface rather than blend into --bg/--surface-3. */
+  --surface-inverse: #16325a;
+  --surface-inverse-2: #102647;
+  --surface-inverse-ink: #eaf1f7;
 
   /* Dark-mode chart steps are NOT var(--accent)/var(--gold) here — those dark
      UI values are tuned for text contrast and sit too light for a chart mark's
@@ -145,6 +159,10 @@ html[lang="en"] {
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
 
+  --color-surface-inverse: var(--surface-inverse);
+  --color-surface-inverse-2: var(--surface-inverse-2);
+  --color-surface-inverse-ink: var(--surface-inverse-ink);
+
   --font-display: var(--font-cairo), "Segoe UI", sans-serif;
   --font-body: var(--font-cairo), "Segoe UI", sans-serif;
 }
@@ -181,5 +199,15 @@ select:focus-visible {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+  }
+}
+
+/* Doubled-track infinite scroll used by SubjectMarquee. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
   }
 }

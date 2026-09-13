@@ -26,4 +26,9 @@ export interface AppUser extends PersonalDetails {
   disabled?: boolean;
   photoURL?: string;
   createdAt: number;
+  /** Self-awarded on lesson completion — see lib/firebase/users.ts awardLessonCompletionRewards() and its matching rate-limit in backend/firestore.rules. */
+  xp?: number;
+  streakCount?: number;
+  /** "YYYY-MM-DD", UTC — last day XP/streak were bumped, used to allow at most one bump per day. */
+  lastActiveDate?: string;
 }

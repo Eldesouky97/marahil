@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Lock } from "lucide-react";
 import { useAuth } from "@/context/AuthProvider";
 import { useLessonPlayer } from "@/lib/hooks/useLessonPlayer";
 import { LessonContent } from "./LessonContent";
@@ -15,7 +15,7 @@ import { Container } from "@/components/ui/Container";
 
 export function LessonPlayer({ courseId, lessonId }: { courseId: string; lessonId: string }) {
   const { profile } = useAuth();
-  const { course, lesson, lessons, enrollment, loading, certificateId, completeLesson } =
+  const { course, lesson, lessons, enrollment, loading, certificateId, completeLesson, locked } =
     useLessonPlayer(courseId, lessonId, profile?.uid, profile?.name);
   const [marking, setMarking] = useState(false);
   const t = useTranslations("lesson");
@@ -30,6 +30,18 @@ export function LessonPlayer({ courseId, lessonId }: { courseId: string; lessonI
 
   if (!course || !lesson) {
     return <p className="py-24 text-center text-dim">{t("notFound")}</p>;
+  }
+
+  if (locked) {
+    return (
+      <div className="py-24 text-center">
+        <Lock size={28} className="mx-auto mb-4 text-dim" />
+        <p className="mb-6 text-dim">{t("lockedNotice")}</p>
+        <Link href={`/courses/${courseId}`}>
+          <Button variant="outline">{t("backToCourse")}</Button>
+        </Link>
+      </div>
+    );
   }
 
   const alreadyDone = enrollment?.completedLessonIds.includes(lesson.id) ?? false;

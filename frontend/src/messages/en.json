@@ -22,7 +22,8 @@
     "subtitle": "Teachers build lessons, quizzes, and certificates with ease, for every stage and subject, while students learn with instant feedback, step by step, all the way to a certificate.",
     "ctaTeacher": "Start Teaching",
     "ctaStudent": "Explore as a Student",
-    "featuredCourses": "Popular Courses on the Platform"
+    "featuredCourses": "Popular Courses on the Platform",
+    "trustBar": "Join {students} students and {teachers} teachers"
   },
   "stages": {
     "eyebrow": "Every Stage, Every Subject",
@@ -116,7 +117,42 @@
     "ctaStudent": "Join as a Student"
   },
   "footer": {
-    "copyright": "© {year} Marahil Learning Platform"
+    "copyright": "© {year} Marahil Learning Platform",
+    "tagline": "Interactive lessons, instant quizzes, and verified certificates for every school stage.",
+    "columns": {
+      "platform": {
+        "title": "Platform",
+        "links": {
+          "stages": "Stages & Subjects",
+          "courses": "Courses",
+          "how": "How It Works",
+          "verify": "Verify a Certificate"
+        }
+      },
+      "account": {
+        "title": "Account",
+        "links": {
+          "login": "Log In",
+          "register": "Create an Account"
+        }
+      }
+    }
+  },
+  "teacherPitch": {
+    "eyebrow": "For Teachers",
+    "title": "Teach once, reach every student",
+    "description": "Publish your lessons and quizzes once, and let Marahil handle progress tracking and certificate issuance for every student who enrolls.",
+    "points": [
+      "Reach students across every stage and subject, not just your own classroom",
+      "Verified digital certificates are issued automatically — no extra work for you",
+      "Track every student's progress and quiz scores live, in one dashboard",
+      "Publish a lesson once and teach an unlimited number of students"
+    ],
+    "stats": [
+      { "value": "1,200+", "label": "lessons published" },
+      { "value": "300+", "label": "teachers teaching" }
+    ],
+    "ctaTeacher": "Start Teaching"
   },
   "auth": {
     "googleButton": "Continue with Google",
@@ -266,7 +302,20 @@
     "noCourses": "You haven't enrolled in any course yet.",
     "myCertificates": "My Certificates",
     "noCertificates": "Complete a course to earn your first certificate.",
-    "progressComplete": "{progress}% complete"
+    "progressComplete": "{progress}% complete",
+    "continueLearning": "Continue where you left off",
+    "resume": "Resume",
+    "xpLabel": "Experience Points",
+    "xpValue": "{xp} XP",
+    "streakValue": "{count}-day streak"
+  },
+  "badges": {
+    "firstLesson": "First Lesson",
+    "firstCertificate": "First Certificate",
+    "threeCourses": "3 Courses Enrolled",
+    "perfectQuiz": "Perfect Score",
+    "weekStreak": "7-Day Streak",
+    "courseComplete": "Course Completed"
   },
   "dashboardAdmin": {
     "sidebar": {
@@ -414,7 +463,8 @@
     "notFound": "This lesson could not be found.",
     "certificateEarnedTitle": "Congratulations! You completed the course",
     "certificateEarnedSubtitle": "Your certificate is ready to download and share.",
-    "viewCertificate": "View Certificate"
+    "viewCertificate": "View Certificate",
+    "lockedNotice": "Complete the previous lessons first to unlock this one."
   },
   "quiz": {
     "questionCounter": "Question {n} of {total}",
@@ -424,7 +474,12 @@
     "resultSubtitle": "Well done! You can review the lesson or move on to the next one.",
     "retry": "Try Again",
     "next": "Next",
-    "seeResult": "See Result"
+    "seeResult": "See Result",
+    "share": "Share Result",
+    "copied": "Copied!",
+    "shareText": "I scored {score}/{total} ({pct}%) on a Marahil quiz!",
+    "shareSuccessToast": "Result copied to clipboard",
+    "shareErrorToast": "Couldn't copy the result"
   },
   "certificates": {
     "notFound": "This certificate could not be found.",

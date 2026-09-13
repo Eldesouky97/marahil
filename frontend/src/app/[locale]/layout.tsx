@@ -12,6 +12,7 @@ import { ThemeScript } from "@/components/theme/ThemeScript";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { AuthGate } from "@/components/auth/AuthGate";
 import { AnalyticsInit } from "@/components/analytics/AnalyticsInit";
+import { ToastProvider } from "@/components/ui/ToastProvider";
 
 const cairo = Cairo({
   weight: ["400", "500", "600", "700", "800"],
@@ -65,12 +66,14 @@ export default async function RootLayout({
       <body className="flex min-h-full flex-col bg-bg font-body text-body">
         <NextIntlClientProvider>
           <ThemeProvider>
-            <AuthProvider>
-              <AnalyticsInit />
-              <AuthGate>
-                <SiteChrome>{children}</SiteChrome>
-              </AuthGate>
-            </AuthProvider>
+            <ToastProvider>
+              <AuthProvider>
+                <AnalyticsInit />
+                <AuthGate>
+                  <SiteChrome>{children}</SiteChrome>
+                </AuthGate>
+              </AuthProvider>
+            </ToastProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

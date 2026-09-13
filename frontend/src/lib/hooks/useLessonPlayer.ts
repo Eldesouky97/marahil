@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { getCourse, getLesson, listLessons } from "@/lib/firebase/courses";
 import { getEnrollment, recordLessonProgress } from "@/lib/firebase/enrollments";
 import { issueCertificate } from "@/lib/firebase/certificates";
+import { awardLessonCompletionRewards } from "@/lib/firebase/users";
+import { isLessonLocked } from "@/lib/utils/lessonAccess";
+import { useAuth } from "@/context/AuthProvider";
 import type { Course, Enrollment, Lesson } from "@/types/course";
 
 export function useLessonPlayer(
@@ -18,6 +21,7 @@ export function useLessonPlayer(
   const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
   const [loading, setLoading] = useState(true);
   const [certificateId, setCertificateId] = useState<string | null>(null);
+  const { profile, refreshProfile } = useAuth();
 
   useEffect(() => {
     let cancelled = false;
@@ -45,6 +49,11 @@ export function useLessonPlayer(
     const updated = await recordLessonProgress(uid, courseId, lessonId, quizScore, lessons.length);
     setEnrollment(updated);
 
+    if (profile) {
+      await awardLessonCompletionRewards(uid, profile.xp ?? 0, profile.streakCount ?? 0, profile.lastActiveDate);
+      await refreshProfile();
+    }
+
     if (updated.progress >= 100 && !updated.certificateIssued && studentName) {
       const certificate = await issueCertificate({
         uid,
@@ -57,5 +66,11 @@ export function useLessonPlayer(
     }
   }
 
-  return { course, lesson, lessons, enrollment, loading, certificateId, completeLesson };
+  const isTeacher = !!course && course.teacherId === uid;
+  const locked =
+    !loading && course && lesson && !isTeacher
+      ? isLessonLocked(lessons, enrollment?.completedLessonIds ?? [], lessonId)
+      : false;
+
+  return { course, lesson, lessons, enrollment, loading, certificateId, completeLesson, locked };
 }

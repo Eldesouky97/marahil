@@ -22,7 +22,8 @@
     "subtitle": "يبني المعلمون دروسهم واختباراتهم وشهاداتهم بسهولة، لكل المراحل الدراسية وكل مادة، ويتعلم الطلاب بتفاعل فوري خطوة بخطوة حتى الشهادة.",
     "ctaTeacher": "ابدأ كمعلم",
     "ctaStudent": "استكشف كطالب",
-    "featuredCourses": "أشهر الدورات على المنصة"
+    "featuredCourses": "أشهر الدورات على المنصة",
+    "trustBar": "انضم إلى {students} طالب و{teachers} معلم"
   },
   "stages": {
     "eyebrow": "كل المراحل، كل المواد",
@@ -116,7 +117,42 @@
     "ctaStudent": "انضم كطالب"
   },
   "footer": {
-    "copyright": "© {year} منصة مراحل التعليمية"
+    "copyright": "© {year} منصة مراحل التعليمية",
+    "tagline": "دروس تفاعلية، اختبارات فورية، وشهادات موثقة لكل المراحل الدراسية.",
+    "columns": {
+      "platform": {
+        "title": "المنصة",
+        "links": {
+          "stages": "المراحل والمواد",
+          "courses": "الدورات",
+          "how": "كيف تعمل المنصة",
+          "verify": "التحقق من شهادة"
+        }
+      },
+      "account": {
+        "title": "الحساب",
+        "links": {
+          "login": "تسجيل الدخول",
+          "register": "إنشاء حساب"
+        }
+      }
+    }
+  },
+  "teacherPitch": {
+    "eyebrow": "للمعلّمين",
+    "title": "علّم مرة واحدة، واصل لكل طالب",
+    "description": "انشر دروسك واختباراتك مرة واحدة، ودع مراحل تتولى تتبّع التقدّم وإصدار الشهادات لكل طالب يلتحق بدورتك.",
+    "points": [
+      "وصول لطلاب من كل المراحل والمواد، مش بس فصلك",
+      "شهادات رقمية موثقة تصدر تلقائيًا — بلا أي جهد إضافي منك",
+      "تتبّع تقدّم كل طالب ودرجاته لحظيًا في لوحة واحدة",
+      "انشر الدرس مرة واحدة وعلّم عدد غير محدود من الطلاب"
+    ],
+    "stats": [
+      { "value": "+1,200", "label": "درس منشور" },
+      { "value": "+300", "label": "معلّم يُدرّس" }
+    ],
+    "ctaTeacher": "ابدأ كمعلم"
   },
   "auth": {
     "googleButton": "المتابعة عبر جوجل",
@@ -266,7 +302,20 @@
     "noCourses": "لم تلتحق بأي دورة بعد.",
     "myCertificates": "شهاداتي",
     "noCertificates": "أكمل دورة لتحصل على أول شهادة.",
-    "progressComplete": "{progress}% مكتمل"
+    "progressComplete": "{progress}% مكتمل",
+    "continueLearning": "أكمل من حيث توقفت",
+    "resume": "متابعة",
+    "xpLabel": "نقاط الخبرة",
+    "xpValue": "{xp} نقطة",
+    "streakValue": "سلسلة {count} أيام"
+  },
+  "badges": {
+    "firstLesson": "أول درس",
+    "firstCertificate": "أول شهادة",
+    "threeCourses": "3 دورات",
+    "perfectQuiz": "علامة كاملة",
+    "weekStreak": "سلسلة 7 أيام",
+    "courseComplete": "دورة مكتملة"
   },
   "dashboardAdmin": {
     "sidebar": {
@@ -414,7 +463,8 @@
     "notFound": "لم يتم العثور على هذا الدرس.",
     "certificateEarnedTitle": "مبروك! أكملت الدورة",
     "certificateEarnedSubtitle": "شهادتك جاهزة الآن للتحميل والمشاركة.",
-    "viewCertificate": "عرض الشهادة"
+    "viewCertificate": "عرض الشهادة",
+    "lockedNotice": "أكمل الدروس السابقة أولًا لفتح هذا الدرس."
   },
   "quiz": {
     "questionCounter": "سؤال {n} من {total}",
@@ -424,7 +474,12 @@
     "resultSubtitle": "أحسنت! يمكنك مراجعة الدرس أو المتابعة للدرس التالي.",
     "retry": "أعد المحاولة",
     "next": "التالي",
-    "seeResult": "النتيجة"
+    "seeResult": "النتيجة",
+    "share": "مشاركة النتيجة",
+    "copied": "تم النسخ!",
+    "shareText": "حصلت على {score}/{total} ({pct}%) في اختبار على منصة مراحل!",
+    "shareSuccessToast": "تم نسخ النتيجة",
+    "shareErrorToast": "تعذّر نسخ النتيجة"
   },
   "certificates": {
     "notFound": "لم يتم العثور على هذه الشهادة.",
