@@ -172,7 +172,7 @@ export function AdminUsersView() {
 
       <div className="mb-6 flex flex-wrap items-center gap-2 rounded-2xl border border-border bg-surface p-2.5">
         <div className="relative min-w-35 flex-1">
-          <Search size={13} className="pointer-events-none absolute top-1/2 -translate-y-1/2 text-faint start-3" />
+          <Search size={13} className="pointer-events-none absolute top-1/2 -translate-y-1/2 text-faint start-s-3" />
           <input
             type="search"
             aria-label={t("searchPlaceholder")}
