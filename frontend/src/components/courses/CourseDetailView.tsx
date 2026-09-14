@@ -6,8 +6,13 @@ import { useStageLabel } from "@/lib/hooks/useStages";
 import { useAuth } from "@/context/AuthProvider";
 import { useCourseDetail } from "@/lib/hooks/useCourseDetail";
 import { useEnrollment } from "@/lib/hooks/useEnrollment";
+import { useCourseLiveSession } from "@/lib/hooks/useCourseLiveSession";
 import { LessonList } from "./LessonList";
 import { EnrollPanel } from "./EnrollPanel";
+import { CourseRatingSummary } from "./CourseRatingSummary";
+import { CourseQuickQuiz } from "./CourseQuickQuiz";
+import { CourseMaterialsPanel } from "./CourseMaterialsPanel";
+import { CourseLiveBanner } from "./CourseLiveBanner";
 import { Badge } from "@/components/ui/Badge";
 import { Spinner } from "@/components/ui/Spinner";
 import { Container } from "@/components/ui/Container";
@@ -16,6 +21,7 @@ export function CourseDetailView({ courseId }: { courseId: string }) {
   const { profile } = useAuth();
   const { course, lessons, loading } = useCourseDetail(courseId);
   const { enrollment } = useEnrollment(profile?.uid, courseId);
+  const liveSession = useCourseLiveSession(courseId);
   const stageLabel = useStageLabel();
   const t = useTranslations("courses");
 
@@ -36,6 +42,9 @@ export function CourseDetailView({ courseId }: { courseId: string }) {
   return (
     <section className="py-16">
       <Container className="grid grid-cols-1 gap-10 lg:grid-cols-3">
+        <div className="lg:col-span-3">
+          <CourseLiveBanner session={liveSession} />
+        </div>
         <div className="lg:col-span-2">
           {course.coverImageUrl && (
             <div className="mb-6 h-56 w-full overflow-hidden rounded-2xl bg-surface-2">
@@ -50,6 +59,9 @@ export function CourseDetailView({ courseId }: { courseId: string }) {
           )}
           <Badge className="mb-4">{stageLabel(course.stage)}</Badge>
           <h1 className="mb-3 font-display text-3xl text-heading">{course.title}</h1>
+          <div className="mb-3">
+            <CourseRatingSummary courseId={course.id} />
+          </div>
           <p className="mb-8 leading-relaxed text-dim">{course.description}</p>
 
           <h2 className="mb-4 text-lg font-bold">{t("content")}</h2>
@@ -60,12 +72,18 @@ export function CourseDetailView({ courseId }: { courseId: string }) {
             canAccess={canAccess}
             isTeacherPreview={profile?.uid === course.teacherId}
           />
+
+          {course.quiz && <CourseQuickQuiz questions={course.quiz} />}
         </div>
 
-        <div className="h-fit rounded-2xl border border-border bg-surface-2 p-6">
-          <p className="mb-1 text-xs text-faint">{t("teacher")}</p>
-          <p className="mb-6 font-bold">{course.teacherName}</p>
-          <EnrollPanel courseId={course.id} />
+        <div className="space-y-6">
+          <div className="h-fit rounded-2xl border border-border bg-surface-2 p-6">
+            <p className="mb-1 text-xs text-faint">{t("teacher")}</p>
+            <p className="mb-6 font-bold">{course.teacherName}</p>
+            <EnrollPanel course={course} />
+          </div>
+
+          {course.materials && <CourseMaterialsPanel materials={course.materials} />}
         </div>
       </Container>
     </section>

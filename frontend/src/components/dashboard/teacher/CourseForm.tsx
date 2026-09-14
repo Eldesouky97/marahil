@@ -22,6 +22,7 @@ export function CourseForm() {
   const [stage, setStage] = useState<StageId>("primary");
   const [subject, setSubject] = useState(stages[1].subjects[0]);
   const [coverImageUrl, setCoverImageUrl] = useState<string | undefined>();
+  const [price, setPrice] = useState("");
   const [saving, setSaving] = useState(false);
 
   const currentStage = stages.find((s) => s.id === stage)!;
@@ -39,6 +40,7 @@ export function CourseForm() {
       teacherName: profile.name,
       coverIcon: "BookOpen",
       coverImageUrl,
+      price: price ? Number(price) : undefined,
     });
     router.push(`/dashboard/teacher/courses/${courseId}`);
   }
@@ -91,6 +93,18 @@ export function CourseForm() {
 
       <FormField label={t("coverImage")}>
         <ImageUploadField folder="course-covers" onUploaded={setCoverImageUrl} />
+      </FormField>
+
+      <FormField label={t("price")}>
+        <input
+          type="number"
+          min={0}
+          dir="ltr"
+          className={inputClasses}
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          placeholder={t("pricePlaceholder")}
+        />
       </FormField>
 
       <Button type="submit" disabled={saving}>

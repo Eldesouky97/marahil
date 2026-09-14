@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { BookOpen, Users } from "lucide-react";
 import { Card } from "@/components/ui/Card";
@@ -9,6 +10,7 @@ import type { Course } from "@/types/course";
 
 export function CourseCard({ course }: { course: Course }) {
   const stageLabel = useStageLabel();
+  const t = useTranslations("courses");
   return (
     <Link href={`/courses/${course.id}`}>
       <Card className="group h-full p-6">
@@ -32,11 +34,14 @@ export function CourseCard({ course }: { course: Course }) {
         </span>
         <h3 className="mb-2 font-bold">{course.title}</h3>
         <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-dim">{course.description}</p>
-        <div className="flex items-center justify-between text-xs text-faint">
+        <div className="mb-2 flex items-center justify-between text-xs text-faint">
           <span>{course.teacherName}</span>
           <span className="flex items-center gap-1">
             <Users size={13} /> {course.studentsCount}
           </span>
+        </div>
+        <div className="text-sm font-bold text-primary-strong">
+          {course.price ? t("priceValue", { price: course.price }) : t("priceFree")}
         </div>
       </Card>
     </Link>

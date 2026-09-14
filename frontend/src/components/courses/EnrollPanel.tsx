@@ -6,8 +6,23 @@ import { useAuth } from "@/context/AuthProvider";
 import { useEnrollment } from "@/lib/hooks/useEnrollment";
 import { Button } from "@/components/ui/Button";
 import { ProgressBar } from "@/components/ui/ProgressBar";
+import { ReviewForm } from "./ReviewForm";
+import type { Course } from "@/types/course";
 
-export function EnrollPanel({ courseId }: { courseId: string }) {
+function PriceRow({ course }: { course: Course }) {
+  const t = useTranslations("courses");
+  return (
+    <div className="mb-4 flex items-baseline justify-between">
+      <span className="text-xs text-dim">{t("priceLabel")}</span>
+      <span className="text-lg font-bold text-heading">
+        {course.price ? t("priceValue", { price: course.price }) : t("priceFree")}
+      </span>
+    </div>
+  );
+}
+
+export function EnrollPanel({ course }: { course: Course }) {
+  const courseId = course.id;
   const { profile, loading: authLoading } = useAuth();
   const { enrollment, loading, enroll } = useEnrollment(profile?.uid, courseId);
   const t = useTranslations("courses");
@@ -16,9 +31,12 @@ export function EnrollPanel({ courseId }: { courseId: string }) {
 
   if (!profile) {
     return (
-      <Link href="/auth/login">
-        <Button className="w-full">{t("loginToEnroll")}</Button>
-      </Link>
+      <div>
+        <PriceRow course={course} />
+        <Link href="/auth/login">
+          <Button className="w-full">{t("loginToEnroll")}</Button>
+        </Link>
+      </div>
     );
   }
 
@@ -28,9 +46,12 @@ export function EnrollPanel({ courseId }: { courseId: string }) {
 
   if (!enrollment) {
     return (
-      <Button className="w-full" onClick={enroll}>
-        {t("enrollCta")}
-      </Button>
+      <div>
+        <PriceRow course={course} />
+        <Button className="w-full" onClick={enroll}>
+          {t("enrollCta")}
+        </Button>
+      </div>
     );
   }
 
@@ -41,6 +62,7 @@ export function EnrollPanel({ courseId }: { courseId: string }) {
         <span className="text-primary-strong">{enrollment.progress}%</span>
       </div>
       <ProgressBar value={enrollment.progress} />
+      {enrollment.progress === 100 && <ReviewForm course={course} profile={profile} />}
     </div>
   );
 }

@@ -6,11 +6,16 @@ import { Award, BookOpen, Search } from "lucide-react";
 import { useAuth } from "@/context/AuthProvider";
 import { useStudentDashboard } from "@/lib/hooks/useStudentDashboard";
 import { useContinueLearning } from "@/lib/hooks/useContinueLearning";
+import { useRecommendedCourses } from "@/lib/hooks/useRecommendedCourses";
+import { useUpcomingLiveSessions } from "@/lib/hooks/useUpcomingLiveSessions";
 import { EnrolledCourseRow } from "./EnrolledCourseRow";
 import { CertificateRow } from "./CertificateRow";
 import { ContinueLearningCard } from "./ContinueLearningCard";
 import { BadgesRow } from "./BadgesRow";
 import { XpStreakBar } from "./XpStreakBar";
+import { WeeklyActivityChart } from "./WeeklyActivityChart";
+import { RecommendedCoursesPanel } from "./RecommendedCoursesPanel";
+import { UpcomingLiveSessionsPanel } from "./UpcomingLiveSessionsPanel";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { Button } from "@/components/ui/Button";
@@ -20,6 +25,8 @@ export function StudentDashboardView() {
   const { profile } = useAuth();
   const { enrolledCourses, certificates, loading } = useStudentDashboard(profile?.uid);
   const continueData = useContinueLearning(enrolledCourses);
+  const { courses: recommendedCourses } = useRecommendedCourses(profile, enrolledCourses);
+  const { sessions: upcomingSessions } = useUpcomingLiveSessions(enrolledCourses);
   const t = useTranslations("dashboardStudent");
   const tShared = useTranslations("dashboardShared");
 
@@ -41,6 +48,12 @@ export function StudentDashboardView() {
       {continueData && <ContinueLearningCard data={continueData} />}
 
       <BadgesRow profile={profile} enrolledCourses={enrolledCourses} certificates={certificates} />
+
+      <WeeklyActivityChart uid={profile?.uid} />
+
+      <UpcomingLiveSessionsPanel sessions={upcomingSessions} />
+
+      <RecommendedCoursesPanel courses={recommendedCourses} />
 
       <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatCard icon={BookOpen} label={t("statsCourses")} value={enrolledCourses.length} />

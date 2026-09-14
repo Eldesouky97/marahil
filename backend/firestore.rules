@@ -19,6 +19,10 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/users/$(uid)).data;
     }
 
+    function liveSessionData(sessionId) {
+      return get(/databases/$(database)/documents/liveSessions/$(sessionId)).data;
+    }
+
     // isAdmin() can never be self-granted client-side: 'admin' is never in the
     // role allowlist on `users` create below, and the only write path that can
     // set role: 'admin' on a user doc is another admin (or a human editing
@@ -100,6 +104,21 @@ service cloud.firestore {
       // account is later removed). AdminUserRow's delete button makes this
       // limitation explicit to the admin before they confirm.
       allow delete: if isAdmin() && !isProtectedAccount();
+
+      // --- users/{uid}/activity/{date} — daily lesson-completion counter for
+      // the student dashboard's weekly-activity chart (date = "YYYY-MM-DD").
+      // Same delta-capped-self-write pattern as xp/streakCount above: a
+      // write can only start a fresh day's doc at count == 1, or bump an
+      // existing one by exactly 1 (one increment per completeLesson() call,
+      // see incrementDailyActivity() in lib/firebase/users.ts). Never
+      // decreases, never jumps by more than one lesson per write.
+      match /activity/{date} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow create: if isOwner(uid) && isApproved(uid) && request.resource.data.count == 1;
+        allow update: if isOwner(uid) && isApproved(uid)
+          && request.resource.data.count == resource.data.count + 1;
+        allow delete: if false;
+      }
     }
 
     // --- courses ---------------------------------------------------------
@@ -182,6 +201,131 @@ service cloud.firestore {
       // Admin can correct a typo or revoke a fraudulently-issued certificate;
       // a client can still never create/update its own.
       allow update, delete: if isAdmin();
+    }
+
+    // --- reviews (id = "{uid}_{courseId}", same scheme as enrollments) -----
+    // Publicly readable (course pages show ratings to signed-out visitors
+    // too). A student can leave exactly one review per course, ever — no
+    // update/delete path is exposed to a client at all, deliberately: this
+    // project has no Cloud Function to verify a lesson was really watched
+    // (see enrollments above), so an editable review would be an easy way to
+    // launder a fabricated 100%-progress enrollment into a fake testimonial
+    // after the fact. Course/teacher rating averages are computed by reading
+    // every review for a course client-side (see lib/hooks/useCourseReviews.ts)
+    // rather than kept as a running total on the course doc — Firestore
+    // rules evaluate each document in a batch against the pre-batch state, so
+    // a "ratingSum/ratingCount on Course" field could never be made to prove
+    // a real review doc was written alongside it in the same write.
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isOwner(request.resource.data.uid)
+        && reviewId == request.auth.uid + '_' + request.resource.data.courseId
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && get(/databases/$(database)/documents/enrollments/$(reviewId)).data.uid == request.auth.uid
+        && get(/databases/$(database)/documents/enrollments/$(reviewId)).data.courseId == request.resource.data.courseId
+        && get(/databases/$(database)/documents/enrollments/$(reviewId)).data.progress == 100
+        && request.resource.data.courseTitle == courseData(request.resource.data.courseId).title
+        && request.resource.data.studentName == userData(request.auth.uid).name;
+      allow update, delete: if isAdmin();
+    }
+
+    // --- questionBank (id = generated, owned by one teacher) ---------------
+    // A teacher's private, reusable pool of MCQ questions — separate from
+    // any lesson's or course's own quiz array, so a question can be authored
+    // once and copied into several quizzes (see QuizBuilder.tsx's "import
+    // from bank" picker). Never shared between teachers — same ownership
+    // shape as `courses` (teacherId field + isApproved() gate), just with no
+    // published/public-read state at all.
+    match /questionBank/{questionId} {
+      allow read: if isOwner(resource.data.teacherId) || isAdmin();
+      allow create: if isSignedIn()
+        && request.resource.data.teacherId == request.auth.uid
+        && isApproved(request.auth.uid);
+      allow update, delete: if (isOwner(resource.data.teacherId) && isApproved(request.auth.uid)) || isAdmin();
+    }
+
+    // --- liveSessions — whiteboard + chat + poll only, no real audio/video
+    // (no WebRTC/Realtime Database infra on the free Spark plan, see
+    // CLAUDE.md). Read access mirrors `courses`: visible if the parent
+    // course is published, or the requester owns it, or is admin. A poll's
+    // question/options/active flag/pollId live directly on the session doc
+    // (only the owning teacher can write it, via this match block's own
+    // update rule) rather than a separate collection — votes are still
+    // their own subcollection so one-vote-per-student can be enforced by
+    // the same doc-id-is-the-uid trick used for enrollments/certificates/
+    // reviews above.
+    match /liveSessions/{sessionId} {
+      function sessionCourse() {
+        return courseData(resource.data.courseId);
+      }
+
+      allow read: if isSignedIn()
+        && (sessionCourse().published == true || isOwner(sessionCourse().teacherId) || isAdmin());
+      allow create: if isOwner(request.resource.data.teacherId)
+        && isApproved(request.auth.uid)
+        && courseData(request.resource.data.courseId).teacherId == request.auth.uid
+        && request.resource.data.status == 'scheduled';
+      allow update: if (isOwner(resource.data.teacherId) && isApproved(request.auth.uid)) || isAdmin();
+      // Can't delete a session that's currently live — end it first.
+      allow delete: if (isOwner(resource.data.teacherId) && isApproved(request.auth.uid) && resource.data.status != 'live')
+        || isAdmin();
+
+      // Chat — create-only while the session is live; immutable once sent
+      // (no update path, same as reviews); teacher/admin can delete a
+      // message for moderation.
+      match /messages/{messageId} {
+        allow read: if isSignedIn();
+        allow create: if isOwner(request.resource.data.uid)
+          && isApproved(request.auth.uid)
+          && liveSessionData(sessionId).status == 'live'
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 500;
+        allow update: if false;
+        allow delete: if isOwner(liveSessionData(sessionId).teacherId) || isAdmin();
+      }
+
+      // Presence + hand-raise — doc id is the participant's own uid, so a
+      // student can only ever write their own participant doc; the teacher
+      // can remove one (kick) via the delete branch below. Presence here is
+      // heartbeat-based (see useLiveParticipants.ts), not real disconnect
+      // detection — that needs Realtime Database's onDisconnect(), which
+      // this project doesn't use.
+      match /participants/{uid} {
+        allow read: if isSignedIn();
+        allow create, update: if isOwner(uid) && isApproved(uid) && liveSessionData(sessionId).status == 'live';
+        allow delete: if isOwner(uid) || isOwner(liveSessionData(sessionId).teacherId) || isAdmin();
+      }
+
+      // Whiteboard strokes — teacher-only writes (one drawer, not a
+      // multi-writer CRDT problem). One immutable doc per stroke, written
+      // once on pointer-up, never per point. "Clear" updates
+      // whiteboardClearedAt on the session doc itself (already covered by
+      // the update rule above) instead of deleting every stroke doc —
+      // viewers just filter createdAt > whiteboardClearedAt client-side.
+      match /strokes/{strokeId} {
+        allow read: if isSignedIn();
+        allow create: if isOwner(liveSessionData(sessionId).teacherId)
+          && isApproved(request.auth.uid)
+          && liveSessionData(sessionId).status == 'live';
+        allow update, delete: if false;
+      }
+
+      // One vote per student per poll instance — doc id = uid. pollId
+      // (regenerated by the teacher each time a new poll is opened) has to
+      // match the session's *current* poll, so a leftover vote doc from an
+      // earlier poll in the same session just stops counting instead of
+      // needing to be deleted.
+      match /pollVotes/{uid} {
+        allow read: if isSignedIn();
+        allow create, update: if isOwner(uid)
+          && isApproved(uid)
+          && liveSessionData(sessionId).get('poll', {}).get('active', false) == true
+          && request.resource.data.pollId == liveSessionData(sessionId).get('poll', {}).get('pollId', '');
+        allow delete: if false;
+      }
     }
 
     // --- adminAuditLog (append-only, admin-only) --------------------------

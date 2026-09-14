@@ -6,6 +6,7 @@ import { setCoursePublished } from "@/lib/firebase/courses";
 import { useCourseDetail } from "@/lib/hooks/useCourseDetail";
 import { TeacherLessonList } from "./TeacherLessonList";
 import { LessonForm } from "./LessonForm";
+import { CourseSettingsPanel } from "./CourseSettingsPanel";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { Button } from "@/components/ui/Button";
 import { Spinner } from "@/components/ui/Spinner";
@@ -58,6 +59,9 @@ export function ManageCourseView({ courseId }: { courseId: string }) {
 
       <h2 className="mb-4 text-lg font-bold">{t("addLesson")}</h2>
       <LessonForm courseId={course.id} nextOrder={lessons.length} onCreated={refresh} />
+
+      <h2 className="mb-4 mt-10 text-lg font-bold">{t("moreSettings")}</h2>
+      <CourseSettingsPanel course={course} onSaved={refresh} />
     </>
   );
 }

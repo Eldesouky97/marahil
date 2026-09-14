@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getCourse, getLesson, listLessons } from "@/lib/firebase/courses";
 import { getEnrollment, recordLessonProgress } from "@/lib/firebase/enrollments";
 import { issueCertificate } from "@/lib/firebase/certificates";
-import { awardLessonCompletionRewards } from "@/lib/firebase/users";
+import { awardLessonCompletionRewards, incrementDailyActivity } from "@/lib/firebase/users";
 import { isLessonLocked } from "@/lib/utils/lessonAccess";
 import { useAuth } from "@/context/AuthProvider";
 import type { Course, Enrollment, Lesson } from "@/types/course";
@@ -51,6 +51,7 @@ export function useLessonPlayer(
 
     if (profile) {
       await awardLessonCompletionRewards(uid, profile.xp ?? 0, profile.streakCount ?? 0, profile.lastActiveDate);
+      await incrementDailyActivity(uid, new Date().toISOString().slice(0, 10));
       await refreshProfile();
     }
 

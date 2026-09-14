@@ -242,7 +242,20 @@
     "loginToEnroll": "Log in to enroll",
     "teacherOnlyNotice": "Enrolling is only available for student accounts.",
     "progressLabel": "Your Progress",
-    "notFound": "This course could not be found."
+    "notFound": "This course could not be found.",
+    "priceLabel": "Price",
+    "priceValue": "{price} EGP",
+    "priceFree": "Free",
+    "searchPlaceholder": "Search by name or teacher…",
+    "sortNewest": "Newest",
+    "sortPopular": "Most Popular",
+    "sortPriceAsc": "Price: Low to High",
+    "sortRating": "Highest Rated",
+    "materialsTitle": "Course Materials",
+    "noMaterials": "No materials yet.",
+    "quickQuizTitle": "Test Yourself on This Subject",
+    "quickQuizSubtitle": "Quick questions, graded instantly — check your level and earn XP.",
+    "quickQuizCta": "Start Quick Quiz"
   },
   "dashboardShared": {
     "welcome": "Welcome, {name}"
@@ -252,6 +265,8 @@
     "statsCourses": "My Courses",
     "statsPublished": "Published",
     "statsStudents": "Total Students",
+    "statsEstimatedRevenue": "Estimated Revenue",
+    "estimatedRevenueNote": "An estimate based on course prices and student counts — there is no real payment or payout system yet.",
     "myCourses": "My Courses",
     "noCourses": "You haven't created any courses yet.",
     "published": "Published",
@@ -264,6 +279,8 @@
       "stage": "School Stage",
       "subject": "Subject",
       "coverImage": "Course Cover Image",
+      "price": "Price (optional)",
+      "pricePlaceholder": "Leave blank for a free course",
       "submit": "Create Course",
       "submitting": "Creating..."
     },
@@ -274,7 +291,17 @@
       "noLessons": "No lessons yet — add the first one below.",
       "addLesson": "Add a New Lesson",
       "questionsCount": "{count} questions",
-      "notFound": "This course could not be found."
+      "notFound": "This course could not be found.",
+      "moreSettings": "More Settings"
+    },
+    "courseSettings": {
+      "price": "Price (EGP, leave blank for a free course)",
+      "materials": "Course Materials",
+      "removeMaterial": "Remove file",
+      "quiz": "Course quick quiz (optional, separate from lesson quizzes)",
+      "save": "Save",
+      "saving": "Saving...",
+      "saved": "Saved ✓"
     },
     "lessonForm": {
       "title": "Lesson Title",
@@ -291,7 +318,28 @@
       "choicePlaceholder": "Choice {n}",
       "explanationPlaceholder": "Answer explanation (optional)",
       "addQuestion": "Add a Question",
-      "deleteQuestion": "Delete question"
+      "deleteQuestion": "Delete question",
+      "importFromBank": "Import from Question Bank",
+      "importPickerTitle": "Select questions to import",
+      "importPickerEmpty": "Your question bank is empty — add questions on the Question Bank page first.",
+      "importSelected": "Import ({count})",
+      "cancel": "Cancel"
+    },
+    "questionBank": {
+      "navLabel": "Question Bank",
+      "title": "My Question Bank — Build Your Quiz",
+      "questionLabel": "Question text",
+      "questionPlaceholder": "Write the question here…",
+      "choicesHint": "Answers — pick the correct one's circle",
+      "choicePlaceholder": "Answer {n}",
+      "addQuestion": "Add Question",
+      "saving": "Saving...",
+      "savedCount": "{count} questions saved",
+      "runTrial": "Run Trial",
+      "empty": "No questions added yet.",
+      "deleteQuestion": "Delete question",
+      "trialTitle": "Trial Run",
+      "backToBank": "Back to Question Bank"
     }
   },
   "dashboardStudent": {
@@ -307,7 +355,10 @@
     "resume": "Resume",
     "xpLabel": "Experience Points",
     "xpValue": "{xp} XP",
-    "streakValue": "{count}-day streak"
+    "streakValue": "{count}-day streak",
+    "weeklyActivityTitle": "Your Weekly Activity",
+    "weeklyActivityTotal": "{count} lessons this week",
+    "recommendedTitle": "Recommended for You"
   },
   "badges": {
     "firstLesson": "First Lesson",
@@ -480,6 +531,57 @@
     "shareText": "I scored {score}/{total} ({pct}%) on a Marahil quiz!",
     "shareSuccessToast": "Result copied to clipboard",
     "shareErrorToast": "Couldn't copy the result"
+  },
+  "reviews": {
+    "reviewsCount": "({count} reviews)",
+    "prompt": "Rate this course",
+    "commentPlaceholder": "Write your thoughts (optional)",
+    "submit": "Submit Rating",
+    "submitting": "Submitting...",
+    "thanks": "Thanks for your review!"
+  },
+  "liveSessions": {
+    "navLabel": "Live Sessions",
+    "notFound": "This session could not be found.",
+    "ended": "This live session has ended.",
+    "backToCourse": "Back to Course",
+    "scheduledNotice": "This session starts at {date}",
+    "startSession": "Start Session",
+    "liveBadge": "Live",
+    "upcomingBadge": "Upcoming",
+    "raiseHand": "Raise Hand",
+    "leave": "Leave",
+    "chatTitle": "Class Discussion",
+    "chatPlaceholder": "Type your question or message…",
+    "send": "Send",
+    "deleteMessage": "Delete message",
+    "pollTitle": "Poll",
+    "pollQuestionPlaceholder": "Write the poll question",
+    "pollOptionPlaceholder": "Option {n}",
+    "pollAddOption": "Add an option",
+    "pollLaunch": "Launch Poll",
+    "pollVotesCount": "{count} votes",
+    "pollClose": "Close Poll",
+    "participantsTitle": "Participants ({count})",
+    "eraser": "Eraser",
+    "clearBoard": "Clear board",
+    "manageTitle": "Live Sessions",
+    "courseLabel": "Course",
+    "courseSelectPlaceholder": "Select a course",
+    "sessionTitleLabel": "Session Title",
+    "scheduledAtLabel": "Scheduled Time",
+    "scheduling": "Scheduling...",
+    "scheduleSession": "Schedule Session",
+    "noSessions": "No sessions scheduled yet.",
+    "enterRoom": "Enter Room",
+    "deleteSession": "Delete session",
+    "endSession": "End Session",
+    "upcomingTitle": "Upcoming Live Sessions",
+    "status": {
+      "scheduled": "Scheduled",
+      "live": "Live Now",
+      "ended": "Ended"
+    }
   },
   "certificates": {
     "notFound": "This certificate could not be found.",

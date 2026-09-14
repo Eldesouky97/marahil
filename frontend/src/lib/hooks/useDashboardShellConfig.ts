@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Award, BookOpen, History, LayoutDashboard, Plus, ShieldCheck, SlidersHorizontal, Users } from "lucide-react";
+import { Award, BookOpen, History, LayoutDashboard, ListChecks, Plus, Radio, ShieldCheck, SlidersHorizontal, Users } from "lucide-react";
 import { useAuth } from "@/context/AuthProvider";
 import type { DashboardNavItem } from "@/components/dashboard/DashboardSidebar";
 
@@ -24,6 +24,7 @@ export function useDashboardShellConfig(): DashboardShellConfig | null {
   const tUsers = useTranslations("dashboardAdmin.users");
   const tAdminSidebar = useTranslations("dashboardAdmin.sidebar");
   const tTeacher = useTranslations("dashboardTeacher");
+  const tLive = useTranslations("liveSessions");
 
   if (!profile) return null;
 
@@ -46,6 +47,8 @@ export function useDashboardShellConfig(): DashboardShellConfig | null {
       navItems: [
         { href: "/dashboard/teacher", icon: LayoutDashboard, label: tNav("dashboard") },
         { href: "/dashboard/teacher/courses/new", icon: Plus, label: tTeacher("newCourse") },
+        { href: "/dashboard/teacher/question-bank", icon: ListChecks, label: tTeacher("questionBank.navLabel") },
+        { href: "/dashboard/teacher/live", icon: Radio, label: tLive("navLabel") },
         { href: "/courses", icon: BookOpen, label: tNav("courses") },
       ],
       roleLabel: tUsers("role_teacher"),

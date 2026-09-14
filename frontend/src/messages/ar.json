@@ -242,7 +242,20 @@
     "loginToEnroll": "سجّل الدخول للالتحاق بالدورة",
     "teacherOnlyNotice": "الالتحاق بالدورات متاح لحسابات الطلاب فقط.",
     "progressLabel": "تقدّمك في الدورة",
-    "notFound": "لم يتم العثور على هذه الدورة."
+    "notFound": "لم يتم العثور على هذه الدورة.",
+    "priceLabel": "السعر",
+    "priceValue": "{price} ج.م",
+    "priceFree": "مجانًا",
+    "searchPlaceholder": "ابحث بالاسم أو المعلّم…",
+    "sortNewest": "الأحدث",
+    "sortPopular": "الأكثر شعبية",
+    "sortPriceAsc": "الأقل سعراً",
+    "sortRating": "الأعلى تقييماً",
+    "materialsTitle": "المواد التعليمية",
+    "noMaterials": "لا توجد مواد تعليمية بعد.",
+    "quickQuizTitle": "اختبر نفسك في المادة دي",
+    "quickQuizSubtitle": "أسئلة سريعة بتتصحح فوراً — اعرف مستواك واكسب XP.",
+    "quickQuizCta": "ابدأ الاختبار السريع"
   },
   "dashboardShared": {
     "welcome": "أهلًا، {name}"
@@ -252,6 +265,8 @@
     "statsCourses": "دوراتي",
     "statsPublished": "منشورة",
     "statsStudents": "إجمالي الطلاب",
+    "statsEstimatedRevenue": "الإيرادات المقدّرة",
+    "estimatedRevenueNote": "تقدير مبني على أسعار الدورات وعدد الطلاب — لا يوجد بعد نظام دفع فعلي أو تحويل أرباح.",
     "myCourses": "دوراتي",
     "noCourses": "لم تنشئ أي دورة بعد.",
     "published": "منشورة",
@@ -264,6 +279,8 @@
       "stage": "المرحلة الدراسية",
       "subject": "المادة",
       "coverImage": "صورة غلاف الدورة",
+      "price": "السعر (اختياري)",
+      "pricePlaceholder": "اتركه فارغًا لدورة مجانية",
       "submit": "إنشاء الدورة",
       "submitting": "جارٍ الإنشاء..."
     },
@@ -274,7 +291,17 @@
       "noLessons": "لا توجد دروس بعد — أضف أول درس أدناه.",
       "addLesson": "إضافة درس جديد",
       "questionsCount": "{count} أسئلة",
-      "notFound": "لم يتم العثور على هذه الدورة."
+      "notFound": "لم يتم العثور على هذه الدورة.",
+      "moreSettings": "إعدادات إضافية"
+    },
+    "courseSettings": {
+      "price": "السعر (بالجنيه، اتركه فارغًا لدورة مجانية)",
+      "materials": "المواد التعليمية",
+      "removeMaterial": "حذف الملف",
+      "quiz": "اختبار سريع للدورة (اختياري، مستقل عن اختبارات الدروس)",
+      "save": "حفظ",
+      "saving": "جارٍ الحفظ...",
+      "saved": "تم الحفظ ✓"
     },
     "lessonForm": {
       "title": "عنوان الدرس",
@@ -291,7 +318,28 @@
       "choicePlaceholder": "اختيار {n}",
       "explanationPlaceholder": "تفسير الإجابة (اختياري)",
       "addQuestion": "أضف سؤالًا",
-      "deleteQuestion": "حذف السؤال"
+      "deleteQuestion": "حذف السؤال",
+      "importFromBank": "استورد من بنك الأسئلة",
+      "importPickerTitle": "اختر أسئلة لاستيرادها",
+      "importPickerEmpty": "بنك أسئلتك فارغ — أضف أسئلة من صفحة بنك الأسئلة أولًا.",
+      "importSelected": "استيراد ({count})",
+      "cancel": "إلغاء"
+    },
+    "questionBank": {
+      "navLabel": "بنك الأسئلة",
+      "title": "بنك أسئلتي — ابني اختبارك",
+      "questionLabel": "نص السؤال",
+      "questionPlaceholder": "اكتب السؤال هنا…",
+      "choicesHint": "الإجابات — اختر دائرة الصح للإجابة الصحيحة",
+      "choicePlaceholder": "الإجابة {n}",
+      "addQuestion": "أضف السؤال",
+      "saving": "جارٍ الحفظ...",
+      "savedCount": "{count} سؤال محفوظ",
+      "runTrial": "تشغيل تجريبي",
+      "empty": "لم تُضف أي أسئلة بعد.",
+      "deleteQuestion": "حذف السؤال",
+      "trialTitle": "تشغيل تجريبي",
+      "backToBank": "العودة لبنك الأسئلة"
     }
   },
   "dashboardStudent": {
@@ -307,7 +355,10 @@
     "resume": "متابعة",
     "xpLabel": "نقاط الخبرة",
     "xpValue": "{xp} نقطة",
-    "streakValue": "سلسلة {count} أيام"
+    "streakValue": "سلسلة {count} أيام",
+    "weeklyActivityTitle": "نشاطك الأسبوعي",
+    "weeklyActivityTotal": "{count} درس هذا الأسبوع",
+    "recommendedTitle": "ترشيحات ليك"
   },
   "badges": {
     "firstLesson": "أول درس",
@@ -480,6 +531,57 @@
     "shareText": "حصلت على {score}/{total} ({pct}%) في اختبار على منصة مراحل!",
     "shareSuccessToast": "تم نسخ النتيجة",
     "shareErrorToast": "تعذّر نسخ النتيجة"
+  },
+  "reviews": {
+    "reviewsCount": "({count} تقييم)",
+    "prompt": "قيّم هذه الدورة",
+    "commentPlaceholder": "اكتب رأيك (اختياري)",
+    "submit": "إرسال التقييم",
+    "submitting": "جارٍ الإرسال...",
+    "thanks": "شكرًا لتقييمك!"
+  },
+  "liveSessions": {
+    "navLabel": "الجلسات المباشرة",
+    "notFound": "لم يتم العثور على هذه الجلسة.",
+    "ended": "انتهت هذه الجلسة المباشرة.",
+    "backToCourse": "العودة للدورة",
+    "scheduledNotice": "الجلسة ستبدأ في {date}",
+    "startSession": "ابدأ الجلسة",
+    "liveBadge": "مباشر",
+    "upcomingBadge": "قريبًا",
+    "raiseHand": "ارفع إيدك",
+    "leave": "خروج",
+    "chatTitle": "مناقشة الجلسة",
+    "chatPlaceholder": "اكتب سؤالك أو رسالتك…",
+    "send": "إرسال",
+    "deleteMessage": "حذف الرسالة",
+    "pollTitle": "استطلاع رأي",
+    "pollQuestionPlaceholder": "اكتب سؤال الاستطلاع",
+    "pollOptionPlaceholder": "اختيار {n}",
+    "pollAddOption": "أضف اختيارًا",
+    "pollLaunch": "نشر الاستطلاع",
+    "pollVotesCount": "{count} صوت",
+    "pollClose": "إغلاق الاستطلاع",
+    "participantsTitle": "الموجودون ({count})",
+    "eraser": "ممحاة",
+    "clearBoard": "مسح اللوحة",
+    "manageTitle": "الجلسات المباشرة",
+    "courseLabel": "الدورة",
+    "courseSelectPlaceholder": "اختر دورة",
+    "sessionTitleLabel": "عنوان الجلسة",
+    "scheduledAtLabel": "الموعد",
+    "scheduling": "جارٍ الجدولة...",
+    "scheduleSession": "جدولة جلسة",
+    "noSessions": "لا توجد جلسات مجدولة بعد.",
+    "enterRoom": "ادخل الغرفة",
+    "deleteSession": "حذف الجلسة",
+    "endSession": "إنهاء الجلسة",
+    "upcomingTitle": "بثوث مباشرة قادمة",
+    "status": {
+      "scheduled": "مجدولة",
+      "live": "مباشرة الآن",
+      "ended": "منتهية"
+    }
   },
   "certificates": {
     "notFound": "لم يتم العثور على هذه الشهادة.",

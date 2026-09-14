@@ -1,11 +1,7 @@
 import { NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-
-const ALLOWED_FOLDERS = ["avatars", "course-covers", "lesson-images"] as const;
-type Folder = (typeof ALLOWED_FOLDERS)[number];
-
-const ALLOWED_CONTENT_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+import { UPLOAD_FOLDERS, UPLOAD_RULES, type UploadFolder } from "@/lib/upload/uploadConfig";
 
 const r2 = new S3Client({
   region: "auto",
@@ -52,17 +48,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid or expired token" }, { status: 401 });
   }
 
-  if (!ALLOWED_FOLDERS.includes(folder)) {
+  if (!UPLOAD_FOLDERS.includes(folder)) {
     return NextResponse.json({ error: "Invalid folder" }, { status: 400 });
   }
-  if (!ALLOWED_CONTENT_TYPES.includes(contentType)) {
-    return NextResponse.json({ error: "Unsupported image type" }, { status: 400 });
+  const rules = UPLOAD_RULES[folder as UploadFolder];
+  if (!rules.contentTypes.includes(contentType)) {
+    return NextResponse.json({ error: "Unsupported file type" }, { status: 400 });
   }
   if (typeof fileName !== "string" || !fileName) {
     return NextResponse.json({ error: "Missing fileName" }, { status: 400 });
   }
 
-  const key = `${folder as Folder}/${uid}/${Date.now()}-${sanitizeFileName(fileName)}`;
+  const key = `${folder as UploadFolder}/${uid}/${Date.now()}-${sanitizeFileName(fileName)}`;
 
   const uploadUrl = await getSignedUrl(
     r2,

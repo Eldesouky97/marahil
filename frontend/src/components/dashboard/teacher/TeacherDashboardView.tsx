@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { Award, BookOpen, Plus, Users } from "lucide-react";
+import { Award, BookOpen, Plus, Users, Wallet } from "lucide-react";
 import { useAuth } from "@/context/AuthProvider";
 import { useTeacherCourses } from "@/lib/hooks/useTeacherCourses";
 import { TeacherCourseRow } from "./TeacherCourseRow";
@@ -16,9 +16,11 @@ export function TeacherDashboardView() {
   const { courses, loading } = useTeacherCourses(profile?.uid);
   const t = useTranslations("dashboardTeacher");
   const tShared = useTranslations("dashboardShared");
+  const tCourses = useTranslations("courses");
 
   const totalStudents = courses.reduce((sum, c) => sum + c.studentsCount, 0);
   const publishedCount = courses.filter((c) => c.published).length;
+  const estimatedRevenue = courses.reduce((sum, c) => sum + (c.price ?? 0) * c.studentsCount, 0);
 
   return (
     <>
@@ -37,7 +39,16 @@ export function TeacherDashboardView() {
         <StatCard icon={BookOpen} label={t("statsCourses")} value={courses.length} />
         <StatCard icon={Award} label={t("statsPublished")} value={publishedCount} />
         <StatCard icon={Users} label={t("statsStudents")} value={totalStudents} />
+        {estimatedRevenue > 0 && (
+          <StatCard
+            icon={Wallet}
+            label={t("statsEstimatedRevenue")}
+            value={tCourses("priceValue", { price: estimatedRevenue })}
+            tone="gold"
+          />
+        )}
       </div>
+      {estimatedRevenue > 0 && <p className="mb-8 -mt-6 text-xs text-faint">{t("estimatedRevenueNote")}</p>}
 
       <h2 className="mb-4 text-lg font-bold">{t("myCourses")}</h2>
       {loading ? (

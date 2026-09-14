@@ -32,6 +32,9 @@ function mapCourse(id: string, data: DocumentData): Course {
     lessonsCount: data.lessonsCount ?? 0,
     studentsCount: data.studentsCount ?? 0,
     createdAt: data.createdAt?.toMillis?.() ?? Date.now(),
+    price: data.price,
+    materials: data.materials,
+    quiz: data.quiz,
   };
 }
 
@@ -68,6 +71,7 @@ export async function createCourse(input: {
   teacherName: string;
   coverIcon: string;
   coverImageUrl?: string;
+  price?: number;
 }): Promise<string> {
   const created = await addDoc(coursesRef, {
     ...input,
@@ -85,7 +89,7 @@ export async function setCoursePublished(courseId: string, published: boolean) {
 
 export async function updateCourse(
   courseId: string,
-  patch: Partial<Pick<Course, "title" | "description" | "stage" | "subject" | "coverImageUrl">>
+  patch: Partial<Pick<Course, "title" | "description" | "stage" | "subject" | "coverImageUrl" | "price" | "materials" | "quiz">>
 ): Promise<void> {
   await updateDoc(doc(db, "courses", courseId), patch);
 }

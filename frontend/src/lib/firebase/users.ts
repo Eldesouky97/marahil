@@ -163,3 +163,19 @@ export async function awardLessonCompletionRewards(
   await updateDoc(doc(db, "users", uid), { xp, streakCount, lastActiveDate: today });
   return { xp, streakCount, lastActiveDate: today };
 }
+
+/**
+ * Self-service — called from useLessonPlayer.completeLesson() alongside
+ * awardLessonCompletionRewards(). Bumps users/{uid}/activity/{date}.count by
+ * one (creating the doc at count 1 if today has no entry yet), backing the
+ * student dashboard's weekly-activity chart. Tracks lessons completed per
+ * day, not real watch-time — this app has no video-time-tracking, so a
+ * "minutes" figure would be fabricated. See the matching rate-limited rule
+ * in backend/firestore.rules.
+ */
+export async function incrementDailyActivity(uid: string, dateStr: string): Promise<void> {
+  const ref = doc(db, "users", uid, "activity", dateStr);
+  const snap = await getDoc(ref);
+  const count = (snap.exists() ? (snap.data().count ?? 0) : 0) + 1;
+  await setDoc(ref, { count });
+}

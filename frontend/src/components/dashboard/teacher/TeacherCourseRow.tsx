@@ -7,6 +7,7 @@ import { Users } from "lucide-react";
 import { setCoursePublished } from "@/lib/firebase/courses";
 import { useStageLabel } from "@/lib/hooks/useStages";
 import { cn } from "@/lib/utils/cn";
+import { CourseRatingSummary } from "@/components/courses/CourseRatingSummary";
 import type { Course } from "@/types/course";
 
 export function TeacherCourseRow({ course }: { course: Course }) {
@@ -35,6 +36,9 @@ export function TeacherCourseRow({ course }: { course: Course }) {
             <Users size={12} /> {course.studentsCount}
           </span>
           <span>{t("lessonsCount", { count: course.lessonsCount })}</span>
+        </div>
+        <div className="mt-1">
+          <CourseRatingSummary courseId={course.id} />
         </div>
       </div>
 
