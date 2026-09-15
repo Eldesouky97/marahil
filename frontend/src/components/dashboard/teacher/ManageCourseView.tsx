@@ -54,11 +54,11 @@ export function ManageCourseView({ courseId }: { courseId: string }) {
 
       <h2 className="mb-4 text-lg font-bold">{t("lessons")}</h2>
       <div className="mb-8">
-        <TeacherLessonList lessons={lessons} />
+        <TeacherLessonList courseId={course.id} lessons={lessons} onChanged={refresh} />
       </div>
 
       <h2 className="mb-4 text-lg font-bold">{t("addLesson")}</h2>
-      <LessonForm courseId={course.id} nextOrder={lessons.length} onCreated={refresh} />
+      <LessonForm courseId={course.id} nextOrder={lessons.length} onSaved={refresh} />
 
       <h2 className="mb-4 mt-10 text-lg font-bold">{t("moreSettings")}</h2>
       <CourseSettingsPanel course={course} onSaved={refresh} />

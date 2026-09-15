@@ -2,50 +2,72 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { addLesson } from "@/lib/firebase/courses";
+import { addLesson, updateLesson } from "@/lib/firebase/courses";
 import { QuizBuilder } from "./QuizBuilder";
+import { LessonSimpleFields } from "./LessonSimpleFields";
+import { SlideBuilder } from "./slides/SlideBuilder";
 import { Button } from "@/components/ui/Button";
 import { FormField, inputClasses } from "@/components/ui/FormField";
-import { ImageUploadField } from "@/components/ui/ImageUploadField";
+import type { Lesson } from "@/types/course";
 import type { QuizQuestion } from "@/types/quiz";
+import type { LessonSlide } from "@/types/lessonSlide";
 
 export function LessonForm({
   courseId,
   nextOrder,
-  onCreated,
+  lesson,
+  onSaved,
+  onCancel,
 }: {
   courseId: string;
-  nextOrder: number;
-  onCreated: () => void;
+  nextOrder?: number;
+  lesson?: Lesson;
+  onSaved: () => void;
+  onCancel?: () => void;
 }) {
-  const [title, setTitle] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
-  const [content, setContent] = useState("");
-  const [imageUrl, setImageUrl] = useState<string | undefined>();
-  const [includeQuiz, setIncludeQuiz] = useState(false);
-  const [quiz, setQuiz] = useState<QuizQuestion[]>([]);
-  const [saving, setSaving] = useState(false);
   const t = useTranslations("dashboardTeacher.lessonForm");
+  const isEditing = !!lesson;
+
+  const [title, setTitle] = useState(lesson?.title ?? "");
+  const [mode, setMode] = useState<"simple" | "slides">(lesson?.slides?.length ? "slides" : "simple");
+  const [videoUrl, setVideoUrl] = useState(lesson?.videoUrl ?? "");
+  const [content, setContent] = useState(lesson?.content ?? "");
+  const [imageUrl, setImageUrl] = useState<string | undefined>(lesson?.imageUrl);
+  const [slides, setSlides] = useState<LessonSlide[]>(lesson?.slides ?? []);
+  const [includeQuiz, setIncludeQuiz] = useState(!!lesson?.quiz?.length);
+  const [quiz, setQuiz] = useState<QuizQuestion[]>(lesson?.quiz ?? []);
+  const [saving, setSaving] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
-    await addLesson(courseId, {
+
+    const payload = {
       title,
-      order: nextOrder,
-      videoUrl: videoUrl || undefined,
-      content: content || undefined,
-      imageUrl,
+      order: lesson?.order ?? nextOrder ?? 0,
+      videoUrl: mode === "simple" ? videoUrl || undefined : undefined,
+      content: mode === "simple" ? content || undefined : undefined,
+      imageUrl: mode === "simple" ? imageUrl : undefined,
+      slides: mode === "slides" && slides.length > 0 ? slides : undefined,
       quiz: includeQuiz && quiz.length > 0 ? quiz : undefined,
-    });
-    setTitle("");
-    setVideoUrl("");
-    setContent("");
-    setImageUrl(undefined);
-    setQuiz([]);
-    setIncludeQuiz(false);
+    };
+
+    if (lesson) {
+      await updateLesson(courseId, lesson.id, payload);
+    } else {
+      await addLesson(courseId, payload);
+      setTitle("");
+      setVideoUrl("");
+      setContent("");
+      setImageUrl(undefined);
+      setSlides([]);
+      setQuiz([]);
+      setIncludeQuiz(false);
+      setMode("simple");
+    }
+
     setSaving(false);
-    onCreated();
+    onSaved();
   }
 
   return (
@@ -54,23 +76,39 @@ export function LessonForm({
         <input required className={inputClasses} value={title} onChange={(e) => setTitle(e.target.value)} />
       </FormField>
 
-      <FormField label={t("videoLabel")}>
-        <input
-          dir="ltr"
-          className={inputClasses}
-          value={videoUrl}
-          onChange={(e) => setVideoUrl(e.target.value)}
-          placeholder="https://www.youtube.com/embed/..."
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => setMode("simple")}
+          className={`cursor-pointer rounded-full border px-4 py-1.5 text-xs ${
+            mode === "simple" ? "border-accent bg-accent/10 text-accent" : "border-border-strong text-dim"
+          }`}
+        >
+          {t("modeSimple")}
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode("slides")}
+          className={`cursor-pointer rounded-full border px-4 py-1.5 text-xs ${
+            mode === "slides" ? "border-accent bg-accent/10 text-accent" : "border-border-strong text-dim"
+          }`}
+        >
+          {t("modeSlides")}
+        </button>
+      </div>
+
+      {mode === "simple" ? (
+        <LessonSimpleFields
+          videoUrl={videoUrl}
+          onVideoUrlChange={setVideoUrl}
+          content={content}
+          onContentChange={setContent}
+          imageUrl={imageUrl}
+          onImageUrlChange={setImageUrl}
         />
-      </FormField>
-
-      <FormField label={t("contentLabel")}>
-        <textarea rows={4} className={inputClasses} value={content} onChange={(e) => setContent(e.target.value)} />
-      </FormField>
-
-      <FormField label={t("image")}>
-        <ImageUploadField folder="lesson-images" onUploaded={setImageUrl} />
-      </FormField>
+      ) : (
+        <SlideBuilder slides={slides} onChange={setSlides} />
+      )}
 
       <label className="flex items-center gap-2 text-sm text-muted">
         <input type="checkbox" checked={includeQuiz} onChange={(e) => setIncludeQuiz(e.target.checked)} />
@@ -79,9 +117,16 @@ export function LessonForm({
 
       {includeQuiz && <QuizBuilder questions={quiz} onChange={setQuiz} />}
 
-      <Button type="submit" disabled={saving}>
-        {saving ? t("submitting") : t("submit")}
-      </Button>
+      <div className="flex gap-3">
+        {onCancel && (
+          <Button type="button" variant="outline" onClick={onCancel} className="px-5 py-2.5 text-sm">
+            {t("cancel")}
+          </Button>
+        )}
+        <Button type="submit" disabled={saving} className={onCancel ? "px-5 py-2.5 text-sm" : undefined}>
+          {saving ? t("submitting") : isEditing ? t("save") : t("submit")}
+        </Button>
+      </div>
     </form>
   );
 }

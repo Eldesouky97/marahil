@@ -1,6 +1,7 @@
-export type UploadFolder = "avatars" | "course-covers" | "lesson-images" | "course-materials";
+export type UploadFolder = "avatars" | "course-covers" | "lesson-images" | "course-materials" | "lesson-slide-videos";
 
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const VIDEO_TYPES = ["video/mp4", "video/webm", "video/ogg"];
 const MATERIAL_TYPES = [
   ...IMAGE_TYPES,
   "application/pdf",
@@ -21,6 +22,7 @@ export const UPLOAD_RULES: Record<UploadFolder, { maxBytes: number; contentTypes
   "course-covers": { maxBytes: 5 * 1024 * 1024, contentTypes: IMAGE_TYPES },
   "lesson-images": { maxBytes: 5 * 1024 * 1024, contentTypes: IMAGE_TYPES },
   "course-materials": { maxBytes: 20 * 1024 * 1024, contentTypes: MATERIAL_TYPES },
+  "lesson-slide-videos": { maxBytes: 200 * 1024 * 1024, contentTypes: VIDEO_TYPES },
 };
 
 export const UPLOAD_FOLDERS = Object.keys(UPLOAD_RULES) as UploadFolder[];

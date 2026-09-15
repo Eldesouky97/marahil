@@ -292,7 +292,9 @@
       "addLesson": "Add a New Lesson",
       "questionsCount": "{count} questions",
       "notFound": "This course could not be found.",
-      "moreSettings": "More Settings"
+      "moreSettings": "More Settings",
+      "editLesson": "Edit lesson",
+      "deleteLesson": "Delete lesson"
     },
     "courseSettings": {
       "price": "Price (EGP, leave blank for a free course)",
@@ -310,7 +312,49 @@
       "image": "Lesson Illustration Image",
       "includeQuiz": "Add a short quiz for this lesson",
       "submit": "Add Lesson",
-      "submitting": "Saving..."
+      "submitting": "Saving...",
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "modeSimple": "Simple content",
+      "modeSlides": "Interactive slides"
+    },
+    "slideBuilder": {
+      "addSlide": "Add Slide",
+      "noSlides": "No slides yet — add the first one below.",
+      "textSlide": "Text & Image",
+      "videoSlide": "Video",
+      "quizSlide": "Quick Quiz",
+      "codeSlide": "Code",
+      "hotspotSlide": "Interactive Image",
+      "matchingSlide": "Matching",
+      "slideTitle": "Slide title (optional)",
+      "deleteSlide": "Delete slide",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "textBody": "Explanation text",
+      "textImage": "Image (optional)",
+      "videoSource": "Video source",
+      "videoSourceYoutube": "YouTube link",
+      "videoSourceUpload": "Upload video",
+      "videoUrlPlaceholder": "https://www.youtube.com/embed/...",
+      "checkpoints": "Interactive checkpoints inside the video",
+      "addCheckpoint": "Add checkpoint",
+      "deleteCheckpoint": "Delete checkpoint",
+      "checkpointTime": "Time (seconds)",
+      "checkpointsYoutubeNotice": "Checkpoints only work with an uploaded video, not YouTube links.",
+      "codeLanguage": "Code language",
+      "codeBody": "Code",
+      "codeCaption": "Caption (optional)",
+      "hotspotImage": "Image",
+      "hotspotHint": "Click on the image to add a hotspot",
+      "hotspotLabel": "Point label",
+      "hotspotDescription": "Point description (optional)",
+      "deletePoint": "Delete point",
+      "matchingPairs": "Matching pairs",
+      "matchingLeft": "Left item",
+      "matchingRight": "Matching item",
+      "addPair": "Add pair",
+      "deletePair": "Delete pair"
     },
     "quizBuilder": {
       "questionLabel": "Question {n}",
@@ -515,7 +559,18 @@
     "certificateEarnedTitle": "Congratulations! You completed the course",
     "certificateEarnedSubtitle": "Your certificate is ready to download and share.",
     "viewCertificate": "View Certificate",
-    "lockedNotice": "Complete the previous lessons first to unlock this one."
+    "lockedNotice": "Complete the previous lessons first to unlock this one.",
+    "slideDeck": {
+      "previous": "Previous",
+      "next": "Next",
+      "finish": "Finish Slides",
+      "slideCounter": "Slide {current} of {total}",
+      "checkpointContinue": "Continue",
+      "checkAnswers": "Check Answers",
+      "reset": "Try Again",
+      "matchingScore": "{score} of {total} correct",
+      "hotspotClose": "Close"
+    }
   },
   "quiz": {
     "questionCounter": "Question {n} of {total}",
@@ -613,6 +668,12 @@
       "tooLarge": "Image is larger than 5MB.",
       "invalidType": "Unsupported file type — use JPEG, PNG, WebP, or GIF.",
       "failed": "Couldn't upload the image. Please try again."
+    },
+    "videoUpload": {
+      "choose": "Choose Video",
+      "tooLarge": "Video is larger than 200MB.",
+      "invalidType": "Unsupported file type — use MP4, WebM, or OGG.",
+      "failed": "Couldn't upload the video. Please try again."
     }
   },
   "profile": {

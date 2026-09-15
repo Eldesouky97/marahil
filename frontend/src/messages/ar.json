@@ -292,7 +292,9 @@
       "addLesson": "إضافة درس جديد",
       "questionsCount": "{count} أسئلة",
       "notFound": "لم يتم العثور على هذه الدورة.",
-      "moreSettings": "إعدادات إضافية"
+      "moreSettings": "إعدادات إضافية",
+      "editLesson": "تعديل الدرس",
+      "deleteLesson": "حذف الدرس"
     },
     "courseSettings": {
       "price": "السعر (بالجنيه، اتركه فارغًا لدورة مجانية)",
@@ -310,7 +312,49 @@
       "image": "صورة توضيحية للدرس",
       "includeQuiz": "إضافة اختبار قصير لهذا الدرس",
       "submit": "إضافة الدرس",
-      "submitting": "جارٍ الحفظ..."
+      "submitting": "جارٍ الحفظ...",
+      "save": "حفظ التغييرات",
+      "cancel": "إلغاء",
+      "modeSimple": "محتوى بسيط",
+      "modeSlides": "سلايدات تفاعلية"
+    },
+    "slideBuilder": {
+      "addSlide": "أضف سلايد",
+      "noSlides": "لا توجد سلايدات بعد — أضف أول سلايد أدناه.",
+      "textSlide": "نص وصورة",
+      "videoSlide": "فيديو",
+      "quizSlide": "اختبار قصير",
+      "codeSlide": "كود",
+      "hotspotSlide": "صورة تفاعلية",
+      "matchingSlide": "مطابقة",
+      "slideTitle": "عنوان السلايد (اختياري)",
+      "deleteSlide": "حذف السلايد",
+      "moveUp": "نقل للأعلى",
+      "moveDown": "نقل للأسفل",
+      "textBody": "نص الشرح",
+      "textImage": "صورة (اختياري)",
+      "videoSource": "مصدر الفيديو",
+      "videoSourceYoutube": "رابط يوتيوب",
+      "videoSourceUpload": "رفع فيديو",
+      "videoUrlPlaceholder": "https://www.youtube.com/embed/...",
+      "checkpoints": "نقاط تفاعلية داخل الفيديو",
+      "addCheckpoint": "أضف نقطة تفاعلية",
+      "deleteCheckpoint": "حذف النقطة",
+      "checkpointTime": "الوقت (بالثواني)",
+      "checkpointsYoutubeNotice": "النقاط التفاعلية متاحة فقط مع الفيديو المرفوع، وليس روابط يوتيوب.",
+      "codeLanguage": "لغة الكود",
+      "codeBody": "الكود",
+      "codeCaption": "وصف (اختياري)",
+      "hotspotImage": "الصورة",
+      "hotspotHint": "اضغط على الصورة لإضافة نقطة تفاعلية",
+      "hotspotLabel": "عنوان النقطة",
+      "hotspotDescription": "وصف النقطة (اختياري)",
+      "deletePoint": "حذف النقطة",
+      "matchingPairs": "أزواج المطابقة",
+      "matchingLeft": "العنصر الأول",
+      "matchingRight": "العنصر المطابق",
+      "addPair": "أضف زوجًا",
+      "deletePair": "حذف الزوج"
     },
     "quizBuilder": {
       "questionLabel": "سؤال {n}",
@@ -515,7 +559,18 @@
     "certificateEarnedTitle": "مبروك! أكملت الدورة",
     "certificateEarnedSubtitle": "شهادتك جاهزة الآن للتحميل والمشاركة.",
     "viewCertificate": "عرض الشهادة",
-    "lockedNotice": "أكمل الدروس السابقة أولًا لفتح هذا الدرس."
+    "lockedNotice": "أكمل الدروس السابقة أولًا لفتح هذا الدرس.",
+    "slideDeck": {
+      "previous": "السابق",
+      "next": "التالي",
+      "finish": "إنهاء السلايدات",
+      "slideCounter": "سلايد {current} من {total}",
+      "checkpointContinue": "استمرار",
+      "checkAnswers": "تحقق من الإجابات",
+      "reset": "إعادة المحاولة",
+      "matchingScore": "{score} من {total} صحيحة",
+      "hotspotClose": "إغلاق"
+    }
   },
   "quiz": {
     "questionCounter": "سؤال {n} من {total}",
@@ -613,6 +668,12 @@
       "tooLarge": "الصورة أكبر من ٥ ميجابايت.",
       "invalidType": "نوع الملف غير مدعوم — استخدم JPEG أو PNG أو WebP أو GIF.",
       "failed": "تعذّر رفع الصورة. حاول مرة أخرى."
+    },
+    "videoUpload": {
+      "choose": "اختر فيديو",
+      "tooLarge": "الفيديو أكبر من ٢٠٠ ميجابايت.",
+      "invalidType": "نوع الملف غير مدعوم — استخدم MP4 أو WebM أو OGG.",
+      "failed": "تعذّر رفع الفيديو. حاول مرة أخرى."
     }
   },
   "profile": {

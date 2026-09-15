@@ -1,5 +1,6 @@
 import type { StageId } from "./stage";
 import type { QuizQuestion } from "./quiz";
+import type { LessonSlide } from "./lessonSlide";
 
 export interface Lesson {
   id: string;
@@ -8,6 +9,8 @@ export interface Lesson {
   videoUrl?: string;
   content?: string;
   imageUrl?: string;
+  /** Richer authoring layer: an ordered interactive slide deck rendered instead of content/videoUrl/imageUrl when present. Purely a presentation layer — quiz below still drives progress/certificates. Firestore's ~1MiB/doc limit is the only real ceiling on slide count/content size. */
+  slides?: LessonSlide[];
   quiz?: QuizQuestion[];
 }
 

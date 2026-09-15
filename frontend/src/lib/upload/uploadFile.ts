@@ -15,7 +15,31 @@ export class UploadError extends Error {
  * enforcement is server-side in app/api/upload/route.ts, this is just an
  * early check to avoid a round-trip for an upload that would be rejected.
  */
-export async function uploadFile(file: File, folder: UploadFolder, idToken: string): Promise<string> {
+function putWithProgress(uploadUrl: string, file: File, onProgress?: (pct: number) => void): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("PUT", uploadUrl);
+    xhr.setRequestHeader("Content-Type", file.type);
+    if (onProgress) {
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100));
+      };
+    }
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) resolve();
+      else reject(new UploadError("upload-failed", "Upload to storage failed"));
+    };
+    xhr.onerror = () => reject(new UploadError("upload-failed", "Upload to storage failed"));
+    xhr.send(file);
+  });
+}
+
+export async function uploadFile(
+  file: File,
+  folder: UploadFolder,
+  idToken: string,
+  onProgress?: (pct: number) => void
+): Promise<string> {
   const rules = UPLOAD_RULES[folder];
   if (!rules.contentTypes.includes(file.type)) {
     throw new UploadError("invalid-type", `Unsupported file type: ${file.type}`);
@@ -34,14 +58,7 @@ export async function uploadFile(file: File, folder: UploadFolder, idToken: stri
   }
   const { uploadUrl, publicUrl } = await presignRes.json();
 
-  const putRes = await fetch(uploadUrl, {
-    method: "PUT",
-    headers: { "Content-Type": file.type },
-    body: file,
-  });
-  if (!putRes.ok) {
-    throw new UploadError("upload-failed", "Upload to storage failed");
-  }
+  await putWithProgress(uploadUrl, file, onProgress);
 
   return publicUrl;
 }

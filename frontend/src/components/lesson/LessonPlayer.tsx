@@ -7,6 +7,7 @@ import { ArrowLeft, Lock } from "lucide-react";
 import { useAuth } from "@/context/AuthProvider";
 import { useLessonPlayer } from "@/lib/hooks/useLessonPlayer";
 import { LessonContent } from "./LessonContent";
+import { SlideDeck } from "./slides/SlideDeck";
 import { CertificateEarnedBanner } from "./CertificateEarnedBanner";
 import { QuizPlayer } from "@/components/quiz/QuizPlayer";
 import { Button } from "@/components/ui/Button";
@@ -18,6 +19,7 @@ export function LessonPlayer({ courseId, lessonId }: { courseId: string; lessonI
   const { course, lesson, lessons, enrollment, loading, certificateId, completeLesson, locked } =
     useLessonPlayer(courseId, lessonId, profile?.uid, profile?.name);
   const [marking, setMarking] = useState(false);
+  const [deckDone, setDeckDone] = useState(false);
   const t = useTranslations("lesson");
 
   if (loading) {
@@ -66,22 +68,27 @@ export function LessonPlayer({ courseId, lessonId }: { courseId: string; lessonI
 
         <h1 className="mb-6 font-display text-2xl text-heading">{lesson.title}</h1>
 
-        <LessonContent lesson={lesson} />
-
-        {lesson.quiz && lesson.quiz.length > 0 ? (
-          <div className="mt-8 rounded-2xl border border-border bg-surface-2 p-8">
-            <QuizPlayer
-              questions={lesson.quiz}
-              onComplete={(score, total) => completeLesson(Math.round((score / total) * 100))}
-            />
-          </div>
+        {lesson.slides && lesson.slides.length > 0 ? (
+          <SlideDeck slides={lesson.slides} onDeckComplete={() => setDeckDone(true)} />
         ) : (
-          !alreadyDone && (
-            <Button className="mt-8" onClick={markComplete} disabled={marking}>
-              {marking ? t("markCompleteLoading") : t("markComplete")}
-            </Button>
-          )
+          <LessonContent lesson={lesson} />
         )}
+
+        {(!lesson.slides?.length || deckDone) &&
+          (lesson.quiz && lesson.quiz.length > 0 ? (
+            <div className="mt-8 rounded-2xl border border-border bg-surface-2 p-8">
+              <QuizPlayer
+                questions={lesson.quiz}
+                onComplete={(score, total) => completeLesson(Math.round((score / total) * 100))}
+              />
+            </div>
+          ) : (
+            !alreadyDone && (
+              <Button className="mt-8" onClick={markComplete} disabled={marking}>
+                {marking ? t("markCompleteLoading") : t("markComplete")}
+              </Button>
+            )
+          ))}
 
         {certificateId && <CertificateEarnedBanner certificateId={certificateId} />}
 
