@@ -27,9 +27,17 @@ function putWithProgress(uploadUrl: string, file: File, onProgress?: (pct: numbe
     }
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) resolve();
-      else reject(new UploadError("upload-failed", "Upload to storage failed"));
+      else {
+        // Status 0 here (vs. a real HTTP status) points at the R2 bucket's CORS policy
+        // rejecting the browser's cross-origin PUT, not a code or credentials problem.
+        console.error(`R2 upload PUT failed: status ${xhr.status} ${xhr.statusText}`);
+        reject(new UploadError("upload-failed", "Upload to storage failed"));
+      }
     };
-    xhr.onerror = () => reject(new UploadError("upload-failed", "Upload to storage failed"));
+    xhr.onerror = () => {
+      console.error("R2 upload PUT failed: network/CORS error — check the R2 bucket's CORS policy allows this origin.");
+      reject(new UploadError("upload-failed", "Upload to storage failed"));
+    };
     xhr.send(file);
   });
 }
