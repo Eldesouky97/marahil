@@ -282,7 +282,11 @@
       "price": "Price (optional)",
       "pricePlaceholder": "Leave blank for a free course",
       "submit": "Create Course",
-      "submitting": "Creating..."
+      "submitting": "Creating...",
+      "importPptxLabel": "Or start from a PowerPoint (optional)",
+      "importPptxSummary": "Imported {count} slides — they'll be created as the course's first lesson.",
+      "importPptxRemove": "Remove",
+      "importedLessonFallbackTitle": "Imported Lesson"
     },
     "manageCourse": {
       "publish": "Publish Course",

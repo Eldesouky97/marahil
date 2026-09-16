@@ -2,14 +2,17 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { X } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
-import { createCourse } from "@/lib/firebase/courses";
+import { createCourse, addLesson } from "@/lib/firebase/courses";
 import { useStages } from "@/lib/hooks/useStages";
 import { useAuth } from "@/context/AuthProvider";
 import { Button } from "@/components/ui/Button";
 import { FormField, inputClasses } from "@/components/ui/FormField";
 import { ImageUploadField } from "@/components/ui/ImageUploadField";
+import { PptxImportButton } from "@/components/dashboard/teacher/slides/PptxImportButton";
 import type { StageId } from "@/types/stage";
+import type { LessonSlide } from "@/types/lessonSlide";
 
 export function CourseForm() {
   const router = useRouter();
@@ -23,6 +26,7 @@ export function CourseForm() {
   const [subject, setSubject] = useState(stages[1].subjects[0]);
   const [coverImageUrl, setCoverImageUrl] = useState<string | undefined>();
   const [price, setPrice] = useState("");
+  const [importedSlides, setImportedSlides] = useState<LessonSlide[] | null>(null);
   const [saving, setSaving] = useState(false);
 
   const currentStage = stages.find((s) => s.id === stage)!;
@@ -42,6 +46,15 @@ export function CourseForm() {
       coverImageUrl,
       price: price ? Number(price) : undefined,
     });
+
+    if (importedSlides && importedSlides.length > 0) {
+      await addLesson(courseId, {
+        title: importedSlides[0]?.title || t("importedLessonFallbackTitle"),
+        order: 0,
+        slides: importedSlides,
+      });
+    }
+
     router.push(`/dashboard/teacher/courses/${courseId}`);
   }
 
@@ -105,6 +118,24 @@ export function CourseForm() {
           onChange={(e) => setPrice(e.target.value)}
           placeholder={t("pricePlaceholder")}
         />
+      </FormField>
+
+      <FormField label={t("importPptxLabel")}>
+        {importedSlides ? (
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-accent/40 bg-accent/10 px-4 py-2.5 text-sm text-accent-ink">
+            <span>{t("importPptxSummary", { count: importedSlides.length })}</span>
+            <button
+              type="button"
+              onClick={() => setImportedSlides(null)}
+              className="shrink-0 cursor-pointer text-danger"
+              aria-label={t("importPptxRemove")}
+            >
+              <X size={15} />
+            </button>
+          </div>
+        ) : (
+          <PptxImportButton onImported={setImportedSlides} />
+        )}
       </FormField>
 
       <Button type="submit" disabled={saving}>

@@ -282,7 +282,11 @@
       "price": "السعر (اختياري)",
       "pricePlaceholder": "اتركه فارغًا لدورة مجانية",
       "submit": "إنشاء الدورة",
-      "submitting": "جارٍ الإنشاء..."
+      "submitting": "جارٍ الإنشاء...",
+      "importPptxLabel": "أو ابدأ من عرض PowerPoint (اختياري)",
+      "importPptxSummary": "تم استيراد {count} سلايد — سيتم إنشاؤها كأول درس في الدورة.",
+      "importPptxRemove": "إزالة",
+      "importedLessonFallbackTitle": "الدرس المستورد"
     },
     "manageCourse": {
       "publish": "نشر الدورة",
