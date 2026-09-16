@@ -7,6 +7,7 @@ import { useRouter } from "@/i18n/navigation";
 import { createCourse, addLesson } from "@/lib/firebase/courses";
 import { useStages } from "@/lib/hooks/useStages";
 import { useAuth } from "@/context/AuthProvider";
+import { useToast } from "@/components/ui/ToastProvider";
 import { Button } from "@/components/ui/Button";
 import { FormField, inputClasses } from "@/components/ui/FormField";
 import { ImageUploadField } from "@/components/ui/ImageUploadField";
@@ -18,6 +19,7 @@ export function CourseForm() {
   const router = useRouter();
   const { profile } = useAuth();
   const stages = useStages();
+  const { showToast } = useToast();
   const t = useTranslations("dashboardTeacher.courseForm");
 
   const [title, setTitle] = useState("");
@@ -35,24 +37,40 @@ export function CourseForm() {
     e.preventDefault();
     if (!profile) return;
     setSaving(true);
-    const courseId = await createCourse({
-      title,
-      description,
-      stage,
-      subject,
-      teacherId: profile.uid,
-      teacherName: profile.name,
-      coverIcon: "BookOpen",
-      coverImageUrl,
-      price: price ? Number(price) : undefined,
-    });
+
+    let courseId: string;
+    try {
+      courseId = await createCourse({
+        title,
+        description,
+        stage,
+        subject,
+        teacherId: profile.uid,
+        teacherName: profile.name,
+        coverIcon: "BookOpen",
+        coverImageUrl,
+        price: price ? Number(price) : undefined,
+      });
+    } catch (err) {
+      console.error("createCourse failed:", err);
+      showToast(t("createFailed"), { tone: "error" });
+      setSaving(false);
+      return;
+    }
 
     if (importedSlides && importedSlides.length > 0) {
-      await addLesson(courseId, {
-        title: importedSlides[0]?.title || t("importedLessonFallbackTitle"),
-        order: 0,
-        slides: importedSlides,
-      });
+      try {
+        await addLesson(courseId, {
+          title: importedSlides[0]?.title || t("importedLessonFallbackTitle"),
+          order: 0,
+          slides: importedSlides,
+        });
+      } catch (err) {
+        // The course itself was created fine — don't strand the teacher on this
+        // form over the lesson step failing; let them retry adding it from there.
+        console.error("addLesson (pptx import) failed:", err);
+        showToast(t("importPptxLessonFailed"), { tone: "error", duration: 7000 });
+      }
     }
 
     router.push(`/dashboard/teacher/courses/${courseId}`);

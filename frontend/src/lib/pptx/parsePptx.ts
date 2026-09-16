@@ -12,7 +12,7 @@ const IMAGE_EXT_TO_TYPE: Record<string, string> = {
   bmp: "image/bmp",
 };
 
-interface ExtractedSlide {
+export interface ExtractedSlide {
   texts: string[];
   image: { blob: Blob; contentType: string; extension: string } | null;
 }

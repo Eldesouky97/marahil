@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { Eye } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { setCoursePublished } from "@/lib/firebase/courses";
 import { useCourseDetail } from "@/lib/hooks/useCourseDetail";
 import { TeacherLessonList } from "./TeacherLessonList";
@@ -41,14 +43,21 @@ export function ManageCourseView({ courseId }: { courseId: string }) {
       <DashboardHeader
         title={course.title}
         action={
-          <Button
-            variant={course.published ? "outline" : "primary"}
-            onClick={togglePublish}
-            disabled={publishing}
-            className="px-5 py-2.5 text-sm"
-          >
-            {course.published ? t("unpublish") : t("publish")}
-          </Button>
+          <div className="flex gap-2">
+            <Link href={`/courses/${course.id}`}>
+              <Button variant="outline" className="px-5 py-2.5 text-sm">
+                <Eye size={16} /> {t("previewAsStudent")}
+              </Button>
+            </Link>
+            <Button
+              variant={course.published ? "outline" : "primary"}
+              onClick={togglePublish}
+              disabled={publishing}
+              className="px-5 py-2.5 text-sm"
+            >
+              {course.published ? t("unpublish") : t("publish")}
+            </Button>
+          </div>
         }
       />
 

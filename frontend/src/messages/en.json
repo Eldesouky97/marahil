@@ -286,7 +286,9 @@
       "importPptxLabel": "Or start from a PowerPoint (optional)",
       "importPptxSummary": "Imported {count} slides — they'll be created as the course's first lesson.",
       "importPptxRemove": "Remove",
-      "importedLessonFallbackTitle": "Imported Lesson"
+      "importedLessonFallbackTitle": "Imported Lesson",
+      "createFailed": "Couldn't create the course. Please try again.",
+      "importPptxLessonFailed": "The course was created, but the imported lesson couldn't be added. Add it from the course management page."
     },
     "manageCourse": {
       "publish": "Publish Course",
@@ -298,7 +300,9 @@
       "notFound": "This course could not be found.",
       "moreSettings": "More Settings",
       "editLesson": "Edit lesson",
-      "deleteLesson": "Delete lesson"
+      "deleteLesson": "Delete lesson",
+      "previewAsStudent": "Preview as Student",
+      "previewLesson": "Preview lesson"
     },
     "courseSettings": {
       "price": "Price (EGP, leave blank for a free course)",

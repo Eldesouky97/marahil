@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { ClipboardCheck, Layers, Pencil, PlayCircle, Trash2 } from "lucide-react";
+import { ClipboardCheck, Eye, Layers, Pencil, PlayCircle, Trash2 } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { deleteLesson } from "@/lib/firebase/courses";
 import { LessonForm } from "./LessonForm";
 import type { Lesson } from "@/types/course";
@@ -56,6 +57,13 @@ export function TeacherLessonList({
                 <ClipboardCheck size={13} /> {t("questionsCount", { count: lesson.quiz.length })}
               </span>
             )}
+            <Link
+              href={`/learn/${courseId}/${lesson.id}`}
+              className="text-dim hover:text-primary-strong"
+              aria-label={t("previewLesson")}
+            >
+              <Eye size={15} />
+            </Link>
             <button
               type="button"
               onClick={() => setEditingLessonId(lesson.id)}
