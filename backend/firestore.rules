@@ -134,9 +134,14 @@ service cloud.firestore {
           && request.resource.data.teacherId == resource.data.teacherId
           && isApproved(request.auth.uid))
         || isAdmin();
-      // Only admin can delete a course outright — a teacher still can't
-      // hard-delete their own (they can only unpublish it).
-      allow delete: if isAdmin();
+      // A teacher can hard-delete their own course, but only once it has
+      // zero enrolled students — enrollments/certificates/reviews all
+      // require a real enrollment to exist, so this sidesteps orphaning any
+      // of them without needing rules that could enumerate those
+      // collections (which Firestore rules can't do). Admin keeps
+      // unconditional delete, same as always.
+      allow delete: if (isOwner(resource.data.teacherId) && isApproved(request.auth.uid) && resource.data.studentsCount == 0)
+        || isAdmin();
 
       match /lessons/{lessonId} {
         function course() {

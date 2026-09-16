@@ -308,7 +308,22 @@
       "editLesson": "Edit lesson",
       "deleteLesson": "Delete lesson",
       "previewAsStudent": "Preview as Student",
-      "previewLesson": "Preview lesson"
+      "previewLesson": "Preview lesson",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "duplicateLesson": "Duplicate lesson",
+      "duplicateSuffix": "(Copy)",
+      "duplicateCourse": "Duplicate Course",
+      "duplicating": "Duplicating...",
+      "duplicateFailed": "Couldn't duplicate the course. Please try again.",
+      "dangerZone": "Danger Zone",
+      "deleteBlockedStudents": "This course can't be deleted while {count} student(s) are enrolled. Deletion is only available for courses with no students.",
+      "deleteCourse": "Delete Course Permanently",
+      "deleteConfirm": "Are you sure? This will permanently delete the course and all its lessons — this can't be undone.",
+      "deleteCourseConfirmButton": "Yes, delete the course",
+      "cancel": "Cancel",
+      "deleting": "Deleting...",
+      "deleteFailed": "Couldn't delete the course. Please try again."
     },
     "courseSettings": {
       "price": "Price (EGP, leave blank for a free course)",

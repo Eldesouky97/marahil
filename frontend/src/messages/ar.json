@@ -308,7 +308,22 @@
       "editLesson": "تعديل الدرس",
       "deleteLesson": "حذف الدرس",
       "previewAsStudent": "معاينة كطالب",
-      "previewLesson": "معاينة الدرس"
+      "previewLesson": "معاينة الدرس",
+      "moveUp": "نقل للأعلى",
+      "moveDown": "نقل للأسفل",
+      "duplicateLesson": "نسخ الدرس",
+      "duplicateSuffix": "(نسخة)",
+      "duplicateCourse": "نسخ الدورة",
+      "duplicating": "جارٍ النسخ...",
+      "duplicateFailed": "تعذّر نسخ الدورة. حاول مرة أخرى.",
+      "dangerZone": "منطقة الخطر",
+      "deleteBlockedStudents": "لا يمكن حذف الدورة لوجود {count} طالب مسجل بها. الحذف النهائي متاح فقط للدورات بدون طلاب.",
+      "deleteCourse": "حذف الدورة نهائيًا",
+      "deleteConfirm": "هل أنت متأكد؟ سيتم حذف الدورة وكل دروسها نهائيًا ولا يمكن التراجع.",
+      "deleteCourseConfirmButton": "نعم، احذف الدورة",
+      "cancel": "إلغاء",
+      "deleting": "جارٍ الحذف...",
+      "deleteFailed": "تعذّر حذف الدورة. حاول مرة أخرى."
     },
     "courseSettings": {
       "price": "السعر (بالجنيه، اتركه فارغًا لدورة مجانية)",

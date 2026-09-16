@@ -115,10 +115,83 @@ export async function updateCourse(
   await updateDoc(doc(db, "courses", courseId), withoutUndefined(patch));
 }
 
-/** Admin-only. Deletes every lesson first (Firestore doesn't cascade-delete subcollections), then the course itself. */
+/**
+ * Clones a course (its own fields + every lesson, each lesson's own slides
+ * included) into a brand-new draft course owned by `teacherId` — always the
+ * calling teacher's own id/name, never copied from the source course, so
+ * this can't be used to silently reassign ownership even if ever called on
+ * a course that isn't the caller's own. New course starts unpublished with
+ * zero students, same as any freshly created course.
+ */
+export async function duplicateCourse(courseId: string, teacherId: string, teacherName: string, titleSuffix: string): Promise<string> {
+  const source = await getCourse(courseId);
+  if (!source) throw new Error("Course not found");
+  const sourceLessons = await listLessons(courseId);
+
+  const newCourseId = await createCourse({
+    title: `${source.title} ${titleSuffix}`,
+    description: source.description,
+    stage: source.stage,
+    subject: source.subject,
+    teacherId,
+    teacherName,
+    coverIcon: source.coverIcon,
+    coverImageUrl: source.coverImageUrl,
+    price: source.price,
+  });
+
+  if (source.materials || source.quiz) {
+    await updateCourse(newCourseId, { materials: source.materials, quiz: source.quiz });
+  }
+
+  for (const lesson of sourceLessons) {
+    await addLesson(newCourseId, {
+      title: lesson.title,
+      order: lesson.order,
+      videoUrl: lesson.videoUrl,
+      content: lesson.content,
+      imageUrl: lesson.imageUrl,
+      slides: lesson.slides,
+      quiz: lesson.quiz,
+    });
+  }
+
+  return newCourseId;
+}
+
+/**
+ * Deletes every lesson, then every live session scheduled for this course
+ * (Firestore doesn't cascade-delete subcollections), then the course doc
+ * itself. Teachers can only reach this once their own course has zero
+ * enrolled students (see firestore.rules) — admin can call it regardless.
+ *
+ * A live session's own `messages`/`participants` are cleaned up too, but
+ * `strokes` and `pollVotes` are deliberately left alone: both have
+ * `allow delete: if false` in firestore.rules (immutable by design — the
+ * whiteboard/poll history is never meant to be erasable, not even by an
+ * admin), so a course with either just leaves them as harmless orphans —
+ * unreachable once the session doc above them is gone, not shown anywhere.
+ * A session still `status == 'live'` also can't be deleted (must be ended
+ * first) — deleting a course mid-class is a rare edge case this doesn't
+ * specially handle; that one deleteDoc() call will simply reject.
+ */
 export async function deleteCourse(courseId: string): Promise<void> {
   const lessonsSnap = await getDocs(collection(db, "courses", courseId, "lessons"));
   await Promise.all(lessonsSnap.docs.map((d) => deleteDoc(d.ref)));
+
+  const sessionsSnap = await getDocs(query(collection(db, "liveSessions"), where("courseId", "==", courseId)));
+  for (const sessionDoc of sessionsSnap.docs) {
+    const [messagesSnap, participantsSnap] = await Promise.all([
+      getDocs(collection(sessionDoc.ref, "messages")),
+      getDocs(collection(sessionDoc.ref, "participants")),
+    ]);
+    await Promise.all([
+      ...messagesSnap.docs.map((d) => deleteDoc(d.ref)),
+      ...participantsSnap.docs.map((d) => deleteDoc(d.ref)),
+    ]);
+    await deleteDoc(sessionDoc.ref);
+  }
+
   await deleteDoc(doc(db, "courses", courseId));
 }
 
