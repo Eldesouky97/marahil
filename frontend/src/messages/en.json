@@ -354,7 +354,16 @@
       "matchingLeft": "Left item",
       "matchingRight": "Matching item",
       "addPair": "Add pair",
-      "deletePair": "Delete pair"
+      "deletePair": "Delete pair",
+      "importPptx": "Import from PowerPoint",
+      "importPptxParsing": "Reading the file...",
+      "importPptxUploading": "Uploading images ({done} of {total})...",
+      "importPptxInvalidType": "The file must be a .pptx",
+      "importPptxTooLarge": "File is larger than 50MB",
+      "importPptxInvalidFile": "Couldn't read this file as a valid PowerPoint presentation",
+      "importPptxFailed": "Couldn't import the presentation. Please try again.",
+      "importPptxSuccess": "Imported {count} slides from the presentation",
+      "importPptxReviewQuiz": "Double check the correct answer on {count} auto-imported quiz slide(s)"
     },
     "quizBuilder": {
       "questionLabel": "Question {n}",

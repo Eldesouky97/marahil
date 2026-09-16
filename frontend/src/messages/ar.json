@@ -354,7 +354,16 @@
       "matchingLeft": "العنصر الأول",
       "matchingRight": "العنصر المطابق",
       "addPair": "أضف زوجًا",
-      "deletePair": "حذف الزوج"
+      "deletePair": "حذف الزوج",
+      "importPptx": "استيراد من PowerPoint",
+      "importPptxParsing": "جارٍ تحليل الملف...",
+      "importPptxUploading": "جارٍ رفع الصور ({done} من {total})...",
+      "importPptxInvalidType": "الملف يجب أن يكون بصيغة .pptx",
+      "importPptxTooLarge": "الملف أكبر من ٥٠ ميجابايت",
+      "importPptxInvalidFile": "تعذّر قراءة هذا الملف كعرض PowerPoint صالح",
+      "importPptxFailed": "تعذّر استيراد العرض التقديمي. حاول مرة أخرى.",
+      "importPptxSuccess": "تم استيراد {count} سلايد من العرض التقديمي",
+      "importPptxReviewQuiz": "راجع الإجابة الصحيحة في {count} سلايد اختبار تم استيرادها تلقائيًا"
     },
     "quizBuilder": {
       "questionLabel": "سؤال {n}",

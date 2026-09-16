@@ -9,6 +9,7 @@ import { QuizSlideEditor } from "./QuizSlideEditor";
 import { CodeSlideEditor } from "./CodeSlideEditor";
 import { HotspotSlideEditor } from "./HotspotSlideEditor";
 import { MatchingSlideEditor } from "./MatchingSlideEditor";
+import { PptxImportButton } from "./PptxImportButton";
 import { inputClasses } from "@/components/ui/FormField";
 import type { LessonSlide, LessonSlideType } from "@/types/lessonSlide";
 
@@ -144,6 +145,7 @@ export function SlideBuilder({ slides, onChange }: { slides: LessonSlide[]; onCh
             </button>
           );
         })}
+        <PptxImportButton onImported={(imported) => onChange([...slides, ...imported])} />
       </div>
     </div>
   );
