@@ -293,7 +293,8 @@
       "importPptxSplitHere": "ابدأ درسًا جديدًا هنا",
       "importPptxMergeUp": "دمج مع الدرس السابق",
       "importPptxReviewSummary": "{lessons} درسًا · {slides} سلايد",
-      "importPptxReviewConfirm": "تأكيد"
+      "importPptxReviewConfirm": "تأكيد",
+      "importPptxQuizReviewLabel": "سؤال اختيار من متعدد — اختر الإجابة الصحيحة"
     },
     "manageCourse": {
       "publish": "نشر الدورة",

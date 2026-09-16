@@ -293,7 +293,8 @@
       "importPptxSplitHere": "Start a new lesson here",
       "importPptxMergeUp": "Merge into previous lesson",
       "importPptxReviewSummary": "{lessons} lesson(s) · {slides} slides",
-      "importPptxReviewConfirm": "Confirm"
+      "importPptxReviewConfirm": "Confirm",
+      "importPptxQuizReviewLabel": "Multiple-choice question — pick the correct answer"
     },
     "manageCourse": {
       "publish": "Publish Course",

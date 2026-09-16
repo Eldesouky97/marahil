@@ -118,28 +118,48 @@ function resolveZipPath(baseDir: string, relativeTarget: string): string {
   return stack.join("/");
 }
 
-async function extractSlideImage(zip: JSZip, slidePath: string): Promise<ExtractedSlide["image"]> {
+/**
+ * A slide's own image relationship can be its decorative background fill
+ * (<p:bg><p:bgPr><a:blipFill><a:blip r:embed="...">) as well as a genuine
+ * picture someone placed on the slide (<p:pic><p:blipFill><a:blip
+ * r:embed="...">) — both are just "an image relationship" if you only look
+ * at the slide's .rels file, which is what earlier grabbed slide-theme
+ * background art instead of actual slide content. Only <p:pic> shapes count
+ * as content; the background's embed id is explicitly excluded even if it
+ * would otherwise look like a valid candidate.
+ */
+async function extractSlideImage(zip: JSZip, slidePath: string, slideXml: string): Promise<ExtractedSlide["image"]> {
   const slideDir = slidePath.slice(0, slidePath.lastIndexOf("/"));
   const slideFileName = slidePath.slice(slidePath.lastIndexOf("/") + 1);
   const relsPath = `${slideDir}/_rels/${slideFileName}.rels`;
   const relsXml = await zip.file(relsPath)?.async("string");
   if (!relsXml) return null;
 
-  const imageRel = [...relsXml.matchAll(/<Relationship\s+Id="([^"]+)"\s+Type="([^"]+)"\s+Target="([^"]+)"/g)].find(
-    ([, , type]) => type.endsWith("/relationships/image")
-  );
-  if (!imageRel) return null;
+  const relIdToTarget = new Map<string, string>();
+  for (const m of relsXml.matchAll(/<Relationship\s+Id="([^"]+)"\s+Type="([^"]+)"\s+Target="([^"]+)"/g)) {
+    if (m[2].endsWith("/relationships/image")) relIdToTarget.set(m[1], m[3]);
+  }
+  if (relIdToTarget.size === 0) return null;
 
-  const mediaPath = resolveZipPath(slideDir, imageRel[3]);
-  const mediaFile = zip.file(mediaPath);
-  if (!mediaFile) return null;
+  const bgEmbedId = slideXml.match(/<p:bg\b[\s\S]*?<\/p:bg>/)?.[0].match(/<a:blip\b[^>]*\br:embed="([^"]+)"/)?.[1];
 
-  const extension = (mediaPath.split(".").pop() ?? "").toLowerCase();
-  const contentType = IMAGE_EXT_TO_TYPE[extension];
-  if (!contentType) return null; // skip formats R2's lesson-images folder doesn't accept (e.g. embedded .emf/.wmf)
+  for (const picMatch of slideXml.matchAll(/<p:pic\b[\s\S]*?<\/p:pic>/g)) {
+    const embedId = picMatch[0].match(/<a:blip\b[^>]*\br:embed="([^"]+)"/)?.[1];
+    if (!embedId || embedId === bgEmbedId) continue;
+    const target = relIdToTarget.get(embedId);
+    if (!target) continue;
 
-  const blob = await mediaFile.async("blob");
-  return { blob, contentType, extension };
+    const mediaPath = resolveZipPath(slideDir, target);
+    const mediaFile = zip.file(mediaPath);
+    if (!mediaFile) continue;
+
+    const extension = (mediaPath.split(".").pop() ?? "").toLowerCase();
+    const contentType = IMAGE_EXT_TO_TYPE[extension];
+    if (!contentType) continue; // skip formats R2's lesson-images folder doesn't accept (e.g. embedded .emf/.wmf)
+
+    return { blob: await mediaFile.async("blob"), contentType, extension };
+  }
+  return null;
 }
 
 /** MCQ heuristic: a line ending in "؟"/"?" followed by ≥2 "number-token, content-token" pairs. Never guesses the correct answer. */
@@ -221,7 +241,7 @@ export async function extractPptxSlides(
     const path = slidePaths[i];
     const xml = await zip.file(path)?.async("string");
     const texts = xml ? extractTextRuns(xml) : [];
-    const image = await extractSlideImage(zip, path);
+    const image = xml ? await extractSlideImage(zip, path, xml) : null;
     extracted.push({ texts, image });
     onProgress?.(i + 1, slidePaths.length);
   }

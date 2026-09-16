@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, X } from "lucide-react";
+import { Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { QuizQuestionEditor } from "@/components/dashboard/teacher/QuizQuestionEditor";
 import { SLIDE_ICONS } from "@/components/dashboard/teacher/slides/slideIcons";
 import { computeInitialBoundaries, groupIntoLessons } from "@/lib/pptx/groupLessons";
 import type { PptxSection } from "@/lib/pptx/parsePptx";
@@ -20,6 +21,12 @@ export interface ReviewedLesson {
  * groups automatically; everything else starts as one group, and the
  * "ابدأ درسًا جديدًا هنا" control is how a teacher splits any deck by hand
  * instead of the app guessing lesson boundaries from prose content.
+ *
+ * Quiz slides render expanded with the real question editor (same one
+ * QuizBuilder/VideoSlideEditor use) instead of a plain label — a
+ * PowerPoint-detected MCQ never comes with a known correct answer, so
+ * leaving that to a "go fix it later" toast wasn't good enough; the teacher
+ * needs to actually pick it before this ever reaches a student.
  */
 export function PptxImportReview({
   slides,
@@ -33,6 +40,7 @@ export function PptxImportReview({
   onCancel: () => void;
 }) {
   const t = useTranslations("dashboardTeacher.courseForm");
+  const [workingSlides, setWorkingSlides] = useState<LessonSlide[]>(slides);
   const [boundaries, setBoundaries] = useState<number[]>(() => computeInitialBoundaries(slides.length, sections));
   const [titleOverrides, setTitleOverrides] = useState<Record<number, string>>({});
 
@@ -41,7 +49,19 @@ export function PptxImportReview({
     setBoundaries((prev) => (prev.includes(index) ? prev.filter((b) => b !== index) : [...prev, index].sort((a, b) => a - b)));
   }
 
-  const rawGroups = groupIntoLessons(slides, boundaries, sections, t("importedLessonFallbackTitle"));
+  function updateSlide(globalIndex: number, patch: Partial<LessonSlide>) {
+    setWorkingSlides((prev) => prev.map((s, i) => (i === globalIndex ? ({ ...s, ...patch } as LessonSlide) : s)));
+  }
+
+  function deleteSlide(globalIndex: number) {
+    setWorkingSlides((prev) => prev.filter((_, i) => i !== globalIndex));
+    setBoundaries((prev) => {
+      const adjusted = prev.map((b) => (b > globalIndex ? b - 1 : b));
+      return [...new Set(adjusted)].sort((a, b) => a - b);
+    });
+  }
+
+  const rawGroups = groupIntoLessons(workingSlides, boundaries, sections, t("importedLessonFallbackTitle"));
   const groups = rawGroups.reduce<Array<{ start: number; title: string; slides: LessonSlide[] }>>((acc, group) => {
     const previous = acc[acc.length - 1];
     const start = previous ? previous.start + previous.slides.length : 0;
@@ -97,10 +117,34 @@ export function PptxImportReview({
                         <Plus size={11} /> {t("importPptxSplitHere")}
                       </button>
                     )}
-                    <div className="flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2">
-                      <Icon size={13} className="shrink-0 text-accent" />
-                      <span className="flex-1 truncate text-xs text-body">{slide.title || "…"}</span>
-                    </div>
+
+                    {slide.type === "quiz" ? (
+                      <div className="rounded-lg border border-gold/40 bg-gold/6 p-3">
+                        <div className="mb-2 flex items-center gap-2 text-xs font-bold text-gold-ink">
+                          <Icon size={13} className="shrink-0" />
+                          {t("importPptxQuizReviewLabel")}
+                        </div>
+                        <QuizQuestionEditor
+                          question={slide.questions[0]}
+                          index={0}
+                          onChange={(patch) => updateSlide(globalIndex, { questions: [{ ...slide.questions[0], ...patch }] })}
+                          onDelete={() => deleteSlide(globalIndex)}
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2">
+                        <Icon size={13} className="shrink-0 text-accent" />
+                        <span className="flex-1 truncate text-xs text-body">{slide.title || "…"}</span>
+                        <button
+                          type="button"
+                          onClick={() => deleteSlide(globalIndex)}
+                          className="shrink-0 cursor-pointer text-dim hover:text-danger"
+                          aria-label={t("importPptxRemove")}
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -110,7 +154,7 @@ export function PptxImportReview({
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3">
-        <span className="text-xs text-dim">{t("importPptxReviewSummary", { lessons: groups.length, slides: slides.length })}</span>
+        <span className="text-xs text-dim">{t("importPptxReviewSummary", { lessons: groups.length, slides: workingSlides.length })}</span>
         <Button type="button" onClick={handleConfirm} className="px-4 py-2 text-sm">
           {t("importPptxReviewConfirm")}
         </Button>
