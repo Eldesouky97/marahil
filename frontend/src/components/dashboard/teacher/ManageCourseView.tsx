@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Copy, Eye } from "lucide-react";
+import { Copy, Eye, Plus } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useAuth } from "@/context/AuthProvider";
 import { useToast } from "@/components/ui/ToastProvider";
@@ -24,7 +24,17 @@ export function ManageCourseView({ courseId }: { courseId: string }) {
   const [duplicating, setDuplicating] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [manualShowAddLesson, setManualShowAddLesson] = useState<boolean | null>(null);
   const t = useTranslations("dashboardTeacher.manageCourse");
+
+  // Default the "add lesson" form open only for a genuinely empty course —
+  // once at least one lesson already exists (e.g. a course just created
+  // from a PPTX import), landing here shouldn't greet the teacher with an
+  // empty form that reads as "start over"; they open it on purpose instead.
+  // Purely derived (no effect/ref) — a manual toggle overrides it for the
+  // rest of this mount; with no override, it just tracks lessons.length, so
+  // deleting the last remaining lesson naturally reopens it too.
+  const showAddLesson = manualShowAddLesson ?? lessons.length === 0;
 
   if (loading) {
     return (
@@ -103,8 +113,24 @@ export function ManageCourseView({ courseId }: { courseId: string }) {
         <TeacherLessonList courseId={course.id} lessons={lessons} onChanged={refresh} />
       </div>
 
-      <h2 className="mb-4 text-lg font-bold">{t("addLesson")}</h2>
-      <LessonForm courseId={course.id} nextOrder={lessons.length} onSaved={refresh} />
+      {showAddLesson ? (
+        <>
+          <h2 className="mb-4 text-lg font-bold">{t("addLesson")}</h2>
+          <LessonForm
+            courseId={course.id}
+            nextOrder={lessons.length}
+            onSaved={() => {
+              setManualShowAddLesson(false);
+              refresh();
+            }}
+            onCancel={() => setManualShowAddLesson(false)}
+          />
+        </>
+      ) : (
+        <Button variant="outline" onClick={() => setManualShowAddLesson(true)} className="px-5 py-2.5 text-sm">
+          <Plus size={16} /> {t("addLesson")}
+        </Button>
+      )}
 
       <h2 className="mb-4 mt-10 text-lg font-bold">{t("moreSettings")}</h2>
       <CourseSettingsPanel course={course} onSaved={refresh} />

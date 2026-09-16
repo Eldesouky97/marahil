@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { ArrowDown, ArrowUp, ClipboardCheck, Copy, Eye, Layers, Pencil, PlayCircle, Trash2 } from "lucide-react";
-import { Link } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { addLesson, deleteLesson, updateLesson } from "@/lib/firebase/courses";
 import { LessonForm } from "./LessonForm";
+import { ActionsMenu, type ActionsMenuItem } from "@/components/dashboard/ActionsMenu";
 import type { Lesson } from "@/types/course";
 
 export function TeacherLessonList({
@@ -18,6 +19,7 @@ export function TeacherLessonList({
   onChanged: () => void;
 }) {
   const t = useTranslations("dashboardTeacher.manageCourse");
+  const router = useRouter();
   const [editingLessonId, setEditingLessonId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -72,63 +74,48 @@ export function TeacherLessonList({
             />
           </li>
         ) : (
-          <li key={lesson.id} className="flex items-center gap-4 rounded-xl border border-border bg-surface p-4">
+          <li key={lesson.id} className="flex items-center gap-2 rounded-xl border border-border bg-surface p-4 sm:gap-3">
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
               {lesson.slides?.length ? <Layers size={17} /> : <PlayCircle size={17} />}
             </span>
-            <span className="flex-1 truncate text-sm font-medium">
+            <span className="min-w-0 flex-1 truncate text-sm font-medium">
               {i + 1}. {lesson.title}
             </span>
             {lesson.quiz && lesson.quiz.length > 0 && (
-              <span className="flex items-center gap-1 text-xs text-primary">
+              <span className="hidden shrink-0 items-center gap-1 text-xs text-primary sm:flex">
                 <ClipboardCheck size={13} /> {t("questionsCount", { count: lesson.quiz.length })}
               </span>
             )}
-            <button
-              type="button"
-              onClick={() => handleMove(i, -1)}
-              disabled={busy || i === 0}
-              className="cursor-pointer text-dim hover:text-primary-strong disabled:cursor-not-allowed disabled:opacity-30"
-              aria-label={t("moveUp")}
-            >
-              <ArrowUp size={15} />
-            </button>
-            <button
-              type="button"
-              onClick={() => handleMove(i, 1)}
-              disabled={busy || i === lessons.length - 1}
-              className="cursor-pointer text-dim hover:text-primary-strong disabled:cursor-not-allowed disabled:opacity-30"
-              aria-label={t("moveDown")}
-            >
-              <ArrowDown size={15} />
-            </button>
-            <Link
-              href={`/learn/${courseId}/${lesson.id}`}
-              className="text-dim hover:text-primary-strong"
-              aria-label={t("previewLesson")}
-            >
-              <Eye size={15} />
-            </Link>
-            <button
-              type="button"
-              onClick={() => handleDuplicate(lesson)}
-              disabled={busy}
-              className="cursor-pointer text-dim hover:text-primary-strong disabled:cursor-not-allowed disabled:opacity-30"
-              aria-label={t("duplicateLesson")}
-            >
-              <Copy size={15} />
-            </button>
-            <button
-              type="button"
-              onClick={() => setEditingLessonId(lesson.id)}
-              className="cursor-pointer text-dim hover:text-primary-strong"
-              aria-label={t("editLesson")}
-            >
-              <Pencil size={15} />
-            </button>
-            <button type="button" onClick={() => handleDelete(lesson.id)} className="cursor-pointer text-danger" aria-label={t("deleteLesson")}>
-              <Trash2 size={15} />
-            </button>
+            <div className="flex shrink-0 items-center gap-1">
+              <button
+                type="button"
+                onClick={() => handleMove(i, -1)}
+                disabled={busy || i === 0}
+                className="cursor-pointer text-dim hover:text-primary-strong disabled:cursor-not-allowed disabled:opacity-30"
+                aria-label={t("moveUp")}
+              >
+                <ArrowUp size={15} />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleMove(i, 1)}
+                disabled={busy || i === lessons.length - 1}
+                className="cursor-pointer text-dim hover:text-primary-strong disabled:cursor-not-allowed disabled:opacity-30"
+                aria-label={t("moveDown")}
+              >
+                <ArrowDown size={15} />
+              </button>
+              <ActionsMenu
+                items={
+                  [
+                    { label: t("previewLesson"), icon: Eye, onClick: () => router.push(`/learn/${courseId}/${lesson.id}`) },
+                    { label: t("editLesson"), icon: Pencil, onClick: () => setEditingLessonId(lesson.id) },
+                    { label: t("duplicateLesson"), icon: Copy, onClick: () => handleDuplicate(lesson), disabled: busy },
+                    { label: t("deleteLesson"), icon: Trash2, onClick: () => handleDelete(lesson.id), danger: true },
+                  ] satisfies ActionsMenuItem[]
+                }
+              />
+            </div>
           </li>
         )
       )}

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { MoreVertical } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
-export interface AdminUserMenuItem {
+export interface ActionsMenuItem {
   label: string;
   icon: React.ComponentType<{ size?: number }>;
   onClick: () => void;
@@ -12,8 +12,8 @@ export interface AdminUserMenuItem {
   danger?: boolean;
 }
 
-/** Shared by AdminUserRow (mobile card) and AdminUserTableRow (desktop table) — a small local dropdown, not a `ui/` primitive since nothing else needs one yet. */
-export function AdminUserActionsMenu({ items }: { items: AdminUserMenuItem[] }) {
+/** A small local "⋮" dropdown for a row with more actions than comfortably fit inline — first built for the admin users list, now shared by any dashboard row (teacher lesson rows included) with the same crowding problem. */
+export function ActionsMenu({ items }: { items: ActionsMenuItem[] }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 

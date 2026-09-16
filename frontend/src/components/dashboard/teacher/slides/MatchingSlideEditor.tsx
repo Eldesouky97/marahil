@@ -30,20 +30,25 @@ export function MatchingSlideEditor({
     <div className="space-y-3">
       <p className="text-xs text-dim">{t("matchingPairs")}</p>
       {slide.pairs.map((pair, index) => (
-        <div key={pair.id} className="flex items-center gap-2">
+        <div key={pair.id} className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <input
-            className={inputClasses}
+            className={`${inputClasses} min-w-0`}
             placeholder={t("matchingLeft")}
             value={pair.left}
             onChange={(e) => updatePair(index, { left: e.target.value })}
           />
           <input
-            className={inputClasses}
+            className={`${inputClasses} min-w-0`}
             placeholder={t("matchingRight")}
             value={pair.right}
             onChange={(e) => updatePair(index, { right: e.target.value })}
           />
-          <button type="button" onClick={() => deletePair(index)} className="cursor-pointer text-danger" aria-label={t("deletePair")}>
+          <button
+            type="button"
+            onClick={() => deletePair(index)}
+            className="flex shrink-0 cursor-pointer justify-end text-danger sm:justify-start"
+            aria-label={t("deletePair")}
+          >
             <Trash2 size={15} />
           </button>
         </div>

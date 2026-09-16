@@ -74,7 +74,7 @@ export function SlideBuilder({ slides, onChange }: { slides: LessonSlide[]; onCh
               <button
                 type="button"
                 onClick={() => setExpandedId(expanded ? null : slide.id)}
-                className="flex-1 cursor-pointer truncate text-start text-sm font-medium"
+                className="min-w-0 flex-1 cursor-pointer truncate text-start text-sm font-medium"
               >
                 {index + 1}. {slide.title || t(`${slide.type}Slide`)}
               </button>

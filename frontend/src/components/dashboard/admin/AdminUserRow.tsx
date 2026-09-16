@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { CheckCircle2, KeyRound, Trash2, UserRound, UserX, UserCheck as UserCheckIcon } from "lucide-react";
 import { useAdminUserRowActions } from "@/lib/hooks/useAdminUserRowActions";
 import { initials } from "@/lib/utils/initials";
-import { AdminUserActionsMenu, type AdminUserMenuItem } from "./AdminUserActionsMenu";
+import { ActionsMenu, type ActionsMenuItem } from "@/components/dashboard/ActionsMenu";
 import { AdminUserIconButton } from "./AdminUserIconButton";
 import { AdminRoleBadgeButton } from "./AdminRoleBadgeButton";
 import { AdminUserDetails } from "./AdminUserDetails";
@@ -42,7 +42,7 @@ export function AdminUserRow({ user, selected, selectable, onToggleSelect, onDel
     handleDelete,
   } = useAdminUserRowActions(user, onDeleted);
 
-  const menuItems: AdminUserMenuItem[] = [
+  const menuItems: ActionsMenuItem[] = [
     {
       label: resetSent ? t("resetPasswordSent") : t("resetPassword"),
       icon: KeyRound,
@@ -85,7 +85,7 @@ export function AdminUserRow({ user, selected, selectable, onToggleSelect, onDel
             disabled={locked}
             tone={disabled ? "default" : "danger"}
           />
-          <AdminUserActionsMenu items={menuItems} />
+          <ActionsMenu items={menuItems} />
         </div>
       </div>
 
