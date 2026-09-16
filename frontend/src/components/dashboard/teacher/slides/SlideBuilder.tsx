@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { AlignLeft, ArrowDown, ArrowUp, ClipboardCheck, Code2, MousePointerClick, Plus, Shuffle, Trash2, Video } from "lucide-react";
+import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
 import { TextSlideEditor } from "./TextSlideEditor";
 import { VideoSlideEditor } from "./VideoSlideEditor";
 import { QuizSlideEditor } from "./QuizSlideEditor";
@@ -10,19 +10,9 @@ import { CodeSlideEditor } from "./CodeSlideEditor";
 import { HotspotSlideEditor } from "./HotspotSlideEditor";
 import { MatchingSlideEditor } from "./MatchingSlideEditor";
 import { PptxImportButton } from "./PptxImportButton";
+import { SLIDE_ICONS, SLIDE_TYPES } from "./slideIcons";
 import { inputClasses } from "@/components/ui/FormField";
 import type { LessonSlide, LessonSlideType } from "@/types/lessonSlide";
-
-const SLIDE_TYPES: LessonSlideType[] = ["text", "video", "quiz", "code", "hotspot", "matching"];
-
-const SLIDE_ICONS: Record<LessonSlideType, typeof AlignLeft> = {
-  text: AlignLeft,
-  video: Video,
-  quiz: ClipboardCheck,
-  code: Code2,
-  hotspot: MousePointerClick,
-  matching: Shuffle,
-};
 
 function emptySlide(type: LessonSlideType): LessonSlide {
   const id = crypto.randomUUID();
@@ -145,7 +135,7 @@ export function SlideBuilder({ slides, onChange }: { slides: LessonSlide[]; onCh
             </button>
           );
         })}
-        <PptxImportButton onImported={(imported) => onChange([...slides, ...imported])} />
+        <PptxImportButton onImported={(result) => onChange([...slides, ...result.slides])} />
       </div>
     </div>
   );

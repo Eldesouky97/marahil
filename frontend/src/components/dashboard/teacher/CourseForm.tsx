@@ -11,9 +11,9 @@ import { useToast } from "@/components/ui/ToastProvider";
 import { Button } from "@/components/ui/Button";
 import { FormField, inputClasses } from "@/components/ui/FormField";
 import { ImageUploadField } from "@/components/ui/ImageUploadField";
-import { PptxImportButton } from "@/components/dashboard/teacher/slides/PptxImportButton";
+import { PptxImportButton, type PptxImportedResult } from "@/components/dashboard/teacher/slides/PptxImportButton";
+import { PptxImportReview, type ReviewedLesson } from "@/components/dashboard/teacher/PptxImportReview";
 import type { StageId } from "@/types/stage";
-import type { LessonSlide } from "@/types/lessonSlide";
 
 export function CourseForm() {
   const router = useRouter();
@@ -28,10 +28,18 @@ export function CourseForm() {
   const [subject, setSubject] = useState(stages[1].subjects[0]);
   const [coverImageUrl, setCoverImageUrl] = useState<string | undefined>();
   const [price, setPrice] = useState("");
-  const [importedSlides, setImportedSlides] = useState<LessonSlide[] | null>(null);
+  const [pendingImport, setPendingImport] = useState<PptxImportedResult | null>(null);
+  const [importedLessons, setImportedLessons] = useState<ReviewedLesson[] | null>(null);
   const [saving, setSaving] = useState(false);
 
   const currentStage = stages.find((s) => s.id === stage)!;
+
+  function handlePptxImported(result: PptxImportedResult) {
+    setPendingImport(result);
+    setImportedLessons(null);
+    if (!title.trim()) setTitle(result.suggestedTitle);
+    if (!description.trim() && result.suggestedDescription) setDescription(result.suggestedDescription);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -58,16 +66,14 @@ export function CourseForm() {
       return;
     }
 
-    if (importedSlides && importedSlides.length > 0) {
+    if (importedLessons && importedLessons.length > 0) {
       try {
-        await addLesson(courseId, {
-          title: importedSlides[0]?.title || t("importedLessonFallbackTitle"),
-          order: 0,
-          slides: importedSlides,
-        });
+        for (let i = 0; i < importedLessons.length; i++) {
+          await addLesson(courseId, { title: importedLessons[i].title, order: i, slides: importedLessons[i].slides });
+        }
       } catch (err) {
         // The course itself was created fine — don't strand the teacher on this
-        // form over the lesson step failing; let them retry adding it from there.
+        // form over a lesson step failing; let them retry adding it from there.
         console.error("addLesson (pptx import) failed:", err);
         showToast(t("importPptxLessonFailed"), { tone: "error", duration: 7000 });
       }
@@ -139,12 +145,26 @@ export function CourseForm() {
       </FormField>
 
       <FormField label={t("importPptxLabel")}>
-        {importedSlides ? (
+        {pendingImport ? (
+          <PptxImportReview
+            slides={pendingImport.slides}
+            sections={pendingImport.sections}
+            onConfirm={(lessons) => {
+              setImportedLessons(lessons);
+              setPendingImport(null);
+            }}
+            onCancel={() => setPendingImport(null)}
+          />
+        ) : importedLessons ? (
           <div className="flex items-center justify-between gap-3 rounded-lg border border-accent/40 bg-accent/10 px-4 py-2.5 text-sm text-accent-ink">
-            <span>{t("importPptxSummary", { count: importedSlides.length })}</span>
+            <span>
+              {t("importPptxSummary", {
+                count: importedLessons.reduce((sum, l) => sum + l.slides.length, 0),
+              })}
+            </span>
             <button
               type="button"
-              onClick={() => setImportedSlides(null)}
+              onClick={() => setImportedLessons(null)}
               className="shrink-0 cursor-pointer text-danger"
               aria-label={t("importPptxRemove")}
             >
@@ -152,7 +172,7 @@ export function CourseForm() {
             </button>
           </div>
         ) : (
-          <PptxImportButton onImported={setImportedSlides} />
+          <PptxImportButton onImported={handlePptxImported} />
         )}
       </FormField>
 

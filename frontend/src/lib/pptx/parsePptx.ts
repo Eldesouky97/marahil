@@ -39,7 +39,19 @@ function extractTextRuns(slideXml: string): string[] {
   return matches.map((m) => decodeXmlEntities(m[1]).trim()).filter((t) => t.length > 0);
 }
 
-async function getOrderedSlidePaths(zip: JSZip): Promise<string[]> {
+export interface PptxSection {
+  name: string;
+  slideIndexes: number[];
+}
+
+interface SlideOrderInfo {
+  paths: string[];
+  /** Each <p:sldId>'s own numeric `id` attribute -> its 0-based position in `paths`. Sections reference slides by this id, not by the r:id used to resolve the file path. */
+  idToIndex: Map<string, number>;
+  presentationXml: string;
+}
+
+async function getSlideOrderInfo(zip: JSZip): Promise<SlideOrderInfo> {
   const presentationXml = await zip.file("ppt/presentation.xml")?.async("string");
   const relsXml = await zip.file("ppt/_rels/presentation.xml.rels")?.async("string");
   if (!presentationXml || !relsXml) {
@@ -51,16 +63,49 @@ async function getOrderedSlidePaths(zip: JSZip): Promise<string[]> {
     relIdToTarget.set(m[1], m[2]);
   }
 
-  const orderedIds = [...presentationXml.matchAll(/<p:sldId\b[^>]*\br:id="([^"]+)"/g)].map((m) => m[1]);
-  const paths = orderedIds
-    .map((rid) => relIdToTarget.get(rid))
-    .filter((target): target is string => !!target)
-    .map((target) => `ppt/${target.replace(/^\.?\//, "")}`);
+  const paths: string[] = [];
+  const idToIndex = new Map<string, number>();
+  for (const m of presentationXml.matchAll(/<p:sldId\b([^>]*)\/>/g)) {
+    const attrs = m[1];
+    const rid = attrs.match(/\br:id="([^"]+)"/)?.[1];
+    const target = rid ? relIdToTarget.get(rid) : undefined;
+    if (!target) continue;
+    const id = attrs.match(/\bid="([^"]+)"/)?.[1];
+    if (id) idToIndex.set(id, paths.length);
+    paths.push(`ppt/${target.replace(/^\.?\//, "")}`);
+  }
 
   if (paths.length === 0) {
     throw new PptxParseError("No slides found in this .pptx file");
   }
-  return paths;
+  return { paths, idToIndex, presentationXml };
+}
+
+/**
+ * PowerPoint's native "Sections" feature (grouping slides into named chunks
+ * from within PowerPoint itself) lives in an extension block in
+ * presentation.xml: <p14:sectionLst><p14:section name="..."><p14:sldIdLst>
+ * <p14:sldId id="..."/>...</p14:sldIdLst></p14:section>...</p14:sectionLst>
+ * — note these reference slides by the plain `id` attribute, not `r:id`.
+ * Returns null (not an empty array) when the file has none, which is the
+ * common case — most decks aren't organized with this feature.
+ */
+function extractSections(presentationXml: string, idToIndex: Map<string, number>): PptxSection[] | null {
+  const listMatch = presentationXml.match(/<p14:sectionLst\b[^>]*>([\s\S]*?)<\/p14:sectionLst>/);
+  if (!listMatch) return null;
+
+  const sections = [...listMatch[1].matchAll(/<p14:section\b[^>]*\bname="([^"]*)"[^>]*>([\s\S]*?)<\/p14:section>/g)]
+    .map((m) => {
+      const name = decodeXmlEntities(m[1]);
+      const slideIndexes = [...m[2].matchAll(/<p14:sldId\b[^>]*\bid="([^"]+)"/g)]
+        .map((sm) => idToIndex.get(sm[1]))
+        .filter((idx): idx is number => idx !== undefined)
+        .sort((a, b) => a - b);
+      return { name, slideIndexes };
+    })
+    .filter((section) => section.slideIndexes.length > 0);
+
+  return sections.length > 0 ? sections : null;
 }
 
 /** Resolves a zip-internal relative path (e.g. "../media/x.jpeg" from "ppt/slides") without URL-encoding filenames — plain string/array manipulation keeps unicode/space-containing names byte-exact for the zip lookup. */
@@ -160,7 +205,7 @@ function slideToLessonSlide(extracted: ExtractedSlide, imageUrl: string | undefi
 export async function extractPptxSlides(
   file: File,
   onProgress?: (done: number, total: number) => void
-): Promise<{ extracted: ExtractedSlide[] }> {
+): Promise<{ extracted: ExtractedSlide[]; sections: PptxSection[] | null }> {
   let zip: JSZip;
   try {
     zip = await JSZip.loadAsync(file);
@@ -168,7 +213,9 @@ export async function extractPptxSlides(
     throw new PptxParseError("Could not read this file as a .pptx archive");
   }
 
-  const slidePaths = await getOrderedSlidePaths(zip);
+  const { paths: slidePaths, idToIndex, presentationXml } = await getSlideOrderInfo(zip);
+  const sections = extractSections(presentationXml, idToIndex);
+
   const extracted: ExtractedSlide[] = [];
   for (let i = 0; i < slidePaths.length; i++) {
     const path = slidePaths[i];
@@ -178,7 +225,7 @@ export async function extractPptxSlides(
     extracted.push({ texts, image });
     onProgress?.(i + 1, slidePaths.length);
   }
-  return { extracted };
+  return { extracted, sections };
 }
 
 export function buildLessonSlides(

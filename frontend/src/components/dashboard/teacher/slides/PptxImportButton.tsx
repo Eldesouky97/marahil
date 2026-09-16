@@ -6,8 +6,17 @@ import { FileUp } from "lucide-react";
 import { useAuth } from "@/context/AuthProvider";
 import { useToast } from "@/components/ui/ToastProvider";
 import { uploadFile } from "@/lib/upload/uploadFile";
-import { extractPptxSlides, buildLessonSlides, PptxParseError, type ExtractedSlide } from "@/lib/pptx/parsePptx";
+import { extractPptxSlides, buildLessonSlides, PptxParseError, type ExtractedSlide, type PptxSection } from "@/lib/pptx/parsePptx";
 import type { LessonSlide } from "@/types/lessonSlide";
+
+export interface PptxImportedResult {
+  slides: LessonSlide[];
+  sections: PptxSection[] | null;
+  /** The file name minus extension — a reasonable course/lesson title starting point, never applied without the teacher seeing it first. */
+  suggestedTitle: string;
+  /** The first slide's subtitle line, when it has one. */
+  suggestedDescription?: string;
+}
 
 const MAX_PPTX_BYTES = 50 * 1024 * 1024;
 const UPLOAD_CONCURRENCY = 4;
@@ -86,7 +95,7 @@ async function uploadImagesConcurrently(
   return results;
 }
 
-export function PptxImportButton({ onImported }: { onImported: (slides: LessonSlide[]) => void }) {
+export function PptxImportButton({ onImported }: { onImported: (result: PptxImportedResult) => void }) {
   const { firebaseUser } = useAuth();
   const { showToast } = useToast();
   const t = useTranslations("dashboardTeacher.slideBuilder");
@@ -110,7 +119,7 @@ export function PptxImportButton({ onImported }: { onImported: (slides: LessonSl
     setPhase("parsing");
     setProgress({ done: 0, total: 0 });
     try {
-      const { extracted } = await extractPptxSlides(file, (done, total) => setProgress({ done, total }));
+      const { extracted, sections } = await extractPptxSlides(file, (done, total) => setProgress({ done, total }));
 
       setPhase("uploading");
       setProgress({ done: 0, total: extracted.length });
@@ -118,7 +127,12 @@ export function PptxImportButton({ onImported }: { onImported: (slides: LessonSl
       const imageUrls = await uploadImagesConcurrently(extracted, idToken, (done, total) => setProgress({ done, total }));
 
       const { slides, quizSlideNumbers } = buildLessonSlides(extracted, imageUrls);
-      onImported(slides);
+      onImported({
+        slides,
+        sections,
+        suggestedTitle: file.name.replace(/\.pptx$/i, ""),
+        suggestedDescription: extracted[0]?.texts[1],
+      });
       showToast(t("importPptxSuccess", { count: slides.length }), { tone: "success" });
       if (quizSlideNumbers.length > 0) {
         showToast(t("importPptxReviewQuiz", { count: quizSlideNumbers.length }), { tone: "info", duration: 7000 });

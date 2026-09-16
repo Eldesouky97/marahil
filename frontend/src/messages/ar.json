@@ -284,11 +284,16 @@
       "submit": "إنشاء الدورة",
       "submitting": "جارٍ الإنشاء...",
       "importPptxLabel": "أو ابدأ من عرض PowerPoint (اختياري)",
-      "importPptxSummary": "تم استيراد {count} سلايد — سيتم إنشاؤها كأول درس في الدورة.",
+      "importPptxSummary": "تم تجهيز {count} سلايد لإنشائها كدروس في الدورة.",
       "importPptxRemove": "إزالة",
       "importedLessonFallbackTitle": "الدرس المستورد",
       "createFailed": "تعذّر إنشاء الدورة. حاول مرة أخرى.",
-      "importPptxLessonFailed": "تم إنشاء الدورة، لكن تعذّر إضافة الدرس المستورد. أضفه من صفحة إدارة الدورة."
+      "importPptxLessonFailed": "تم إنشاء الدورة، لكن تعذّر إضافة الدروس المستوردة. أضفها من صفحة إدارة الدورة.",
+      "importPptxReviewTitle": "راجع الدروس قبل الإنشاء",
+      "importPptxSplitHere": "ابدأ درسًا جديدًا هنا",
+      "importPptxMergeUp": "دمج مع الدرس السابق",
+      "importPptxReviewSummary": "{lessons} درسًا · {slides} سلايد",
+      "importPptxReviewConfirm": "تأكيد"
     },
     "manageCourse": {
       "publish": "نشر الدورة",

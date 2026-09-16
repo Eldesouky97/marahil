@@ -284,11 +284,16 @@
       "submit": "Create Course",
       "submitting": "Creating...",
       "importPptxLabel": "Or start from a PowerPoint (optional)",
-      "importPptxSummary": "Imported {count} slides — they'll be created as the course's first lesson.",
+      "importPptxSummary": "{count} slides ready to be created as lessons in the course.",
       "importPptxRemove": "Remove",
       "importedLessonFallbackTitle": "Imported Lesson",
       "createFailed": "Couldn't create the course. Please try again.",
-      "importPptxLessonFailed": "The course was created, but the imported lesson couldn't be added. Add it from the course management page."
+      "importPptxLessonFailed": "The course was created, but the imported lessons couldn't be added. Add them from the course management page.",
+      "importPptxReviewTitle": "Review the lessons before creating",
+      "importPptxSplitHere": "Start a new lesson here",
+      "importPptxMergeUp": "Merge into previous lesson",
+      "importPptxReviewSummary": "{lessons} lesson(s) · {slides} slides",
+      "importPptxReviewConfirm": "Confirm"
     },
     "manageCourse": {
       "publish": "Publish Course",
