@@ -25,9 +25,15 @@ import type { StageId } from "@/types/stage";
  * omits entirely stays omitted and untouched by updateDoc's merge, same as
  * ever. Used by updateLesson() since LessonForm relies on this to actually
  * clear videoUrl/content/imageUrl/slides/quiz when switching authoring mode.
+ * A *defined* top-level value (e.g. the `slides` array itself) still runs
+ * through withoutUndefined() — deleteField() only clears a whole top-level
+ * field, it can't be used for an undefined property nested inside an array
+ * element (a slide missing an image, say), which must simply be omitted.
  */
 function withDeletedFields<T extends object>(obj: T): Record<string, unknown> {
-  return Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, v === undefined ? deleteField() : v]));
+  return Object.fromEntries(
+    Object.entries(obj).map(([k, v]) => [k, v === undefined ? deleteField() : withoutUndefined(v)])
+  );
 }
 
 const coursesRef = collection(db, "courses");
