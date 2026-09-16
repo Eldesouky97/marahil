@@ -2,6 +2,7 @@ import {
   addDoc,
   collection,
   deleteDoc,
+  deleteField,
   doc,
   DocumentData,
   getDoc,
@@ -12,8 +13,22 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "./client";
+import { withoutUndefined } from "@/lib/utils/withoutUndefined";
 import type { Course, Lesson } from "@/types/course";
 import type { StageId } from "@/types/stage";
+
+/**
+ * For an update (unlike a create), a key the caller bothers to include at all
+ * means "set this field" — so an explicit `undefined` there means "clear it"
+ * and must become Firestore's deleteField() sentinel, not just get dropped
+ * (which would silently leave the old value in place). A key the caller
+ * omits entirely stays omitted and untouched by updateDoc's merge, same as
+ * ever. Used by updateLesson() since LessonForm relies on this to actually
+ * clear videoUrl/content/imageUrl/slides/quiz when switching authoring mode.
+ */
+function withDeletedFields<T extends object>(obj: T): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, v === undefined ? deleteField() : v]));
+}
 
 const coursesRef = collection(db, "courses");
 
@@ -74,7 +89,7 @@ export async function createCourse(input: {
   price?: number;
 }): Promise<string> {
   const created = await addDoc(coursesRef, {
-    ...input,
+    ...withoutUndefined(input),
     published: false,
     lessonsCount: 0,
     studentsCount: 0,
@@ -91,7 +106,7 @@ export async function updateCourse(
   courseId: string,
   patch: Partial<Pick<Course, "title" | "description" | "stage" | "subject" | "coverImageUrl" | "price" | "materials" | "quiz">>
 ): Promise<void> {
-  await updateDoc(doc(db, "courses", courseId), patch);
+  await updateDoc(doc(db, "courses", courseId), withoutUndefined(patch));
 }
 
 /** Admin-only. Deletes every lesson first (Firestore doesn't cascade-delete subcollections), then the course itself. */
@@ -117,7 +132,7 @@ export async function addLesson(
   courseId: string,
   lesson: Omit<Lesson, "id">
 ): Promise<string> {
-  const created = await addDoc(collection(db, "courses", courseId, "lessons"), lesson);
+  const created = await addDoc(collection(db, "courses", courseId, "lessons"), withoutUndefined(lesson));
   await updateDoc(doc(db, "courses", courseId), {
     lessonsCount: (await listLessons(courseId)).length,
   });
@@ -129,7 +144,7 @@ export async function updateLesson(
   lessonId: string,
   patch: Partial<Omit<Lesson, "id">>
 ): Promise<void> {
-  await updateDoc(doc(db, "courses", courseId, "lessons", lessonId), patch);
+  await updateDoc(doc(db, "courses", courseId, "lessons", lessonId), withDeletedFields(patch));
 }
 
 export async function deleteLesson(courseId: string, lessonId: string): Promise<void> {

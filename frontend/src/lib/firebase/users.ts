@@ -11,6 +11,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "./client";
+import { withoutUndefined } from "@/lib/utils/withoutUndefined";
 import type { AppUser, PersonalDetails, UserRole, UserStatus } from "@/types/user";
 
 const OPTIONAL_DETAIL_KEYS: (keyof PersonalDetails)[] = [
@@ -24,11 +25,6 @@ const OPTIONAL_DETAIL_KEYS: (keyof PersonalDetails)[] = [
   "jobTitle",
   "nationalId",
 ];
-
-/** Firestore's `setDoc`/`updateDoc` throw on an explicit `undefined` field — drop those instead of sending them. */
-function withoutUndefined<T extends object>(obj: T): Partial<T> {
-  return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined)) as Partial<T>;
-}
 
 function mapUser(uid: string, data: DocumentData): AppUser {
   return {
