@@ -11,7 +11,7 @@ import { CodeSlideView } from "./CodeSlideView";
 import { HotspotSlideView } from "./HotspotSlideView";
 import { MatchingSlideView } from "./MatchingSlideView";
 import { Button } from "@/components/ui/Button";
-import { cn } from "@/lib/utils/cn";
+import { ProgressBar } from "@/components/ui/ProgressBar";
 import type { LessonSlide } from "@/types/lessonSlide";
 
 export function SlideDeck({ slides, onDeckComplete }: { slides: LessonSlide[]; onDeckComplete: () => void }) {
@@ -34,22 +34,9 @@ export function SlideDeck({ slides, onDeckComplete }: { slides: LessonSlide[]; o
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 space-y-2">
         <span className="text-xs text-dim">{t("slideCounter", { current: index + 1, total: slides.length })}</span>
-        <div className="flex items-center gap-1.5">
-          {slides.map((s, i) => (
-            <button
-              key={s.id}
-              type="button"
-              onClick={() => setIndex(i)}
-              aria-label={`${i + 1}`}
-              className={cn(
-                "h-1.5 rounded-full transition-all",
-                i === index ? "w-5 bg-primary" : i < index ? "w-1.5 bg-accent" : "w-1.5 bg-overlay"
-              )}
-            />
-          ))}
-        </div>
+        <ProgressBar value={((index + 1) / slides.length) * 100} />
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-border bg-surface-2 p-6">
